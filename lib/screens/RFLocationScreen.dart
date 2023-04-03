@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFHotelListComponent.dart';
-import 'package:room_finder_flutter/main.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFDataGenerator.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFHotelListComponent.dart';
+import 'package:customer_app/main.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFDataGenerator.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFLocationScreen extends StatefulWidget {
   @override
@@ -38,21 +38,29 @@ class _RFLocationScreenState extends State<RFLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBarWidget(context, showLeadingIcon: false, appBarHeight: 50, title: "Search Detail", roundCornerShape: false),
+      appBar: commonAppBarWidget(context,
+          showLeadingIcon: false,
+          appBarHeight: 50,
+          title: "Search Detail",
+          roundCornerShape: false),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 32),
+              padding:
+                  EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 32),
               decoration: boxDecorationWithRoundedCorners(
-                borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(12),
+                    bottomLeft: Radius.circular(12)),
                 backgroundColor: rf_primaryColor,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Search for Property", style: boldTextStyle(color: white)),
+                  Text("Search for Property",
+                      style: boldTextStyle(color: white)),
                   16.height,
                   AppTextField(
                     controller: addressController,
@@ -67,7 +75,12 @@ class _RFLocationScreenState extends State<RFLocationScreen> {
                           8.width,
                           Text('Imadol', style: boldTextStyle()),
                           8.width,
-                          Container(width: 1, height: 15, color: appStore.isDarkModeOn ? white : gray.withOpacity(0.6)),
+                          Container(
+                              width: 1,
+                              height: 15,
+                              color: appStore.isDarkModeOn
+                                  ? white
+                                  : gray.withOpacity(0.6)),
                           16.width,
                         ],
                       ).paddingOnly(left: 16),
@@ -93,7 +106,9 @@ class _RFLocationScreenState extends State<RFLocationScreen> {
                 return Container(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   decoration: boxDecorationWithRoundedCorners(
-                    backgroundColor: selectedIndex == index ? gray.withOpacity(0.1) : Colors.transparent,
+                    backgroundColor: selectedIndex == index
+                        ? gray.withOpacity(0.1)
+                        : Colors.transparent,
                   ),
                   child: Text(
                     data.roomCategoryName.validate(),
@@ -118,7 +133,8 @@ class _RFLocationScreenState extends State<RFLocationScreen> {
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               itemCount: hotelListData.length,
-              itemBuilder: (BuildContext context, int index) => RFHotelListComponent(hotelData: hotelListData[index]),
+              itemBuilder: (BuildContext context, int index) =>
+                  RFHotelListComponent(hotelData: hotelListData[index]),
             ),
           ],
         ),

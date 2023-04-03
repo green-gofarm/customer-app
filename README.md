@@ -1,4 +1,4 @@
-# room_finder_flutter
+# customer_app
 
 A new Flutter project.
 

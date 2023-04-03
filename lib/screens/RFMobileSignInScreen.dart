@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFCommonAppComponent.dart';
-import 'package:room_finder_flutter/main.dart';
-import 'package:room_finder_flutter/screens/RFEmailSignInScreen.dart';
-import 'package:room_finder_flutter/screens/RFResetPasswordScreen.dart';
-import 'package:room_finder_flutter/screens/RFSignUpScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFString.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
-import 'package:room_finder_flutter/utils/codePicker/country_code_picker.dart';
+import 'package:customer_app/components/RFCommonAppComponent.dart';
+import 'package:customer_app/main.dart';
+import 'package:customer_app/screens/RFEmailSignInScreen.dart';
+import 'package:customer_app/screens/RFResetPasswordScreen.dart';
+import 'package:customer_app/screens/RFSignUpScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFString.dart';
+import 'package:customer_app/utils/RFWidget.dart';
+import 'package:customer_app/utils/codePicker/country_code_picker.dart';
 
 class RFMobileSignIn extends StatefulWidget {
   @override
@@ -58,12 +58,19 @@ class _RFMobileSignInState extends State<RFMobileSignIn> {
               16.height,
               Container(
                 padding: EdgeInsets.only(left: 15),
-                decoration: boxDecoration(showShadow: false, bgColor: context.cardColor, radius: 8, color: context.dividerColor),
+                decoration: boxDecoration(
+                    showShadow: false,
+                    bgColor: context.cardColor,
+                    radius: 8,
+                    color: context.dividerColor),
                 height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    CountryCodePicker(onChanged: print, padding: EdgeInsets.all(0), showFlag: false),
+                    CountryCodePicker(
+                        onChanged: print,
+                        padding: EdgeInsets.all(0),
+                        showFlag: false),
                     Container(
                       height: 25.0,
                       width: 1.0,
@@ -72,7 +79,8 @@ class _RFMobileSignInState extends State<RFMobileSignIn> {
                     ),
                     TextField(
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(border: InputBorder.none, hintText: "Phone Number"),
+                      decoration: InputDecoration(
+                          border: InputBorder.none, hintText: "Phone Number"),
                       onChanged: (value) {},
                     ).expand(),
                   ],

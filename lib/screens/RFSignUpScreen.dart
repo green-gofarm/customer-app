@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFCommonAppComponent.dart';
-import 'package:room_finder_flutter/screens/RFEmailSignInScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFCommonAppComponent.dart';
+import 'package:customer_app/screens/RFEmailSignInScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 import '../utils/RFString.dart';
 
@@ -61,7 +61,9 @@ class _RFSignUpScreenState extends State<RFSignUpScreen> {
                 showLableText: true,
                 suffixIcon: Container(
                   padding: EdgeInsets.all(2),
-                  decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: rf_rattingBgColor),
+                  decoration: boxDecorationWithRoundedCorners(
+                      boxShape: BoxShape.circle,
+                      backgroundColor: rf_rattingBgColor),
                   child: Icon(Icons.done, color: Colors.white, size: 14),
                 ),
               ),
@@ -77,7 +79,9 @@ class _RFSignUpScreenState extends State<RFSignUpScreen> {
                 showLableText: true,
                 suffixIcon: Container(
                   padding: EdgeInsets.all(2),
-                  decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: rf_rattingBgColor),
+                  decoration: boxDecorationWithRoundedCorners(
+                      boxShape: BoxShape.circle,
+                      backgroundColor: rf_rattingBgColor),
                   child: Icon(Icons.done, color: Colors.white, size: 14),
                 ),
               ),
@@ -116,7 +120,10 @@ class _RFSignUpScreenState extends State<RFSignUpScreen> {
             ),
           ],
         ),
-        subWidget: rfCommonRichText(title: "Have an account? ", subTitle: "Sign In Here").paddingAll(8).onTap(
+        subWidget: rfCommonRichText(
+                title: "Have an account? ", subTitle: "Sign In Here")
+            .paddingAll(8)
+            .onTap(
           () {
             finish(context);
           },

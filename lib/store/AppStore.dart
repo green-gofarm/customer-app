@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFConstant.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFConstant.dart';
 
 part 'AppStore.g.dart';
 

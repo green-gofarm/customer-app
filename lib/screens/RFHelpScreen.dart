@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFFAQComponent.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/utils/RFDataGenerator.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFFAQComponent.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/utils/RFDataGenerator.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFHelpScreen extends StatelessWidget {
   final List<RoomFinderModel> faqData = faqList();
@@ -11,14 +11,20 @@ class RFHelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBarWidget(context, showLeadingIcon: false, title: 'Help', roundCornerShape: true, appBarHeight: 80),
+      appBar: commonAppBarWidget(context,
+          showLeadingIcon: false,
+          title: 'Help',
+          roundCornerShape: true,
+          appBarHeight: 80),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Frequent Asked Questions', style: boldTextStyle(size: 18)).paddingOnly(left: 16, top: 24),
+            Text('Frequent Asked Questions', style: boldTextStyle(size: 18))
+                .paddingOnly(left: 16, top: 24),
             ListView.builder(
-              padding: EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 24),
+              padding:
+                  EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 24),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,

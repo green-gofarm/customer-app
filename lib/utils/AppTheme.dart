@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
+import 'package:customer_app/utils/RFColors.dart';
 
 class AppThemeData {
   //
@@ -19,10 +19,13 @@ class AppThemeData {
     appBarTheme: AppBarTheme(
       //color: whiteColor,
       iconTheme: IconThemeData(color: textPrimaryColor),
-      systemOverlayStyle: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark, statusBarColor: rf_primaryColor),
+      systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: rf_primaryColor),
     ),
     textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.black),
-    colorScheme: ColorScheme.light(primary: appColorPrimary, primaryVariant: appColorPrimary),
+    colorScheme: ColorScheme.light(
+        primary: appColorPrimary, primaryVariant: appColorPrimary),
     cardTheme: CardTheme(color: Colors.white),
     cardColor: Colors.white,
     iconTheme: IconThemeData(color: textPrimaryColor),
@@ -34,7 +37,8 @@ class AppThemeData {
     ),
     visualDensity: VisualDensity.adaptivePlatformDensity,
   ).copyWith(
-    pageTransitionsTheme: PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
+    pageTransitionsTheme:
+        PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
       TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       TargetPlatform.linux: OpenUpwardsPageTransitionsBuilder(),
@@ -49,7 +53,9 @@ class AppThemeData {
     appBarTheme: AppBarTheme(
       //color: appBackgroundColorDark,
       iconTheme: IconThemeData(color: blackColor),
-      systemOverlayStyle: SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light, statusBarColor: rf_primaryColor),
+      systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.light,
+          statusBarColor: rf_primaryColor),
     ),
     primaryColor: color_primary_black,
     dividerColor: Color(0xFFDADADA).withOpacity(0.3),
@@ -57,8 +63,11 @@ class AppThemeData {
     textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.white),
     hoverColor: Colors.black12,
     fontFamily: GoogleFonts.openSans().fontFamily,
-    bottomSheetTheme: BottomSheetThemeData(backgroundColor: appBackgroundColorDark),
-    primaryTextTheme: TextTheme(headline6: primaryTextStyle(color: Colors.white), overline: primaryTextStyle(color: Colors.white)),
+    bottomSheetTheme:
+        BottomSheetThemeData(backgroundColor: appBackgroundColorDark),
+    primaryTextTheme: TextTheme(
+        headline6: primaryTextStyle(color: Colors.white),
+        overline: primaryTextStyle(color: Colors.white)),
     cardTheme: CardTheme(color: cardBackgroundBlackDark),
     cardColor: appSecondaryBackgroundColor,
     iconTheme: IconThemeData(color: whiteColor),
@@ -68,9 +77,14 @@ class AppThemeData {
       subtitle2: TextStyle(color: Colors.white54),
     ),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    colorScheme: ColorScheme.dark(primary: appBackgroundColorDark, onPrimary: cardBackgroundBlackDark, primaryVariant: color_primary_black).copyWith(secondary: whiteColor),
+    colorScheme: ColorScheme.dark(
+            primary: appBackgroundColorDark,
+            onPrimary: cardBackgroundBlackDark,
+            primaryVariant: color_primary_black)
+        .copyWith(secondary: whiteColor),
   ).copyWith(
-    pageTransitionsTheme: PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
+    pageTransitionsTheme:
+        PageTransitionsTheme(builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
       TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       TargetPlatform.linux: OpenUpwardsPageTransitionsBuilder(),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFCommonAppComponent.dart';
-import 'package:room_finder_flutter/components/RFLocationComponent.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/screens/RFSearchDetailScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFDataGenerator.dart';
-import 'package:room_finder_flutter/utils/RFString.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFCommonAppComponent.dart';
+import 'package:customer_app/components/RFLocationComponent.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/screens/RFSearchDetailScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFDataGenerator.dart';
+import 'package:customer_app/utils/RFString.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFSearchFragment extends StatefulWidget {
   @override
@@ -62,7 +62,8 @@ class _RFSearchFragmentState extends State<RFSearchFragment> {
                 lableText: "Enter an address or city",
                 showLableText: true,
                 showPreFixIcon: true,
-                prefixIcon: Icon(Icons.location_on, color: rf_primaryColor, size: 16),
+                prefixIcon:
+                    Icon(Icons.location_on, color: rf_primaryColor, size: 16),
               ),
             ),
             8.height,
@@ -75,7 +76,8 @@ class _RFSearchFragmentState extends State<RFSearchFragment> {
                 lableText: 'Enter price range',
                 showLableText: true,
                 showPreFixIcon: true,
-                prefixIcon: Icon(Icons.currency_rupee, color: rf_primaryColor, size: 16),
+                prefixIcon: Icon(Icons.currency_rupee,
+                    color: rf_primaryColor, size: 16),
               ),
             ),
             8.height,
@@ -114,7 +116,8 @@ class _RFSearchFragmentState extends State<RFSearchFragment> {
               children: List.generate(
                 locationListData.length,
                 (index) {
-                  return RFLocationComponent(locationData: locationListData[index]);
+                  return RFLocationComponent(
+                      locationData: locationListData[index]);
                 },
               ),
             ),

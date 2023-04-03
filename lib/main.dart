@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/screens/RFSplashScreen.dart';
-import 'package:room_finder_flutter/store/AppStore.dart';
-import 'package:room_finder_flutter/utils/AppTheme.dart';
-import 'package:room_finder_flutter/utils/RFConstant.dart';
+import 'package:customer_app/screens/RFSplashScreen.dart';
+import 'package:customer_app/store/AppStore.dart';
+import 'package:customer_app/utils/AppTheme.dart';
+import 'package:customer_app/utils/RFConstant.dart';
 
 AppStore appStore = AppStore();
 

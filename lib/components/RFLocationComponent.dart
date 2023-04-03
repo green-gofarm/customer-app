@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFLocationComponent extends StatelessWidget {
   final RoomFinderModel locationData;
@@ -17,12 +17,17 @@ class RFLocationComponent extends StatelessWidget {
           locationData.img.validate(),
           fit: BoxFit.cover,
           height: 170,
-          width: locationWidth.validate() ? context.width() : context.width() * 0.47 - 16,
+          width: locationWidth.validate()
+              ? context.width()
+              : context.width() * 0.47 - 16,
         ),
         Container(
           height: 170,
-          width: locationWidth.validate() ? context.width() : context.width() * 0.47 - 16,
-          decoration: boxDecorationWithRoundedCorners(backgroundColor: black.withOpacity(0.2)),
+          width: locationWidth.validate()
+              ? context.width()
+              : context.width() * 0.47 - 16,
+          decoration: boxDecorationWithRoundedCorners(
+              backgroundColor: black.withOpacity(0.2)),
         ),
         Positioned(
           bottom: 16,
@@ -34,11 +39,14 @@ class RFLocationComponent extends StatelessWidget {
                 children: [
                   Icon(Icons.location_on, color: white, size: 18),
                   8.width,
-                  Text(locationData.location.validate(), style: boldTextStyle(color: white)),
+                  Text(locationData.location.validate(),
+                      style: boldTextStyle(color: white)),
                 ],
               ),
               4.height,
-              Text(locationData.price.validate(), style: secondaryTextStyle(color: white)).paddingOnly(left: 4),
+              Text(locationData.price.validate(),
+                      style: secondaryTextStyle(color: white))
+                  .paddingOnly(left: 4),
             ],
           ),
         ),

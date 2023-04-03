@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFCommonAppComponent.dart';
-import 'package:room_finder_flutter/components/RFConformationDialog.dart';
-import 'package:room_finder_flutter/screens/RFHomeScreen.dart';
-import 'package:room_finder_flutter/screens/RFResetPasswordScreen.dart';
-import 'package:room_finder_flutter/screens/RFSignUpScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFString.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFCommonAppComponent.dart';
+import 'package:customer_app/components/RFConformationDialog.dart';
+import 'package:customer_app/screens/RFHomeScreen.dart';
+import 'package:customer_app/screens/RFResetPasswordScreen.dart';
+import 'package:customer_app/screens/RFSignUpScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFString.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 // ignore: must_be_immutable
 class RFEmailSignInScreen extends StatefulWidget {
@@ -37,7 +37,8 @@ class _RFEmailSignInScreenState extends State<RFEmailSignInScreen> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(rf_primaryColor,
+        statusBarIconBrightness: Brightness.light);
 
     widget.showDialog
         ? Timer.run(() {
@@ -48,7 +49,9 @@ class _RFEmailSignInScreenState extends State<RFEmailSignInScreen> {
                 Future.delayed(Duration(seconds: 1), () {
                   Navigator.of(context).pop(true);
                 });
-                return Material(type: MaterialType.transparency, child: RFConformationDialog());
+                return Material(
+                    type: MaterialType.transparency,
+                    child: RFConformationDialog());
               },
             );
           })
@@ -83,7 +86,9 @@ class _RFEmailSignInScreenState extends State<RFEmailSignInScreen> {
                 showLableText: true,
                 suffixIcon: Container(
                   padding: EdgeInsets.all(2),
-                  decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: rf_rattingBgColor),
+                  decoration: boxDecorationWithRoundedCorners(
+                      boxShape: BoxShape.circle,
+                      backgroundColor: rf_rattingBgColor),
                   child: Icon(Icons.done, color: Colors.white, size: 14),
                 ),
               ),
@@ -118,7 +123,8 @@ class _RFEmailSignInScreenState extends State<RFEmailSignInScreen> {
             ),
           ],
         ),
-        subWidget: socialLoginWidget(context, title1: "New Member? ", title2: "Sign up Here", callBack: () {
+        subWidget: socialLoginWidget(context,
+            title1: "New Member? ", title2: "Sign up Here", callBack: () {
           RFSignUpScreen().launch(context);
         }),
       ),

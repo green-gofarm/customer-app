@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/utils/RFConstant.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/utils/RFConstant.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 import '../../../main.dart';
 import 'country_code.dart';
@@ -19,8 +19,15 @@ class SelectionDialog extends StatefulWidget {
   /// elements passed as favorite
   final List<CountryCode> favoriteElements;
 
-  SelectionDialog(this.elements, this.favoriteElements, {Key? key, this.showCountryOnly, this.emptySearchBuilder, InputDecoration searchDecoration = const InputDecoration(), this.searchStyle, this.showFlag})
-      : this.searchDecoration = searchDecoration.copyWith(prefixIcon: Icon(Icons.search)),
+  SelectionDialog(this.elements, this.favoriteElements,
+      {Key? key,
+      this.showCountryOnly,
+      this.emptySearchBuilder,
+      InputDecoration searchDecoration = const InputDecoration(),
+      this.searchStyle,
+      this.showFlag})
+      : this.searchDecoration =
+            searchDecoration.copyWith(prefixIcon: Icon(Icons.search)),
         super(key: key);
 
   @override
@@ -37,7 +44,10 @@ class _SelectionDialogState extends State<SelectionDialog> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              text("Select Country Code", textColor: appStore.textPrimaryColor, fontSize: 16.0, fontFamily: fontSemibold),
+              text("Select Country Code",
+                  textColor: appStore.textPrimaryColor,
+                  fontSize: 16.0,
+                  fontFamily: fontSemibold),
               SizedBox(height: 8),
               TextField(
                 style: widget.searchStyle,
@@ -98,7 +108,8 @@ class _SelectionDialogState extends State<SelectionDialog> {
                   child: Padding(
                     padding: EdgeInsets.only(right: 16.0),
                     child: CachedNetworkImage(
-                      placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
+                      placeholder: placeholderWidgetFn() as Widget Function(
+                          BuildContext, String)?,
                       imageUrl: e.flagUri!,
                       width: 25.0,
                     ),
@@ -110,8 +121,14 @@ class _SelectionDialogState extends State<SelectionDialog> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Expanded(child: text(e.toLongString(), fontSize: textSizeMedium, textColor: appStore.textPrimaryColor)),
-                text(e.dialCode, fontSize: textSizeMedium, textColor: appStore.textPrimaryColor, fontFamily: fontSemibold),
+                Expanded(
+                    child: text(e.toLongString(),
+                        fontSize: textSizeMedium,
+                        textColor: appStore.textPrimaryColor)),
+                text(e.dialCode,
+                    fontSize: textSizeMedium,
+                    textColor: appStore.textPrimaryColor,
+                    fontFamily: fontSemibold),
               ],
             ),
           ),
@@ -137,7 +154,12 @@ class _SelectionDialogState extends State<SelectionDialog> {
   void _filterElements(String s) {
     s = s.toUpperCase();
     setState(() {
-      filteredElements = widget.elements.where((e) => e.code!.contains(s) || e.dialCode!.contains(s) || e.name!.toUpperCase().contains(s)).toList();
+      filteredElements = widget.elements
+          .where((e) =>
+              e.code!.contains(s) ||
+              e.dialCode!.contains(s) ||
+              e.name!.toUpperCase().contains(s))
+          .toList();
     });
   }
 

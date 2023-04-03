@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/screens/RFHotelDescriptionScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/screens/RFHotelDescriptionScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFHotelListComponent extends StatelessWidget {
   final RoomFinderModel? hotelData;
@@ -16,13 +16,16 @@ class RFHotelListComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: context.width(),
-      decoration: boxDecorationRoundedWithShadow(8, backgroundColor: context.cardColor),
+      decoration:
+          boxDecorationRoundedWithShadow(8, backgroundColor: context.cardColor),
       padding: EdgeInsets.all(8),
       margin: EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          rfCommonCachedNetworkImage(hotelData!.img.validate(), height: 100, width: 100, fit: BoxFit.cover).cornerRadiusWithClipRRect(8),
+          rfCommonCachedNetworkImage(hotelData!.img.validate(),
+                  height: 100, width: 100, fit: BoxFit.cover)
+              .cornerRadiusWithClipRRect(8),
           16.width,
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,12 +38,15 @@ class RFHotelListComponent extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(hotelData!.roomCategoryName.validate(), style: boldTextStyle()),
+                      Text(hotelData!.roomCategoryName.validate(),
+                          style: boldTextStyle()),
                       8.height,
                       Row(
                         children: [
-                          Text(hotelData!.price.validate(), style: boldTextStyle(color: rf_primaryColor)),
-                          Text(hotelData!.rentDuration.validate(), style: secondaryTextStyle()),
+                          Text(hotelData!.price.validate(),
+                              style: boldTextStyle(color: rf_primaryColor)),
+                          Text(hotelData!.rentDuration.validate(),
+                              style: secondaryTextStyle()),
                         ],
                       )
                     ],
@@ -48,11 +54,14 @@ class RFHotelListComponent extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: hotelData!.color ?? greenColor),
+                        decoration: boxDecorationWithRoundedCorners(
+                            boxShape: BoxShape.circle,
+                            backgroundColor: hotelData!.color ?? greenColor),
                         padding: EdgeInsets.all(4),
                       ),
                       6.width,
-                      Text(hotelData!.address.validate(), style: secondaryTextStyle()),
+                      Text(hotelData!.address.validate(),
+                          style: secondaryTextStyle()),
                     ],
                   ),
                 ],
@@ -62,7 +71,8 @@ class RFHotelListComponent extends StatelessWidget {
                 children: [
                   Icon(Icons.location_on, color: rf_primaryColor, size: 16),
                   6.width,
-                  Text(hotelData!.location.validate(), style: secondaryTextStyle()),
+                  Text(hotelData!.location.validate(),
+                      style: secondaryTextStyle()),
                 ],
               ),
             ],
@@ -71,6 +81,9 @@ class RFHotelListComponent extends StatelessWidget {
       ),
     ).onTap(() {
       RFHotelDescriptionScreen(hotelData: hotelData).launch(context);
-    }, splashColor: Colors.transparent, hoverColor: Colors.transparent, highlightColor: Colors.transparent);
+    },
+        splashColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent);
   }
 }
