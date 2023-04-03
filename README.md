@@ -1,22 +1,16 @@
-# prokit_flutter
+# room_finder_flutter
 
-# [Buy ProKit Flutter Source Code][buy]
+A new Flutter project.
 
-# List of Video Tutorials
+## Getting Started
 
-- ProKit Flutter Teaser - https://www.youtube.com/watch?v=ZihgdqdQDpQ
-- Introduction to ProKit Flutter - https://www.youtube.com/watch?v=O1ymxJt87Jw
+This project is a starting point for a Flutter application.
 
-- Download and configuring Flutter and building the ProKit Flutter - https://youtu.be/QNlfN32G5As
-- How to build ProKit Flutter in Android - https://youtu.be/QKMfASEX9As
-- How to build ProKit Flutter in iOS - https://youtu.be/Hg9S6AKzWxE
-- How to extract Theme or Full App from ProKit Flutter - https://youtu.be/qLBIhQyUW3w
+A few resources to get you started if this is your first Flutter project:
 
-Note:
-- Importing mobx is a must as Mobx is used for changing colors in the entire app (eg. Dark Mode to Light Mode and vice versa).
-- Importing nb_utils is a must as nb_utils is the package that is often used in the prokit as it has many common widgets. hence it saves our time.
-- Copy the store folder from the main directory and paste it in the new project.
-- Copy this files "AppColor","AppTheme","AppWidgets","AppConstants". from utils folder located at (lib - main - utils-  files).
-- We have used localizationsDelegates in muvi app for Multi-Language support so we will delete the localizationsDelegates from the main. dart file as we don't need in the example video. (do not delete when copying muvi app.)
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-   [buy]: <https://codecanyon.net/item/prokit-flutter-app-ui-design-templete-kit/25787190?s_rank=1>
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
