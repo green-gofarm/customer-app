@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '238098794310',
     projectId: 'go-gofarm',
     storageBucket: 'go-gofarm.appspot.com',
-    androidClientId: '238098794310-f4mtj7t2v6aiq6a7i9umm46t2gbdl9cp.apps.googleusercontent.com',
+    androidClientId: '238098794310-2748qe4msdd13lp1draq3o5ofb9i96kb.apps.googleusercontent.com',
     iosClientId: '238098794310-5bfh4fggh5sod7444pqq7ksmshttfgto.apps.googleusercontent.com',
     iosBundleId: 'gofarm.customerApp',
   );

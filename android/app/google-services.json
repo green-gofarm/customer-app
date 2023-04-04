@@ -61,6 +61,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "238098794310-2748qe4msdd13lp1draq3o5ofb9i96kb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gofarm.customer_app",
+            "certificate_hash": "2ae1a3c695bce6df4eea9124d179230db632345b"
+          }
+        },
+        {
           "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
           "client_type": 3
         }
