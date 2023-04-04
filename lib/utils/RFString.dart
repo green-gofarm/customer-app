@@ -1,2 +1,2 @@
-const RFAppName = "Room Finder";
-const RFAppSubTitle = "Ultimate property Finder";
+const RFAppName = "Gofarm";
+const RFAppSubTitle = "Trải nghiệm farmstay tuyệt với nhất";

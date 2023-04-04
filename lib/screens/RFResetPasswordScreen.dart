@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/screens/RFEmailSignInScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/screens/RFEmailSignInScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFResetPasswordScreen extends StatefulWidget {
   @override
@@ -30,11 +30,17 @@ class _RFResetPasswordScreenState extends State<RFResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBarWidget(context, showLeadingIcon: false, title: 'Reset Password', roundCornerShape: true, appBarHeight: 80),
+      appBar: commonAppBarWidget(context,
+          showLeadingIcon: false,
+          title: 'Reset Password',
+          roundCornerShape: true,
+          appBarHeight: 80),
       body: Column(
         children: [
           32.height,
-          Text('Enter your email address below \nto reset password', style: secondaryTextStyle(height: 1.5), textAlign: TextAlign.center),
+          Text('Enter your email address below \nto reset password',
+              style: secondaryTextStyle(height: 1.5),
+              textAlign: TextAlign.center),
           16.height,
           AppTextField(
             controller: emailController,
@@ -44,7 +50,8 @@ class _RFResetPasswordScreenState extends State<RFResetPasswordScreen> {
               showLableText: true,
               suffixIcon: Container(
                 padding: EdgeInsets.all(2),
-                decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: redColor),
+                decoration: boxDecorationWithRoundedCorners(
+                    boxShape: BoxShape.circle, backgroundColor: redColor),
                 child: Icon(Icons.done, color: Colors.white, size: 14),
               ),
             ),

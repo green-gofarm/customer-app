@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFCongratulatedDialog.dart';
-import 'package:room_finder_flutter/components/RFHotelDetailComponent.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFCongratulatedDialog.dart';
+import 'package:customer_app/components/RFHotelDetailComponent.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFHotelDescriptionScreen extends StatefulWidget {
   final RoomFinderModel? hotelData;
@@ -12,7 +12,8 @@ class RFHotelDescriptionScreen extends StatefulWidget {
   RFHotelDescriptionScreen({this.hotelData});
 
   @override
-  _RFHotelDescriptionScreenState createState() => _RFHotelDescriptionScreenState();
+  _RFHotelDescriptionScreenState createState() =>
+      _RFHotelDescriptionScreenState();
 }
 
 class _RFHotelDescriptionScreenState extends State<RFHotelDescriptionScreen> {
@@ -23,7 +24,8 @@ class _RFHotelDescriptionScreenState extends State<RFHotelDescriptionScreen> {
   }
 
   void init() async {
-    setStatusBarColor(Colors.transparent, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(Colors.transparent,
+        statusBarIconBrightness: Brightness.light);
   }
 
   @override
@@ -33,7 +35,8 @@ class _RFHotelDescriptionScreenState extends State<RFHotelDescriptionScreen> {
 
   @override
   void dispose() {
-    setStatusBarColor(Colors.transparent, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(Colors.transparent,
+        statusBarIconBrightness: Brightness.light);
     super.dispose();
   }
 
@@ -62,7 +65,9 @@ class _RFHotelDescriptionScreenState extends State<RFHotelDescriptionScreen> {
                 },
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
               ),
               backgroundColor: rf_primaryColor,
               pinned: true,
@@ -81,17 +86,21 @@ class _RFHotelDescriptionScreenState extends State<RFHotelDescriptionScreen> {
                       height: 350,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.hotelData!.roomCategoryName.validate(), style: boldTextStyle(color: white, size: 18)),
+                          Text(widget.hotelData!.roomCategoryName.validate(),
+                              style: boldTextStyle(color: white, size: 18)),
                           8.height,
                           Row(
                             children: [
-                              Text("${widget.hotelData!.price.validate()} ", style: boldTextStyle(color: white)),
-                              Text(widget.hotelData!.rentDuration.validate(), style: secondaryTextStyle(color: white)),
+                              Text("${widget.hotelData!.price.validate()} ",
+                                  style: boldTextStyle(color: white)),
+                              Text(widget.hotelData!.rentDuration.validate(),
+                                  style: secondaryTextStyle(color: white)),
                             ],
                           ),
                         ],

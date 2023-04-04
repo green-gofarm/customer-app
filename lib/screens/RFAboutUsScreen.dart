@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFPremiumServiceComponent.dart';
-import 'package:room_finder_flutter/main.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFImages.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFPremiumServiceComponent.dart';
+import 'package:customer_app/main.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFImages.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFAboutUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBarWidget(context, showLeadingIcon: false, title: 'About Us', roundCornerShape: true, appBarHeight: 80),
+      appBar: commonAppBarWidget(context,
+          showLeadingIcon: false,
+          title: 'About Us',
+          roundCornerShape: true,
+          appBarHeight: 80),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             16.height,
-            rfCommonCachedNetworkImage(rf_aboutUs, fit: BoxFit.cover, height: 150, width: context.width()),
+            rfCommonCachedNetworkImage(rf_aboutUs,
+                fit: BoxFit.cover, height: 150, width: context.width()),
             Container(
-              decoration: boxDecorationRoundedWithShadow(8, backgroundColor: context.cardColor),
+              decoration: boxDecorationRoundedWithShadow(8,
+                  backgroundColor: context.cardColor),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               margin: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
@@ -26,7 +32,9 @@ class RFAboutUsScreen extends StatelessWidget {
                 children: [
                   Text('About the Company', style: boldTextStyle()),
                   8.height,
-                  Text('Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.', style: secondaryTextStyle()),
+                  Text(
+                      'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
+                      style: secondaryTextStyle()),
                   16.height,
                   Text('About the Members', style: boldTextStyle()),
                   8.height,
@@ -40,7 +48,9 @@ class RFAboutUsScreen extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 24),
               decoration: boxDecorationWithRoundedCorners(
-                backgroundColor: appStore.isDarkModeOn ? scaffoldDarkColor : rf_selectedCategoryBgColor,
+                backgroundColor: appStore.isDarkModeOn
+                    ? scaffoldDarkColor
+                    : rf_selectedCategoryBgColor,
               ),
               padding: EdgeInsets.all(16),
               child: RFPremiumServiceComponent(),

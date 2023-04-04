@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFImages.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFImages.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFPremiumServiceComponent extends StatelessWidget {
   @override
@@ -29,8 +29,10 @@ class RFPremiumServiceComponent extends StatelessWidget {
               color: rf_primaryColor,
               elevation: 0.0,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              child: Text('Upgrade', style: boldTextStyle(color: white, size: 14)),
+              shapeBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              child:
+                  Text('Upgrade', style: boldTextStyle(color: white, size: 14)),
               onTap: () {
                 //
               },

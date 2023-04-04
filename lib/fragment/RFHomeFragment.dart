@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/components/RFCommonAppComponent.dart';
-import 'package:room_finder_flutter/components/RFHotelListComponent.dart';
-import 'package:room_finder_flutter/components/RFLocationComponent.dart';
-import 'package:room_finder_flutter/components/RFRecentUpdateComponent.dart';
-import 'package:room_finder_flutter/main.dart';
-import 'package:room_finder_flutter/models/RoomFinderModel.dart';
-import 'package:room_finder_flutter/screens/RFLocationViewAllScreen.dart';
-import 'package:room_finder_flutter/screens/RFRecentupdateViewAllScreen.dart';
-import 'package:room_finder_flutter/screens/RFSearchDetailScreen.dart';
-import 'package:room_finder_flutter/screens/RFViewAllHotelListScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFDataGenerator.dart';
-import 'package:room_finder_flutter/utils/RFString.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/components/RFCommonAppComponent.dart';
+import 'package:customer_app/components/RFHotelListComponent.dart';
+import 'package:customer_app/components/RFLocationComponent.dart';
+import 'package:customer_app/components/RFRecentUpdateComponent.dart';
+import 'package:customer_app/main.dart';
+import 'package:customer_app/models/RoomFinderModel.dart';
+import 'package:customer_app/screens/RFLocationViewAllScreen.dart';
+import 'package:customer_app/screens/RFRecentupdateViewAllScreen.dart';
+import 'package:customer_app/screens/RFSearchDetailScreen.dart';
+import 'package:customer_app/screens/RFViewAllHotelListScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFDataGenerator.dart';
+import 'package:customer_app/utils/RFString.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFHomeFragment extends StatefulWidget {
   @override
@@ -37,7 +37,8 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(rf_primaryColor,
+        statusBarIconBrightness: Brightness.light);
   }
 
   @override
@@ -64,7 +65,8 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
                 hintText: "Search address or near you",
                 showPreFixIcon: true,
                 showLableText: false,
-                prefixIcon: Icon(Icons.location_on, color: rf_primaryColor, size: 18),
+                prefixIcon:
+                    Icon(Icons.location_on, color: rf_primaryColor, size: 18),
               ),
             ),
             16.height,
@@ -83,7 +85,8 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
               },
               child: Align(
                 alignment: Alignment.topRight,
-                child: Text('Advance Search', style: primaryTextStyle(), textAlign: TextAlign.end),
+                child: Text('Advance Search',
+                    style: primaryTextStyle(), textAlign: TextAlign.end),
               ),
             )
           ],
@@ -115,7 +118,10 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: Text(
                       data.roomCategoryName.validate(),
-                      style: boldTextStyle(color: selectCategoryIndex == index ? rf_primaryColor : gray),
+                      style: boldTextStyle(
+                          color: selectCategoryIndex == index
+                              ? rf_primaryColor
+                              : gray),
                     ),
                   ),
                 );
@@ -129,7 +135,10 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
                   onPressed: () {
                     RFViewAllHotelListScreen().launch(context);
                   },
-                  child: Text('View All', style: secondaryTextStyle(decoration: TextDecoration.underline, textBaseline: TextBaseline.alphabetic)),
+                  child: Text('View All',
+                      style: secondaryTextStyle(
+                          decoration: TextDecoration.underline,
+                          textBaseline: TextBaseline.alphabetic)),
                 )
               ],
             ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),
@@ -150,9 +159,12 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
                 Text('Locations', style: boldTextStyle()),
                 TextButton(
                   onPressed: () {
-                    RFLocationViewAllScreen(locationWidth: true).launch(context);
+                    RFLocationViewAllScreen(locationWidth: true)
+                        .launch(context);
                   },
-                  child: Text('View All', style: secondaryTextStyle(decoration: TextDecoration.underline)),
+                  child: Text('View All',
+                      style: secondaryTextStyle(
+                          decoration: TextDecoration.underline)),
                 )
               ],
             ).paddingOnly(left: 16, right: 16, bottom: 8),
@@ -160,7 +172,8 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
               spacing: 16,
               runSpacing: 16,
               children: List.generate(locationListData.length, (index) {
-                return RFLocationComponent(locationData: locationListData[index]);
+                return RFLocationComponent(
+                    locationData: locationListData[index]);
               }),
             ),
             Row(
@@ -171,7 +184,9 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
                   onPressed: () {
                     RFRecentUpdateViewAllScreen().launch(context);
                   },
-                  child: Text('See All', style: secondaryTextStyle(decoration: TextDecoration.underline)),
+                  child: Text('See All',
+                      style: secondaryTextStyle(
+                          decoration: TextDecoration.underline)),
                 )
               ],
             ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),

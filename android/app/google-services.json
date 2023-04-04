@@ -1,0 +1,96 @@
+{
+  "project_info": {
+    "project_number": "238098794310",
+    "project_id": "go-gofarm",
+    "storage_bucket": "go-gofarm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238098794310:android:acd87ca0fc58467e3a8747",
+        "android_client_info": {
+          "package_name": "com.example.gofarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238098794310-lsb35f3upnn5f2be3df4meuohds85k3s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gofarm",
+            "certificate_hash": "02601d8362653bc073d1a08b7fc06591a0d4832e"
+          }
+        },
+        {
+          "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnTANRkV_5c7EDf0HzR38YPRxAHbQqXRU"
+        },
+        {
+          "current_key": "AIzaSyCRaHby4sTpx0riR4PMpsSyfcJw8lcSmgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "238098794310-3ns9vo8hj7tsh45r4usug46b3q5i0fs9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.roomFinderFlutter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238098794310:android:6e20c264504ea05c3a8747",
+        "android_client_info": {
+          "package_name": "gofarm.customer_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnTANRkV_5c7EDf0HzR38YPRxAHbQqXRU"
+        },
+        {
+          "current_key": "AIzaSyCRaHby4sTpx0riR4PMpsSyfcJw8lcSmgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "238098794310-3ns9vo8hj7tsh45r4usug46b3q5i0fs9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.roomFinderFlutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

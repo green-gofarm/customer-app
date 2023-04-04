@@ -1,10 +1,14 @@
+import 'package:customer_app/auth.dart';
+import 'package:customer_app/firebase_options.dart';
+import 'package:customer_app/utils/api/http_client.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/screens/RFSplashScreen.dart';
-import 'package:room_finder_flutter/store/AppStore.dart';
-import 'package:room_finder_flutter/utils/AppTheme.dart';
-import 'package:room_finder_flutter/utils/RFConstant.dart';
+import 'package:customer_app/screens/RFSplashScreen.dart';
+import 'package:customer_app/store/AppStore.dart';
+import 'package:customer_app/utils/AppTheme.dart';
+import 'package:customer_app/utils/RFConstant.dart';
 
 AppStore appStore = AppStore();
 
@@ -14,6 +18,9 @@ void main() async {
   await initialize();
 
   appStore.toggleDarkMode(value: getBoolAsync(isDarkModeOnPref));
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const MyApp());
 }
@@ -27,7 +34,7 @@ class MyApp extends StatelessWidget {
       builder: (_) => MaterialApp(
         scrollBehavior: SBehavior(),
         navigatorKey: navigatorKey,
-        title: 'Room Finder',
+        title: 'Gofarm',
         debugShowCheckedModeBanner: false,
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,

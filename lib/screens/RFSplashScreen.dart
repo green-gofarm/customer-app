@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/screens/RFMobileSignInScreen.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
+import 'package:customer_app/screens/RFMobileSignInScreen.dart';
+import 'package:customer_app/utils/RFColors.dart';
 
 class RFSplashScreen extends StatefulWidget {
   @override
@@ -16,7 +16,8 @@ class _RFSplashScreenState extends State<RFSplashScreen> {
   }
 
   Future<void> init() async {
-    setStatusBarColor(rf_primaryColor, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(rf_primaryColor,
+        statusBarIconBrightness: Brightness.light);
 
     await Future.delayed(Duration(seconds: 2));
     finish(context);
@@ -25,7 +26,8 @@ class _RFSplashScreenState extends State<RFSplashScreen> {
 
   @override
   void dispose() {
-    setStatusBarColor(rf_primaryColor, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(rf_primaryColor,
+        statusBarIconBrightness: Brightness.light);
 
     super.dispose();
   }
@@ -43,7 +45,8 @@ class _RFSplashScreenState extends State<RFSplashScreen> {
         alignment: Alignment.center,
         children: [
           Container(
-            decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: rf_splashBgColor),
+            decoration: boxDecorationWithRoundedCorners(
+                boxShape: BoxShape.circle, backgroundColor: rf_splashBgColor),
             width: 250,
             height: 250,
           ),
@@ -52,7 +55,8 @@ class _RFSplashScreenState extends State<RFSplashScreen> {
             children: [
               Text("Room Finder", style: boldTextStyle(color: white, size: 20)),
               4.height,
-              Text("Ultimate property Finder", style: primaryTextStyle(color: white)),
+              Text("Ultimate property Finder",
+                  style: primaryTextStyle(color: white)),
             ],
           ),
         ],

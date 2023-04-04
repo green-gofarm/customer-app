@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/fragment/RFAccountFragment.dart';
-import 'package:room_finder_flutter/fragment/RFHomeFragment.dart';
-import 'package:room_finder_flutter/fragment/RFSearchFragment.dart';
-import 'package:room_finder_flutter/fragment/RFSettingsFragment.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
-import 'package:room_finder_flutter/utils/RFImages.dart';
-import 'package:room_finder_flutter/utils/RFWidget.dart';
+import 'package:customer_app/fragment/RFAccountFragment.dart';
+import 'package:customer_app/fragment/RFHomeFragment.dart';
+import 'package:customer_app/fragment/RFSearchFragment.dart';
+import 'package:customer_app/fragment/RFSettingsFragment.dart';
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/RFImages.dart';
+import 'package:customer_app/utils/RFWidget.dart';
 
 class RFHomeScreen extends StatefulWidget {
   @override
@@ -35,7 +35,8 @@ class _RFHomeScreenState extends State<RFHomeScreen> {
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined, size: 22),
           label: 'Home',
-          activeIcon: Icon(Icons.home_outlined, color: rf_primaryColor, size: 22),
+          activeIcon:
+              Icon(Icons.home_outlined, color: rf_primaryColor, size: 22),
         ),
         BottomNavigationBarItem(
           icon: rf_search.iconImage(),
@@ -45,7 +46,8 @@ class _RFHomeScreenState extends State<RFHomeScreen> {
         BottomNavigationBarItem(
           icon: rf_setting.iconImage(size: 22),
           label: 'Settings',
-          activeIcon: rf_setting.iconImage(iconColor: rf_primaryColor, size: 22),
+          activeIcon:
+              rf_setting.iconImage(iconColor: rf_primaryColor, size: 22),
         ),
         BottomNavigationBarItem(
           icon: rf_person.iconImage(),
@@ -69,7 +71,8 @@ class _RFHomeScreenState extends State<RFHomeScreen> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor, statusBarIconBrightness: Brightness.light);
+    setStatusBarColor(rf_primaryColor,
+        statusBarIconBrightness: Brightness.light);
   }
 
   @override

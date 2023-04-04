@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:room_finder_flutter/utils/RFColors.dart';
+import 'package:customer_app/utils/RFColors.dart';
 
 class RFConformationDialog extends StatelessWidget {
   @override
@@ -11,17 +11,21 @@ class RFConformationDialog extends StatelessWidget {
         width: context.width(),
         height: 50.0,
         margin: EdgeInsets.only(left: 24, right: 24, top: 90),
-        decoration: boxDecorationWithRoundedCorners(backgroundColor: context.scaffoldBackgroundColor),
+        decoration: boxDecorationWithRoundedCorners(
+            backgroundColor: context.scaffoldBackgroundColor),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               padding: EdgeInsets.all(4),
-              decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: rf_rattingBgColor),
+              decoration: boxDecorationWithRoundedCorners(
+                  boxShape: BoxShape.circle,
+                  backgroundColor: rf_rattingBgColor),
               child: Icon(Icons.done, color: Colors.white, size: 14),
             ),
             16.width,
-            Text('Registered Successfully!', style: boldTextStyle(color: greenColor.withOpacity(0.7))),
+            Text('Registered Successfully!',
+                style: boldTextStyle(color: greenColor.withOpacity(0.7))),
           ],
         ).onTap(() {
           //
