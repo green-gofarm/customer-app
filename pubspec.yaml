@@ -20,6 +20,12 @@ dependencies:
   mobx: ^2.0.3
   flutter_mobx: ^2.0.1
 
+  # FIREBASE
+  firebase_core: ^2.9.0
+  firebase_auth: ^4.4.0
+  firebase_messaging: ^14.4.0
+  google_sign_in: ^6.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

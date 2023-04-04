@@ -47,72 +47,15 @@ class _RFMobileSignInState extends State<RFMobileSignIn> {
           cardWidget: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Mobile Number', style: boldTextStyle(size: 18)),
-              16.height,
-              Text(
-                'Please enter your phone number. We will send you 4-digit code to verify your account.',
-                style: primaryTextStyle(),
-                maxLines: 4,
-                textAlign: TextAlign.center,
-              ).flexible(),
-              16.height,
-              Container(
-                padding: EdgeInsets.only(left: 15),
-                decoration: boxDecoration(
-                    showShadow: false,
-                    bgColor: context.cardColor,
-                    radius: 8,
-                    color: context.dividerColor),
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    CountryCodePicker(
-                        onChanged: print,
-                        padding: EdgeInsets.all(0),
-                        showFlag: false),
-                    Container(
-                      height: 25.0,
-                      width: 1.0,
-                      color: context.dividerColor,
-                      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                    ),
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          border: InputBorder.none, hintText: "Phone Number"),
-                      onChanged: (value) {},
-                    ).expand(),
-                  ],
-                ),
-              ),
-              24.height,
-              AppButton(
-                color: rf_primaryColor,
-                child: Text('Send Code', style: boldTextStyle(color: white)),
-                width: context.width(),
-                elevation: 0,
-                onTap: () {
-                  RFEmailSignInScreen().launch(context);
+              socialLoginWidget(
+                context,
+                title1: "Chưa có tài khoản? ",
+                title2: "Đăng ký",
+                callBack: () {
+                  RFSignUpScreen().launch(context);
                 },
               ),
-              Align(
-                alignment: Alignment.topRight,
-                child: TextButton(
-                    child: Text("Reset Password?", style: primaryTextStyle()),
-                    onPressed: () {
-                      RFResetPasswordScreen().launch(context);
-                    }),
-              ),
             ],
-          ),
-          subWidget: socialLoginWidget(
-            context,
-            title1: "New Member? ",
-            title2: "Sign up Here",
-            callBack: () {
-              RFSignUpScreen().launch(context);
-            },
           ),
         ),
       ),

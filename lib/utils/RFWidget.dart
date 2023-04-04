@@ -1,4 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:customer_app/auth.dart';
+import 'package:customer_app/screens/RFHomeScreen.dart';
+import 'package:customer_app/utils/api/http_client.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -8,11 +12,16 @@ import 'package:customer_app/utils/RFImages.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../main.dart';
+import '../services/auth_service.dart';
 
-Widget socialLoginButton(BuildContext context,
-    {String? socialImage, String? socialLoginName}) {
+Widget socialLoginButton(
+  BuildContext context, {
+  String? socialImage,
+  String? socialLoginName,
+  Function()? onPressed, // new parameter added
+}) {
   return OutlinedButton(
-    onPressed: () {},
+    onPressed: onPressed, // using onPressed parameter here
     style: OutlinedButton.styleFrom(
       backgroundColor: context.scaffoldBackgroundColor,
       side: BorderSide(color: context.dividerColor, width: 1),
@@ -156,20 +165,25 @@ Widget socialLoginWidget(BuildContext context,
       Column(
         children: [
           28.height,
-          Text('Or Sign Up with', style: primaryTextStyle()),
-          16.height,
-          socialLoginButton(context,
-                  socialImage: rf_facebook_logo,
-                  socialLoginName: "Continue With Facebook")
-              .onTap(() {
-            //
-          }),
-          16.height,
-          socialLoginButton(context,
-                  socialImage: rf_google_logo,
-                  socialLoginName: "Continue With Google")
-              .onTap(() {
-            //
+          socialLoginButton(
+            context,
+            socialImage: rf_google_logo,
+            socialLoginName: "Đăng nhập với Google",
+          ).onTap(() async {
+            try {
+              Auth auth = Auth();
+              final UserCredential userCredential =
+                  await auth.signInWithGoogle();
+
+              if (userCredential.user != null) {
+                final AuthService service = AuthService();
+                final dynamic user = service.signInCustomer();
+                print(user);
+                RFHomeScreen().launch(context);
+              }
+            } catch (error) {
+              debugPrint(error.toString());
+            }
           }),
           24.height,
           rfCommonRichText(title: title1, subTitle: title2)
