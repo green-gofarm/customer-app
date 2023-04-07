@@ -1,11 +1,8 @@
-import 'package:customer_app/screens/SignUpScreen.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/SocialSignInWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:customer_app/components/RFCommonAppComponent.dart';
 import 'package:customer_app/main.dart';
-import 'package:customer_app/screens/RFSignUpScreen.dart';
 import 'package:customer_app/utils/RFString.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 
@@ -45,7 +42,6 @@ class _SignInState extends State<SignInScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SocialSignInWidget(
-                context,
                 callBack: () {
                   Navigator.pushReplacementNamed(context, RoutePaths.SIGN_UP.value);
                 },

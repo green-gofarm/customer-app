@@ -46,9 +46,8 @@ class _SignUpState extends State<SignUpScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SocialSignUpWidget(
-                context,
                 callBack: () {
-                  Navigator.pushReplacementNamed(context, RoutePaths.HOME.value);
+                  Navigator.pushReplacementNamed(context, RoutePaths.SIGN_IN.value);
                 },
               ),
             ],

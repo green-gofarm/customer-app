@@ -2,6 +2,7 @@ import 'package:customer_app/screens/RFHomeScreen.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/screens/SignUpScreen.dart';
 import 'package:customer_app/screens/SplashScreen.dart';
+import 'package:customer_app/screens/auth_wrapper.dart';
 import 'package:customer_app/store/auth/auth_store.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/logger/AppLoggerFilter.dart';
@@ -45,8 +46,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Listen for authentication changes
-    authStore.listenForAuthChanges(context);
 
     return Observer(
       builder: (_) => MaterialApp(
@@ -57,8 +56,9 @@ class MyApp extends StatelessWidget {
         theme: AppThemeData.lightTheme,
         darkTheme: AppThemeData.darkTheme,
         themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-        initialRoute: RoutePaths.SPLASH.value,
+        initialRoute: RoutePaths.AUTH_WRAPPER.value,
         routes: {
+          RoutePaths.AUTH_WRAPPER.value: (context) => AuthWrapper(),
           RoutePaths.SPLASH.value: (context) => SplashScreen(),
           RoutePaths.SIGN_IN.value: (context) => SignInScreen(),
           RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),

@@ -2,6 +2,7 @@ import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/data/auth/auth_api.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -20,23 +21,10 @@ abstract class _AuthStore with Store {
   UserModel? user;
 
   @observable
-  bool isLoading = false;
-
-  @observable
   String? errorMessage = null;
 
   @computed
   UserModel? get getUser => user;
-
-  @action
-  void listenForAuthChanges(BuildContext context) {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        authStore.setUser(null);
-        SignInScreen().launch(context);
-      }
-    });
-  }
 
   void resetStore () {
       setUser(null);
@@ -46,7 +34,6 @@ abstract class _AuthStore with Store {
   @action
   Future<void> signInCustomer(bool? noMessage) async {
     resetStore();
-    isLoading = true;
 
     final result = await _authApi.signInCustomer();
 
@@ -58,14 +45,12 @@ abstract class _AuthStore with Store {
       (user) => this.user = user,
     );
 
-    isLoading = false;
     logger.i("Customer sign in", user.toString());
   }
 
   @action
   Future<bool> checkNewlyAccount(String token) async {
     resetStore();
-    isLoading = true;
 
     final checkResult = await _authApi.checkNewlySignupAccount(token);
 
@@ -75,16 +60,13 @@ abstract class _AuthStore with Store {
           (result) => isNew = result,
     );
 
-    isLoading = false;
     logger.i("Account is new?", isNew);
-
     return isNew;
   }
 
   @action
   Future<void> signUpCustomer(String token) async {
     resetStore();
-    isLoading = true;
 
     final isNew = await checkNewlyAccount(token);
     if(!isNew) {
@@ -100,7 +82,6 @@ abstract class _AuthStore with Store {
       (user) => this.user = user,
     );
 
-    isLoading = false;
     logger.i("Customer sign up", user?.toString());
   }
 

@@ -31,22 +31,6 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
-  late final _$isLoadingAtom =
-      Atom(name: '_AuthStore.isLoading', context: context);
-
-  @override
-  bool get isLoading {
-    _$isLoadingAtom.reportRead();
-    return super.isLoading;
-  }
-
-  @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
-      super.isLoading = value;
-    });
-  }
-
   late final _$errorMessageAtom =
       Atom(name: '_AuthStore.errorMessage', context: context);
 
@@ -93,17 +77,6 @@ mixin _$AuthStore on _AuthStore, Store {
       ActionController(name: '_AuthStore', context: context);
 
   @override
-  void listenForAuthChanges(BuildContext context) {
-    final _$actionInfo = _$_AuthStoreActionController.startAction(
-        name: '_AuthStore.listenForAuthChanges');
-    try {
-      return super.listenForAuthChanges(context);
-    } finally {
-      _$_AuthStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setUser(UserModel? user) {
     final _$actionInfo =
         _$_AuthStoreActionController.startAction(name: '_AuthStore.setUser');
@@ -118,7 +91,6 @@ mixin _$AuthStore on _AuthStore, Store {
   String toString() {
     return '''
 user: ${user},
-isLoading: ${isLoading},
 errorMessage: ${errorMessage},
 getUser: ${getUser}
     ''';
