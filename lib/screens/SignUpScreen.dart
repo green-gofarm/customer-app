@@ -1,10 +1,6 @@
-import 'package:customer_app/screens/SignInScreen.dart';
-import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
-import 'package:customer_app/widgets/SocialSignInWidget.dart';
 import 'package:customer_app/widgets/SocialSignUpWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:customer_app/components/RFCommonAppComponent.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/utils/RFString.dart';
@@ -22,7 +18,15 @@ class _SignUpState extends State<SignUpScreen> {
     init();
   }
 
-  void init() async {}
+  void init() async {
+    final isAuthenticated = await authStore.isAuthenticated();
+    if(isAuthenticated) {
+      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+      return;
+    }
+
+    authStore.errorMessage = null;
+  }
 
   @override
   void setState(fn) {
@@ -47,7 +51,7 @@ class _SignUpState extends State<SignUpScreen> {
             children: [
               SocialSignUpWidget(
                 callBack: () {
-                  Navigator.pushReplacementNamed(context, RoutePaths.SIGN_IN.value);
+                  Navigator.pushNamed(context, RoutePaths.SIGN_IN.value);
                 },
               ),
             ],

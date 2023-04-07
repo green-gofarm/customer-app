@@ -30,13 +30,13 @@ class _SplashScreenState extends State<SplashScreen> {
         await authStore.signInCustomer(true);
       }
       if (authStore.getUser != null) {
-        Navigator.pushReplacementNamed(context, RoutePaths.HOME.value);
+        Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
       } else {
-        Navigator.pushReplacementNamed(context, RoutePaths.SIGN_IN.value);
+        Navigator.pushNamedAndRemoveUntil(context, RoutePaths.SIGN_IN.value, (route) => false);
       }
     } catch (e) {
       logger.e("Auto sign in failed", e);
-      Navigator.pushReplacementNamed(context, RoutePaths.SIGN_IN.value);
+      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.SIGN_IN.value, (route) => false);
     }
   }
 

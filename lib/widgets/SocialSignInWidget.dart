@@ -34,6 +34,7 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
   Future<void> handleGoogleSignIn() async {
     try {
       setState(() {
+        authStore.resetStore();
         setLoading(true);
       });
 
@@ -44,7 +45,7 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
         await authStore.signInCustomer(null);
 
         if (authStore.user != null) {
-          Navigator.pushReplacementNamed(context, RoutePaths.HOME.value);
+          Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
         }
       }
     } catch (error) {
@@ -68,7 +69,7 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
             28.height,
             GoogleButtonWidget(
               context,
-              isLoading: isLoading && mounted,
+              isLoading: isLoading,
               text: BUTTON_TEXT,
             ).onTap(() async {
               await handleGoogleSignIn();

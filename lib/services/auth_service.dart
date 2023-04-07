@@ -1,12 +1,11 @@
-import 'package:customer_app/screens/RFMobileSignInScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class AuthService {
   static Future<UserCredential> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
+
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;

@@ -18,7 +18,15 @@ class _SignInState extends State<SignInScreen> {
     init();
   }
 
-  void init() async {}
+  void init() async {
+    final isAuthenticated = await authStore.isAuthenticated();
+    if(isAuthenticated) {
+      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+      return;
+    }
+
+    authStore.errorMessage = null;
+  }
 
   @override
   void setState(fn) {
@@ -43,7 +51,7 @@ class _SignInState extends State<SignInScreen> {
             children: [
               SocialSignInWidget(
                 callBack: () {
-                  Navigator.pushReplacementNamed(context, RoutePaths.SIGN_UP.value);
+                  Navigator.pushNamed(context, RoutePaths.SIGN_UP.value);
                 },
               ),
             ],

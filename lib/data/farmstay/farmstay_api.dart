@@ -26,7 +26,7 @@ class FarmstayApi {
       final response = await _httpClient.sendRequest(url, METHOD.GET, options);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
         return right(PagingModel<NotificationModel>.fromJson(
             data, (json) => NotificationModel.fromJson(json)));

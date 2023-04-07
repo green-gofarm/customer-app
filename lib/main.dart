@@ -9,6 +9,7 @@ import 'package:customer_app/utils/logger/AppLoggerFilter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import 'package:customer_app/store/AppStore.dart';
@@ -20,6 +21,7 @@ import 'firebase_options.dart';
 // create instances of AppStore, AuthStore, and Logger
 final AppStore appStore = AppStore();
 final AuthStore authStore = AuthStore();
+final materialAppKey = GlobalKey();
 final Logger logger = Logger(
   filter: AppLoggerFilter(),
   printer: PrettyPrinter(),
@@ -46,9 +48,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Observer(
       builder: (_) => MaterialApp(
+        key: materialAppKey,
         scrollBehavior: SBehavior(),
         navigatorKey: navigatorKey,
         title: 'Gofarm',
@@ -64,6 +66,7 @@ class MyApp extends StatelessWidget {
           RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),
           RoutePaths.HOME.value: (context) => RFHomeScreen(),
         },
+        navigatorObservers: [NavigationHistoryObserver()],
       ),
     );
   }

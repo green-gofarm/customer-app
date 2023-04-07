@@ -1,11 +1,9 @@
 import 'package:customer_app/services/auth_service.dart';
-import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:customer_app/components/RFCommonAppComponent.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/RoomFinderModel.dart';
-import 'package:customer_app/screens/RFEmailSignInScreen.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFDataGenerator.dart';
 import 'package:customer_app/utils/RFImages.dart';
@@ -183,7 +181,6 @@ class _RFSettingsFragmentState extends State<RFSettingsFragment> {
                           },
                           onAccept: (v) async {
                             await AuthService.signOut();
-                            Navigator.pushReplacementNamed(context, RoutePaths.SIGN_IN.value);
                           },
                         );
                       } else {

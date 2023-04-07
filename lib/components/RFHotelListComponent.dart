@@ -43,10 +43,12 @@ class RFHotelListComponent extends StatelessWidget {
                       8.height,
                       Row(
                         children: [
-                          Text(hotelData!.price.validate(),
-                              style: boldTextStyle(color: rf_primaryColor)),
-                          Text(hotelData!.rentDuration.validate(),
-                              style: secondaryTextStyle()),
+                          Flexible(
+                            child: Text(hotelData!.price.validate(), style: boldTextStyle(color: rf_primaryColor)),
+                          ),
+                          Flexible(
+                            child: Text(hotelData!.rentDuration.validate(), style: secondaryTextStyle()),
+                          ),
                         ],
                       )
                     ],

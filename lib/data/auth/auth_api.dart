@@ -26,7 +26,7 @@ class AuthApi {
       final response = await _httpClient.sendRequest(url, METHOD.POST, options);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
         return right(UserModel.fromJson(data));
       }
@@ -43,7 +43,7 @@ class AuthApi {
       final response = await _httpClient.sendRequest(url, METHOD.GET, null);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
         return right(UserModel.fromJson(data));
       }
@@ -66,7 +66,7 @@ class AuthApi {
       final response = await _httpClient.sendRequest(url, METHOD.POST, options);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return right(true);
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
@@ -84,7 +84,7 @@ class AuthApi {
       final response = await _httpClient.sendRequest(url, METHOD.GET, options);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
         return right(PagingModel<NotificationModel>.fromJson(
             data, (json) => NotificationModel.fromJson(json)));
@@ -102,7 +102,7 @@ class AuthApi {
       final response = await _httpClient.sendRequest(url, METHOD.PATCH, null);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return right(true);
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
@@ -119,7 +119,7 @@ class AuthApi {
       final response = await _httpClient.sendRequest(url, METHOD.POST, options);
       final payload = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final registered = payload['data']['registered'];
         if (registered != null) {
           return right(!registered);

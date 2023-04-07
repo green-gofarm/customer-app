@@ -2,6 +2,7 @@ import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/data/auth/auth_api.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,9 @@ abstract class _AuthStore with Store {
   @computed
   UserModel? get getUser => user;
 
-  void resetStore () {
-      setUser(null);
-      errorMessage = null;
+  void resetStore() {
+    setUser(null);
+    errorMessage = null;
   }
 
   @action
@@ -38,14 +39,33 @@ abstract class _AuthStore with Store {
     final result = await _authApi.signInCustomer();
 
     await result.fold(
-      (errorMessage) => {
+          (errorMessage) =>
+      {
         if (noMessage == null || noMessage == false)
           {this.errorMessage = errorMessage}
       },
-      (user) => this.user = user,
+          (user) => this.user = user,
     );
 
     logger.i("Customer sign in", user.toString());
+  }
+
+  @action
+  Future<bool> isAuthenticated() async {
+    try {
+      if (user == null) {
+        return false;
+      }
+
+      final token = await AuthService.getFirebaseAuthToken();
+      if (token == null) {
+        return false;
+      }
+
+      return true;
+    } catch (e){
+      return false;
+    }
   }
 
   @action
@@ -60,7 +80,7 @@ abstract class _AuthStore with Store {
           (result) => isNew = result,
     );
 
-    logger.i("Account is new?", isNew);
+    logger.i("Account is new?: $isNew");
     return isNew;
   }
 
@@ -69,7 +89,7 @@ abstract class _AuthStore with Store {
     resetStore();
 
     final isNew = await checkNewlyAccount(token);
-    if(!isNew) {
+    if (!isNew) {
       this.errorMessage = ACCOUNT_ALREADY_EXIST;
       this.user = null;
       return;
@@ -78,8 +98,8 @@ abstract class _AuthStore with Store {
     final result = await _authApi.signUpCustomer(token);
 
     await result.fold(
-      (errorMessage) => this.errorMessage = errorMessage,
-      (user) => this.user = user,
+          (errorMessage) => this.errorMessage = errorMessage,
+          (user) => this.user = user,
     );
 
     logger.i("Customer sign up", user?.toString());
