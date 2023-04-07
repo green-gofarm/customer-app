@@ -28,3 +28,6 @@ const rf_location4 = "images/roomFinding/rf_location4.jpg";
 const rf_location5 = "images/roomFinding/rf_location5.jpg";
 const rf_location6 = "images/roomFinding/rf_location6.jpg";
 const rf_congratulate = "images/roomFinding/rf_congratulate.png";
+
+const big_logo = "images/brand/big-logo.png";
+const go_ram_logo = "images/brand/go-ram.png";

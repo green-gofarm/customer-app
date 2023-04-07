@@ -1,3 +1,5 @@
+import 'package:customer_app/services/auth_service.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:customer_app/components/RFCommonAppComponent.dart';
@@ -179,10 +181,9 @@ class _RFSettingsFragmentState extends State<RFSettingsFragment> {
                           onCancel: (v) {
                             finish(context);
                           },
-                          onAccept: (v) {
-                            RFEmailSignInScreen().launch(v).then((value) {
-                              finish(context);
-                            });
+                          onAccept: (v) async {
+                            await AuthService.signOut();
+                            Navigator.pushReplacementNamed(context, RoutePaths.SIGN_IN.value);
                           },
                         );
                       } else {

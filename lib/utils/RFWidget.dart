@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customer_app/auth.dart';
+import 'package:customer_app/services/auth_service.dart';
+import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/screens/RFHomeScreen.dart';
 import 'package:customer_app/utils/api/http_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +13,7 @@ import 'package:customer_app/utils/RFImages.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../main.dart';
-import '../services/auth_service.dart';
+import '../data/auth/auth_api.dart';
 
 Widget socialLoginButton(
   BuildContext context, {
@@ -160,6 +161,8 @@ class CustomTheme extends StatelessWidget {
 
 Widget socialLoginWidget(BuildContext context,
     {Function? callBack, String? title1, String? title2}) {
+
+
   return Column(
     children: [
       Column(
@@ -169,22 +172,7 @@ Widget socialLoginWidget(BuildContext context,
             context,
             socialImage: rf_google_logo,
             socialLoginName: "Đăng nhập với Google",
-          ).onTap(() async {
-            try {
-              Auth auth = Auth();
-              final UserCredential userCredential =
-                  await auth.signInWithGoogle();
-
-              if (userCredential.user != null) {
-                final AuthService service = AuthService();
-                final dynamic user = service.signInCustomer();
-                print(user);
-                RFHomeScreen().launch(context);
-              }
-            } catch (error) {
-              debugPrint(error.toString());
-            }
-          }),
+          ).onTap(() {}),
           24.height,
           rfCommonRichText(title: title1, subTitle: title2)
               .paddingAll(8)
@@ -354,8 +342,13 @@ extension strExt on String {
   }
 }
 
-Widget commonCacheImageWidget(String? url, double height,
-    {double? width, BoxFit? fit}) {
+Widget commonCacheImageWidget(
+  String? url,
+  double height, {
+  double? width,
+  BoxFit? fit,
+  Alignment? alignment,
+}) {
   if (url.validate().startsWith('http')) {
     if (isMobile) {
       return CachedNetworkImage(
@@ -365,17 +358,28 @@ Widget commonCacheImageWidget(String? url, double height,
         height: height,
         width: width,
         fit: fit ?? BoxFit.cover,
+        alignment: alignment ?? Alignment.topLeft,
         errorWidget: (_, __, ___) {
           return SizedBox(height: height, width: width);
         },
       );
     } else {
-      return Image.network(url!,
-          height: height, width: width, fit: fit ?? BoxFit.cover);
+      return Image.network(
+        url!,
+        height: height,
+        width: width,
+        fit: fit ?? BoxFit.cover,
+        alignment: alignment ?? Alignment.topLeft,
+      );
     }
   } else {
-    return Image.asset(url!,
-        height: height, width: width, fit: fit ?? BoxFit.cover);
+    return Image.asset(
+      url!,
+      height: height,
+      width: width,
+      fit: fit ?? BoxFit.cover,
+      alignment: alignment ?? Alignment.topLeft,
+    );
   }
 }
 

@@ -1,99 +1,42 @@
 {
   "project_info": {
-    "project_number": "238098794310",
-    "project_id": "go-gofarm",
-    "storage_bucket": "go-gofarm.appspot.com"
+    "project_number": "360515549846",
+    "project_id": "green-gofarm",
+    "storage_bucket": "green-gofarm.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:238098794310:android:acd87ca0fc58467e3a8747",
-        "android_client_info": {
-          "package_name": "com.example.gofarm"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "238098794310-lsb35f3upnn5f2be3df4meuohds85k3s.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.gofarm",
-            "certificate_hash": "02601d8362653bc073d1a08b7fc06591a0d4832e"
-          }
-        },
-        {
-          "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAnTANRkV_5c7EDf0HzR38YPRxAHbQqXRU"
-        },
-        {
-          "current_key": "AIzaSyAkI4gY-6pX4st4VGq_HU9sXQi7qmLHJ10"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "238098794310-72ldmjjlq7e9bjuqptimomjmthdpodp3.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.gofarm"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:238098794310:android:41b88e0ec1dd950e3a8747",
+        "mobilesdk_app_id": "1:360515549846:android:d1696e849c3c978c18e0b7",
         "android_client_info": {
           "package_name": "com.gofarm.customer_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "238098794310-acnkqppeqt8n7o65tt7er0a8ru25bl9r.apps.googleusercontent.com",
+          "client_id": "360515549846-ksseruatanp8omr81pe5uo6qrg459l8d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.gofarm.customer_app",
-            "certificate_hash": "3464a06c950af55407a41e543941487b3450e6f8"
+            "certificate_hash": "357d296e28a2c58ae73a1a7e5b27b7b30a756bd6"
           }
         },
         {
-          "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
+          "client_id": "360515549846-k8s0hs3ge6s61s5f9647gfpphesmcno8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAnTANRkV_5c7EDf0HzR38YPRxAHbQqXRU"
-        },
-        {
-          "current_key": "AIzaSyAkI4gY-6pX4st4VGq_HU9sXQi7qmLHJ10"
+          "current_key": "AIzaSyC__TMI9yPZRL9DVNmwa45yg6eE621ha3w"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "238098794310-dfvauc9b8k3o17bkctc0t76utone7a2c.apps.googleusercontent.com",
+              "client_id": "360515549846-9a4ps595ag7u4e2d9qeam9d635c73js2.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "238098794310-72ldmjjlq7e9bjuqptimomjmthdpodp3.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.gofarm"
-              }
             }
           ]
         }

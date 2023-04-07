@@ -53,10 +53,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAnTANRkV_5c7EDf0HzR38YPRxAHbQqXRU',
-    appId: '1:238098794310:android:41b88e0ec1dd950e3a8747',
-    messagingSenderId: '238098794310',
-    projectId: 'go-gofarm',
-    storageBucket: 'go-gofarm.appspot.com',
+    apiKey: 'AIzaSyC__TMI9yPZRL9DVNmwa45yg6eE621ha3w',
+    appId: '1:360515549846:android:d1696e849c3c978c18e0b7',
+    messagingSenderId: '360515549846',
+    projectId: 'green-gofarm',
+    storageBucket: 'green-gofarm.appspot.com',
   );
 }

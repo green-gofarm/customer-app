@@ -1,14 +1,12 @@
-
+import 'dart:async';
 import 'dart:convert';
-import 'package:customer_app/auth.dart';
-import 'package:customer_app/screens/RFMobileSignInScreen.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/utils/api/end_points.dart';
 import 'package:customer_app/utils/api/request_options.dart';
 import 'package:customer_app/utils/enum/method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+
 import 'package:http/http.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class HttpClient {
   final String baseUrl = DOMAIN;
@@ -16,21 +14,24 @@ class HttpClient {
 
   HttpClient({this.headers});
 
-  Future<void> setupRequestHeader (Request request, RequestOptions? options) async {
-    final String? token = await FirebaseAuth.instance.currentUser!.getIdToken();
+  Future<String> getFirebaseToken() async {
+    final String? token;
 
-    if(token == null) {
-      FirebaseAuth.instance.signOut();
-      navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => RFMobileSignIn()),
-            (route) => false,
-      );
-
-      return;
+    try {
+      token = await AuthService.getFirebaseAuthToken();
+      if (token == null) {
+        throw Exception("Firebase auth token not found.");
+      }
+    } catch (error) {
+      AuthService.signOut();
+      rethrow;
     }
 
-    request.headers.addAll({'Authorization': 'Bearer $token'});
+    return token;
+  }
 
+  Future<void> setupRequestHeader(
+      Request request, RequestOptions? options, bool includeToken) async {
     if (headers != null) {
       request.headers.addAll(headers!);
     }
@@ -42,22 +43,49 @@ class HttpClient {
     if (options?.body != null) {
       request.body = jsonEncode(options!.body);
     }
+
+    if (includeToken) {
+      final String token = await getFirebaseToken();
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+    }
   }
 
   Future<Response> sendRequest(
       String path, METHOD method, RequestOptions? options) async {
-
-    final Uri uri = Uri.parse('$baseUrl$path').replace(queryParameters: options?.queryParams);
+    final Uri uri = Uri.parse('$baseUrl$path')
+        .replace(queryParameters: options?.queryParams);
     final Request request = Request(method.value, uri);
 
-    await setupRequestHeader(request, options);
+    try {
+      await setupRequestHeader(request, options, true);
 
-    final response = await Client().send(request);
+      final response = await Client().send(request);
 
-    if (response.statusCode >= 400) {
-      throw Exception('HTTP request failed: ${response.reasonPhrase}');
+      if (response.statusCode >= 400) {
+        throw Exception(response.reasonPhrase.toString());
+      }
+      return Response.fromStream(response);
+    } catch (e) {
+      rethrow;
     }
+  }
 
-    return Response.fromStream(response);
+  Future<Response> sendUnAuthRequest(
+      String path, METHOD method, RequestOptions? options) async {
+    final Uri uri = Uri.parse('$baseUrl$path')
+        .replace(queryParameters: options?.queryParams);
+    final Request request = Request(method.value, uri);
+
+    try {
+      await setupRequestHeader(request, options, false);
+      final response = await Client().send(request);
+
+      if (response.statusCode >= 400) {
+        throw Exception(response.reasonPhrase.toString());
+      }
+      return Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }
