@@ -40,13 +40,11 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
   void _startAuthListener() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       final currentRoute = NavigationHistoryObserver().top?.settings.name;
-      logger.i("Route name: $currentRoute");
 
       if (user == null) {
         authStore.setUser(null);
 
           if (currentRoute == null) {
-            logger.i("Current role: $currentRoute");
             navigatorKey.currentState
                 ?.pushReplacementNamed(RoutePaths.SIGN_IN.value);
             return;
@@ -57,7 +55,6 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
             return;
           }
 
-          logger.i("Current role: $currentRoute");
           navigatorKey.currentState
               ?.pushReplacementNamed(RoutePaths.SIGN_IN.value);
         }

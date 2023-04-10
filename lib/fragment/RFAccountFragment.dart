@@ -122,7 +122,7 @@ class _RFAccountFragmentState extends State<RFAccountFragment> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       rf_call.iconImage(
-                          iconColor:
+                          color:
                               appStore.isDarkModeOn ? white : rf_primaryColor),
                       8.width,
                       Text('Call Me',
@@ -143,7 +143,7 @@ class _RFAccountFragmentState extends State<RFAccountFragment> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      rf_message.iconImage(iconColor: whiteColor),
+                      rf_message.iconImage(color: whiteColor),
                       // rfCommonCachedNetworkImage(rf_message, color: white, height: 16, width: 16),
                       8.width,
                       Text('Message Me', style: boldTextStyle(color: white)),

@@ -8,9 +8,12 @@ class ActivityModel {
   final ImagesModel? images;
   final int? status;
   final int? slot;
-  final String? createdDate;
-  final String? updatedDate;
+  final DateTime? createdDate;
+  final DateTime? updatedDate;
   final String? name;
+  final int? categoryId;
+  final int? bookingCount;
+
 
   ActivityModel({
     this.id,
@@ -23,6 +26,8 @@ class ActivityModel {
     this.createdDate,
     this.updatedDate,
     this.name,
+    this.categoryId,
+    this.bookingCount
   });
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) {
@@ -34,9 +39,11 @@ class ActivityModel {
       images: json['images'] != null ? ImagesModel.fromJson(json['images']) : null,
       status: json['status'],
       slot: json['slot'],
-      createdDate: json['createdDate'],
-      updatedDate: json['updatedDate'],
+      createdDate: json['createdDate'] != null ? DateTime.parse(json['createdDate']): null,
+      updatedDate: json['updatedDate'] != null ? DateTime.parse(json['updatedDate']): null,
       name: json['name'],
+      bookingCount: json['bookingCount'],
     );
   }
+
 }

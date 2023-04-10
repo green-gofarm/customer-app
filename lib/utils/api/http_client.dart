@@ -4,7 +4,6 @@ import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/utils/api/end_points.dart';
 import 'package:customer_app/utils/api/request_options.dart';
 import 'package:customer_app/utils/enum/method.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:http/http.dart';
 
@@ -18,7 +17,7 @@ class HttpClient {
     final String? token;
 
     try {
-      token = await AuthService.getFirebaseAuthToken();
+      token = await AuthService.getFirebaseAuthToken(false);
       if (token == null) {
         throw Exception("Firebase auth token not found.");
       }
@@ -52,7 +51,7 @@ class HttpClient {
 
   Future<Response> sendRequest(
       String path, METHOD method, RequestOptions? options) async {
-    final Uri uri = Uri.parse('$baseUrl$path')
+    final Uri uri = Uri.parse('$baseUrl/$path')
         .replace(queryParameters: options?.queryParams);
     final Request request = Request(method.value, uri);
 
@@ -60,10 +59,22 @@ class HttpClient {
       await setupRequestHeader(request, options, true);
 
       final response = await Client().send(request);
+      return Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-      if (response.statusCode >= 400) {
-        throw Exception(response.reasonPhrase.toString());
-      }
+  Future<Response> sendRequestCustomUrl(
+      String url, METHOD method, RequestOptions? options) async {
+    final Uri uri = Uri.parse('$url')
+        .replace(queryParameters: options?.queryParams);
+    final Request request = Request(method.value, uri);
+
+    try {
+      await setupRequestHeader(request, options, true);
+
+      final response = await Client().send(request);
       return Response.fromStream(response);
     } catch (e) {
       rethrow;
@@ -72,7 +83,7 @@ class HttpClient {
 
   Future<Response> sendUnAuthRequest(
       String path, METHOD method, RequestOptions? options) async {
-    final Uri uri = Uri.parse('$baseUrl$path')
+    final Uri uri = Uri.parse('$baseUrl/$path')
         .replace(queryParameters: options?.queryParams);
     final Request request = Request(method.value, uri);
 
@@ -80,9 +91,6 @@ class HttpClient {
       await setupRequestHeader(request, options, false);
       final response = await Client().send(request);
 
-      if (response.statusCode >= 400) {
-        throw Exception(response.reasonPhrase.toString());
-      }
       return Response.fromStream(response);
     } catch (e) {
       rethrow;

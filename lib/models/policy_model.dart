@@ -24,8 +24,12 @@ class PolicyModel {
       farmstayId: json['farmstayId'],
       description: json['description'],
       status: json['status'],
-      createdDate: json['createdDate'] != null ? DateTime.parse(json['createdDate']) : null,
-      updatedDate: json['updatedDate'] != null ? DateTime.parse(json['updatedDate']) : null,
+      createdDate: json['createdDate'] != null && json['createdDate'] is String
+          ? DateTime.parse(json['createdDate'])
+          : null,
+      updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
+          ? DateTime.parse(json['updatedDate'])
+          : null,
     );
   }
 }

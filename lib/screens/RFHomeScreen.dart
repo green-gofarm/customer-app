@@ -41,18 +41,18 @@ class _RFHomeScreenState extends State<RFHomeScreen> {
         BottomNavigationBarItem(
           icon: rf_search.iconImage(),
           label: 'Search',
-          activeIcon: rf_search.iconImage(iconColor: rf_primaryColor),
+          activeIcon: rf_search.iconImage(color: rf_primaryColor),
         ),
         BottomNavigationBarItem(
           icon: rf_setting.iconImage(size: 22),
           label: 'Settings',
           activeIcon:
-              rf_setting.iconImage(iconColor: rf_primaryColor, size: 22),
+              rf_setting.iconImage(color: rf_primaryColor, size: 22),
         ),
         BottomNavigationBarItem(
           icon: rf_person.iconImage(),
           label: 'Account',
-          activeIcon: rf_person.iconImage(iconColor: rf_primaryColor),
+          activeIcon: rf_person.iconImage(color: rf_primaryColor),
         ),
       ],
     );

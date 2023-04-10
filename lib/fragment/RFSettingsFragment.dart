@@ -113,7 +113,7 @@ class _RFSettingsFragmentState extends State<RFSettingsFragment> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   rf_person
-                      .iconImage(iconColor: rf_primaryColor)
+                      .iconImage(color: rf_primaryColor)
                       .paddingOnly(top: 4),
                   16.width,
                   Column(
@@ -167,7 +167,7 @@ class _RFSettingsFragmentState extends State<RFSettingsFragment> {
                     title: data.roomCategoryName.validate(),
                     leading: data.img
                         .validate()
-                        .iconImage(iconColor: rf_primaryColor, size: 18),
+                        .iconImage(color: rf_primaryColor, size: 18),
                     titleTextStyle: primaryTextStyle(),
                     onTap: () {
                       if (index == 4) {

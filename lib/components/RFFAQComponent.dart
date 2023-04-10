@@ -29,7 +29,7 @@ class RFFAQComponent extends StatelessWidget {
               ),
               padding: EdgeInsets.all(8),
               child:
-                  faqData.img.validate().iconImage(iconColor: rf_primaryColor)),
+                  faqData.img.validate().iconImage(color: rf_primaryColor)),
           16.width,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -42,7 +42,7 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
           await AuthService.signInWithGoogle();
 
       if (userCredential.user != null) {
-        await authStore.signInCustomer(null);
+        await authStore.signInCustomer(false);
 
         if (authStore.user != null) {
           Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);

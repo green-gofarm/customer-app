@@ -1,13 +1,8 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
-import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/data/auth/auth_api.dart';
 import 'package:customer_app/services/auth_service.dart';
-import 'package:customer_app/utils/enum/route_path.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import '../../utils/error_message.dart';
 
@@ -33,21 +28,18 @@ abstract class _AuthStore with Store {
   }
 
   @action
-  Future<void> signInCustomer(bool? noMessage) async {
+  Future<void> signInCustomer(bool noMessage) async {
     resetStore();
 
     final result = await _authApi.signInCustomer();
 
     await result.fold(
-          (errorMessage) =>
-      {
-        if (noMessage == null || noMessage == false)
-          {this.errorMessage = errorMessage}
-      },
-          (user) => this.user = user,
+      (errorMessage) =>
+          {if (noMessage == false) this.errorMessage = errorMessage},
+      (user) => this.user = user,
     );
 
-    logger.i("Customer sign in", user.toString());
+    logger.i("Customer sign in ${user.toString()}, Error is: $errorMessage");
   }
 
   @action
@@ -57,13 +49,13 @@ abstract class _AuthStore with Store {
         return false;
       }
 
-      final token = await AuthService.getFirebaseAuthToken();
+      final token = await AuthService.getFirebaseAuthToken(false);
       if (token == null) {
         return false;
       }
 
       return true;
-    } catch (e){
+    } catch (e) {
       return false;
     }
   }
@@ -76,8 +68,8 @@ abstract class _AuthStore with Store {
 
     bool isNew = false;
     await checkResult.fold(
-          (errorMessage) => this.errorMessage = errorMessage,
-          (result) => isNew = result,
+      (errorMessage) => this.errorMessage = errorMessage,
+      (result) => isNew = result,
     );
 
     logger.i("Account is new?: $isNew");
@@ -98,8 +90,11 @@ abstract class _AuthStore with Store {
     final result = await _authApi.signUpCustomer(token);
 
     await result.fold(
-          (errorMessage) => this.errorMessage = errorMessage,
-          (user) => this.user = user,
+      (errorMessage) => this.errorMessage = errorMessage,
+      (user) {
+        this.user = user;
+        this.errorMessage = "Đăng ký thành công";
+      },
     );
 
     logger.i("Customer sign up", user?.toString());

@@ -1,9 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customer_app/services/auth_service.dart';
-import 'package:customer_app/models/user_model.dart';
-import 'package:customer_app/screens/RFHomeScreen.dart';
-import 'package:customer_app/utils/api/http_client.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/utils/ICImages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -13,7 +9,6 @@ import 'package:customer_app/utils/RFImages.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../main.dart';
-import '../data/auth/auth_api.dart';
 
 Widget socialLoginButton(
   BuildContext context, {
@@ -330,14 +325,16 @@ PreferredSizeWidget commonAppBarWidget(BuildContext context,
 }
 
 extension strExt on String {
-  Widget iconImage({Color? iconColor, double size = bottomNavigationIconSize}) {
+  Widget iconImage({double? size, Color? color, BoxFit? fit}) {
     return Image.asset(
       this,
-      width: size,
-      height: size,
-      color: iconColor ?? gray,
-      errorBuilder: (_, __, ___) =>
-          placeHolderWidget(width: size, height: size),
+      height: size ?? 24,
+      width: size ?? 24,
+      fit: fit ?? BoxFit.cover,
+      color: color ?? (appStore.isDarkModeOn ? Colors.white : gray.withOpacity(0.6)),
+      errorBuilder: (context, error, stackTrace) {
+        return Image.asset(ic_message, height: size ?? 24, width: size ?? 24);
+      },
     );
   }
 }

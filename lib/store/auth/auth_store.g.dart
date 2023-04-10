@@ -51,7 +51,7 @@ mixin _$AuthStore on _AuthStore, Store {
       AsyncAction('_AuthStore.signInCustomer', context: context);
 
   @override
-  Future<void> signInCustomer(bool? noMessage) {
+  Future<void> signInCustomer(bool noMessage) {
     return _$signInCustomerAsyncAction
         .run(() => super.signInCustomer(noMessage));
   }

@@ -1,6 +1,4 @@
 import 'package:customer_app/main.dart';
-import 'package:customer_app/screens/RFHomeScreen.dart';
-import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/utils/RFImages.dart';
 import 'package:customer_app/utils/RFWidget.dart';
@@ -17,83 +15,82 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Future<void>? _autoSignInFuture;
+
   @override
   void initState() {
     super.initState();
+    _autoSignInFuture = autoSignIn();
     init();
   }
 
   Future<void> autoSignIn() async {
+    RoutePaths path = RoutePaths.SIGN_IN;
+
     try {
-      final token = await AuthService.getFirebaseAuthToken();
+      final token = await AuthService.getFirebaseAuthToken(false);
+
       if (token != null) {
         await authStore.signInCustomer(true);
       }
+
       if (authStore.getUser != null) {
-        Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
-      } else {
-        Navigator.pushNamedAndRemoveUntil(context, RoutePaths.SIGN_IN.value, (route) => false);
+        path = RoutePaths.HOME;
       }
     } catch (e) {
+      path = RoutePaths.SIGN_IN;
       logger.e("Auto sign in failed", e);
-      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.SIGN_IN.value, (route) => false);
+    } finally {
+      Navigator.pushNamedAndRemoveUntil(context, path.value, (route) => false);
     }
   }
 
   Future<void> init() async {
     setStatusBarColor(rf_primaryColor,
         statusBarIconBrightness: Brightness.light);
-
-    await autoSignIn();
-  }
-
-  @override
-  void dispose() {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
-
-    super.dispose();
-  }
-
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
+    await Future.delayed(Duration(milliseconds: 500));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: rf_splashBgColor,
-      body: WillPopScope(
-        onWillPop: () async => false,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              decoration: boxDecorationWithRoundedCorners(
-                  boxShape: BoxShape.circle, backgroundColor: rf_splashBgColor),
-              width: 250,
-              height: 250,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: boxDecorationWithRoundedCorners(
+                boxShape: BoxShape.circle, backgroundColor: rf_splashBgColor),
+            width: 150,
+            height: 150,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10000),
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10000),
-              ),
-              child: ClipOval(
-                  child: commonCacheImageWidget(go_ram_logo, 200,
-                      fit: BoxFit.cover, alignment: Alignment.center)),
-            ),
-            SizedBox(
-              width: 200,
-              height: 200,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(rf_primaryColor),
-                strokeWidth: 4,
-              ),
-            ),
-          ],
-        ).center(),
-      ),
+            child: ClipOval(
+                child: commonCacheImageWidget(go_ram_logo, 100,
+                    fit: BoxFit.cover, alignment: Alignment.center)),
+          ),
+          FutureBuilder<void>(
+            future: _autoSignInFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: CircularProgressIndicator(
+                    color: rf_primaryColor,
+                    strokeWidth: 2,
+                  ),
+                );
+              } else {
+                return SizedBox();
+              }
+            },
+          ),
+        ],
+      ).center(),
     );
   }
 }

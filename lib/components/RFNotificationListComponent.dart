@@ -38,7 +38,7 @@ class RFNotificationListComponent extends StatelessWidget {
             child: Stack(
               children: [
                 rf_notification.iconImage(
-                    iconColor: appStore.isDarkModeOn ? white : black),
+                    color: appStore.isDarkModeOn ? white : black),
                 Positioned(
                   top: 1,
                   right: 1,

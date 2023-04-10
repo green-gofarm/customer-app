@@ -42,7 +42,7 @@ class RFHotelDetailComponent extends StatelessWidget {
                   width: 15,
                   height: 15,
                   elevation: 0,
-                  child: rf_call.iconImage(iconColor: white, size: 14),
+                  child: rf_call.iconImage(color: white, size: 14),
                 ),
                 8.width,
                 AppButton(
@@ -53,7 +53,7 @@ class RFHotelDetailComponent extends StatelessWidget {
                   width: 15,
                   height: 15,
                   elevation: 0,
-                  child: rf_message.iconImage(iconColor: white, size: 14),
+                  child: rf_message.iconImage(color: white, size: 14),
                 ),
               ],
             ),

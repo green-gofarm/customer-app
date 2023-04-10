@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:customer_app/main.dart';
 import 'package:customer_app/models/notification_model.dart';
 import 'package:customer_app/models/paging_model.dart';
 import 'package:customer_app/models/user_model.dart';
@@ -15,7 +16,7 @@ typedef FutureEither<T> = Future<Either<String, T>>;
 
 class AuthApi {
   final HttpClient _httpClient = HttpClient(headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json; charset=utf-8;',
   });
 
   FutureEither<UserModel> signUpCustomer(String token) async {
@@ -24,7 +25,7 @@ class AuthApi {
 
     try {
       final response = await _httpClient.sendRequest(url, METHOD.POST, options);
-      final payload = jsonDecode(response.body);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
@@ -41,7 +42,7 @@ class AuthApi {
 
     try {
       final response = await _httpClient.sendRequest(url, METHOD.GET, null);
-      final payload = jsonDecode(response.body);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
@@ -49,7 +50,13 @@ class AuthApi {
       }
 
       if (response.statusCode == 404) {
+        logger.e("Account not found");
         throw (ACCOUNT_NOT_FOUND);
+      }
+
+      if (response.statusCode == 403) {
+        logger.e("Access denied.");
+        throw (ACCESS_DENIED);
       }
 
       throw (payload['resultMessage'] ?? SIGN_IN_ERROR_MESSAGE);

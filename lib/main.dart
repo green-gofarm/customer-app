@@ -1,3 +1,4 @@
+import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/screens/RFHomeScreen.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/screens/SignUpScreen.dart';
@@ -7,6 +8,7 @@ import 'package:customer_app/store/auth/auth_store.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/logger/AppLoggerFilter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
@@ -49,25 +51,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => MaterialApp(
-        key: materialAppKey,
-        scrollBehavior: SBehavior(),
-        navigatorKey: navigatorKey,
-        title: 'Gofarm',
-        debugShowCheckedModeBanner: false,
-        theme: AppThemeData.lightTheme,
-        darkTheme: AppThemeData.darkTheme,
-        themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-        initialRoute: RoutePaths.AUTH_WRAPPER.value,
-        routes: {
-          RoutePaths.AUTH_WRAPPER.value: (context) => AuthWrapper(),
-          RoutePaths.SPLASH.value: (context) => SplashScreen(),
-          RoutePaths.SIGN_IN.value: (context) => SignInScreen(),
-          RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),
-          RoutePaths.HOME.value: (context) => RFHomeScreen(),
+      builder: (_) => WillPopScope(
+        onWillPop: () async {
+          return await onWillPop(context);
         },
-        navigatorObservers: [NavigationHistoryObserver()],
+        child: MaterialApp(
+          key: materialAppKey,
+          scrollBehavior: SBehavior(),
+          navigatorKey: navigatorKey,
+          title: 'Gofarm',
+          debugShowCheckedModeBanner: false,
+          theme: AppThemeData.lightTheme,
+          darkTheme: AppThemeData.darkTheme,
+          themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
+          initialRoute: RoutePaths.AUTH_WRAPPER.value,
+          routes: {
+            RoutePaths.AUTH_WRAPPER.value: (context) => AuthWrapper(),
+            RoutePaths.SPLASH.value: (context) => SplashScreen(),
+            RoutePaths.SIGN_IN.value: (context) => SignInScreen(),
+            RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),
+            RoutePaths.HOME.value: (context) => HomeScreen(),
+          },
+          navigatorObservers: [NavigationHistoryObserver()],
+        ),
       ),
     );
+  }
+
+  Future<bool> onWillPop(BuildContext context) async {
+    await SystemNavigator.pop(animated: true);
+    return false;
   }
 }

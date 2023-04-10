@@ -11,6 +11,7 @@ class RoomModel {
   final DateTime? createdDate;
   final DateTime? updatedDate;
   final String? name;
+  final int? bookingCount;
 
   RoomModel({
     this.id,
@@ -23,6 +24,7 @@ class RoomModel {
     this.createdDate,
     this.updatedDate,
     this.name,
+    this.bookingCount,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) {
@@ -34,9 +36,14 @@ class RoomModel {
       price: json['price'],
       images: json['images'] != null ? ImagesModel.fromJson(json['images']) : null,
       status: json['status'],
-      createdDate: json['createdDate'] != null ? DateTime.parse(json['createdDate']) : null,
-      updatedDate: json['updatedDate'] != null ? DateTime.parse(json['updatedDate']) : null,
+      createdDate: json['createdDate'] != null && json['createdDate'] is String
+          ? DateTime.parse(json['createdDate'])
+          : null,
+      updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
+          ? DateTime.parse(json['updatedDate'])
+          : null,
       name: json['name'],
+      bookingCount: json['bookingCount'],
     );
   }
 }

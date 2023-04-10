@@ -24,7 +24,8 @@ class AuthService {
     await FirebaseAuth.instance.signOut();
   }
 
-  static Future<String?> getFirebaseAuthToken () async {
-    return await FirebaseAuth.instance.currentUser?.getIdToken(true);
+  static Future<String?> getFirebaseAuthToken (bool? forceRefresh) async {
+    final bool isForce = forceRefresh != null ? forceRefresh : false;
+    return await FirebaseAuth.instance.currentUser?.getIdToken(isForce);
   }
 }

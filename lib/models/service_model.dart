@@ -7,8 +7,8 @@ class ServiceModel {
   final int? categoryId;
   final String? image;
   final double? price;
-  final String? createdDate;
-  final String? updatedDate;
+  final DateTime? createdDate;
+  final DateTime? updatedDate;
 
   ServiceModel({
     this.id,
@@ -33,8 +33,12 @@ class ServiceModel {
       categoryId: json['categoryId'],
       image: json['image'],
       price: json['price'],
-      createdDate: json['createdDate'],
-      updatedDate: json['updatedDate'],
+      createdDate: json['createdDate'] != null && json['createdDate'] is String
+          ? DateTime.parse(json['createdDate'])
+          : null,
+      updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
+          ? DateTime.parse(json['updatedDate'])
+          : null,
     );
   }
 

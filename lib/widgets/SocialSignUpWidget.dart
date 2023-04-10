@@ -39,12 +39,14 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
       await AuthService.signInWithGoogle();
 
       if (userCredential.user != null) {
-        final String? token = await AuthService.getFirebaseAuthToken();
+        final String? token = await AuthService.getFirebaseAuthToken(false);
         if (token != null) {
           await authStore.signUpCustomer(token);
         }
 
         if (authStore.user != null) {
+          //Refresh to get new token after sign up success;
+          AuthService.getFirebaseAuthToken(true);
           Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
         }
       }

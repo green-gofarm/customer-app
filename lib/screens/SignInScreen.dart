@@ -19,13 +19,12 @@ class _SignInState extends State<SignInScreen> {
   }
 
   void init() async {
+    authStore.errorMessage = null;
     final isAuthenticated = await authStore.isAuthenticated();
     if(isAuthenticated) {
       Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
       return;
     }
-
-    authStore.errorMessage = null;
   }
 
   @override
