@@ -37,8 +37,7 @@ class _RFEmailSignInScreenState extends State<RFEmailSignInScreen> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
 
     widget.showDialog
         ? Timer.run(() {

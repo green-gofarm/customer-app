@@ -23,7 +23,6 @@ class _RFMobileSignInState extends State<RFMobileSignIn> {
   }
 
   void init() async {
-    // setStatusBarColor(rf_primaryColor, statusBarIconBrightness: Brightness.light);
   }
 
   @override

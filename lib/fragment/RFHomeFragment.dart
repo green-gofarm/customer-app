@@ -37,8 +37,7 @@ class _RFHomeFragmentState extends State<RFHomeFragment> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
   }
 
   @override

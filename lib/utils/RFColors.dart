@@ -12,6 +12,8 @@ const rf_notificationBgColor = Color(0xFFF2F2F2);
 const rf_rattingBgColor = Color(0xFF2DD35c);
 const rf_textColor = Color(0xFF4F4F4F);
 
+const editTextBgColor = Color(0xFFF8F8F8);
+
 // Dark Theme Colors
 const appBackgroundColorDark = Color(0xFF121212);
 const cardBackgroundBlackDark = Color(0xFF1F1F1F);

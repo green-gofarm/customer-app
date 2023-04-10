@@ -36,8 +36,7 @@ class _BookingFragmentState extends State<BookingFragment> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
   }
 
   @override

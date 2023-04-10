@@ -226,3 +226,4 @@ Widget commonImageWidget({String? image}) {
     ],
   );
 }
+

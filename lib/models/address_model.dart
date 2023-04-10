@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class AddressModel {
   final String? country;
   final ProvinceModel? province;
@@ -13,7 +15,9 @@ class AddressModel {
     this.detail,
   });
 
-  factory AddressModel.fromJson(Map<String, dynamic> json) {
+  factory AddressModel.fromJson(String jsonString) {
+    Map<String, dynamic> json = jsonDecode(jsonString);
+
     return AddressModel(
       country: json['country'],
       province: ProvinceModel.fromJson(json['province']),
@@ -21,6 +25,11 @@ class AddressModel {
       ward: WardModel.fromJson(json['ward']),
       detail: json['detail'],
     );
+  }
+
+  @override
+  String toString() {
+    return '${detail ?? ''}, ${ward?.name ?? ''}, ${district?.name ?? ''}, ${province?.name ?? ''}, ${country ?? ''}';
   }
 }
 

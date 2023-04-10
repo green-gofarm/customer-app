@@ -1,14 +1,14 @@
 import 'dart:convert';
 
+import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
 import 'package:customer_app/models/activity_schedule_model.dart';
+import 'package:customer_app/models/farmstay_detail_model.dart';
 import 'package:customer_app/models/farmstay_model.dart';
 import 'package:customer_app/models/farmstay_schedule_model.dart';
-import 'package:customer_app/models/notification_model.dart';
 import 'package:customer_app/models/paging_model.dart';
 import 'package:customer_app/models/room_model.dart';
 import 'package:customer_app/models/room_schedule_model.dart';
-import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/utils/api/end_points.dart';
 import 'package:customer_app/utils/api/http_client.dart';
 import 'package:customer_app/utils/api/request_options.dart';
@@ -34,8 +34,30 @@ class FarmstayApi {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
-        return right(PagingModel<FarmstayModel>.fromJson(
-            data, (json) => FarmstayModel.fromJson(json)));
+        final farmstayPaging =PagingModel<FarmstayModel>.fromJson(
+            data, (json) => FarmstayModel.fromJson(json));
+        return right(farmstayPaging);
+      }
+      throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<PagingModel<FarmstayModel>> searchFarmstay(
+      Map<String, String> params) async {
+    final url = '${ENP.FARMSTAY}/search';
+    final options = RequestOptions(queryParams: params);
+
+    try {
+      final response = await _httpClient.sendRequest(url, METHOD.GET, options);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = payload['data'] as Map<String, dynamic>;
+        final farmstayPaging =PagingModel<FarmstayModel>.fromJson(
+            data, (json) => FarmstayModel.fromJson(json));
+        return right(farmstayPaging);
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
     } catch (e) {
@@ -173,7 +195,7 @@ class FarmstayApi {
     }
   }
 
-  FutureEither<FarmstayModel> getFarmstayDetail(int id) async {
+  FutureEither<FarmstayDetailModel> getFarmstayDetail(int id) async {
     final url = '$DOMAIN_V2/${ENP.FARMSTAY}/$id';
 
     try {
@@ -183,7 +205,7 @@ class FarmstayApi {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
-        return right(FarmstayModel.fromJson(data));
+        return right(FarmstayDetailModel.fromJson(data));
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
     } catch (e) {

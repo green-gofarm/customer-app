@@ -46,8 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
     await Future.delayed(Duration(milliseconds: 500));
   }
 
@@ -55,42 +54,42 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: rf_splashBgColor,
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            decoration: boxDecorationWithRoundedCorners(
-                boxShape: BoxShape.circle, backgroundColor: rf_splashBgColor),
-            width: 150,
-            height: 150,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10000),
-            ),
-            child: ClipOval(
-                child: commonCacheImageWidget(go_ram_logo, 100,
-                    fit: BoxFit.cover, alignment: Alignment.center)),
-          ),
-          FutureBuilder<void>(
-            future: _autoSignInFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: CircularProgressIndicator(
-                    color: rf_primaryColor,
-                    strokeWidth: 2,
-                  ),
-                );
-              } else {
-                return SizedBox();
-              }
-            },
-          ),
-        ],
-      ).center(),
+      // body: Stack(
+      //   alignment: Alignment.center,
+      //   children: [
+      //     Container(
+      //       decoration: boxDecorationWithRoundedCorners(
+      //           boxShape: BoxShape.circle, backgroundColor: rf_splashBgColor),
+      //       width: 150,
+      //       height: 150,
+      //     ),
+      //     Container(
+      //       decoration: BoxDecoration(
+      //         borderRadius: BorderRadius.circular(10000),
+      //       ),
+      //       child: ClipOval(
+      //           child: commonCacheImageWidget(go_ram_logo, 100,
+      //               fit: BoxFit.cover, alignment: Alignment.center)),
+      //     ),
+      //     FutureBuilder<void>(
+      //       future: _autoSignInFuture,
+      //       builder: (context, snapshot) {
+      //         if (snapshot.connectionState == ConnectionState.waiting) {
+      //           return SizedBox(
+      //             width: 100,
+      //             height: 100,
+      //             child: CircularProgressIndicator(
+      //               color: rf_primaryColor,
+      //               strokeWidth: 2,
+      //             ),
+      //           );
+      //         } else {
+      //           return SizedBox();
+      //         }
+      //       },
+      //     ),
+      //   ],
+      // ).center(),
     );
   }
 }

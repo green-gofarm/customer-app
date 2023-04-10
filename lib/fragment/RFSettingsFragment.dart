@@ -24,8 +24,7 @@ class _RFSettingsFragmentState extends State<RFSettingsFragment> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
   }
 
   @override
@@ -143,8 +142,7 @@ class _RFSettingsFragmentState extends State<RFSettingsFragment> {
                 activeTrackColor: rf_primaryColor,
                 onChanged: (bool value) {
                   appStore.toggleDarkMode(value: value);
-                  setStatusBarColor(rf_primaryColor,
-                      statusBarIconBrightness: Brightness.light);
+
                   setState(() {});
                 },
               ),

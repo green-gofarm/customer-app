@@ -71,8 +71,7 @@ class _RFHomeScreenState extends State<RFHomeScreen> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
   }
 
   @override

@@ -36,8 +36,7 @@ class _SearchFragmentState extends State<SearchFragment> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
   }
 
   @override

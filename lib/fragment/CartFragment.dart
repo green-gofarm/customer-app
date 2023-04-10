@@ -36,8 +36,7 @@ class _CartFragmentState extends State<CartFragment> {
   }
 
   void init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class PagingModel<T> {
   final List<T>? data;
   final int? page;

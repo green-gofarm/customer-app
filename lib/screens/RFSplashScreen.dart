@@ -16,8 +16,7 @@ class _RFSplashScreenState extends State<RFSplashScreen> {
   }
 
   Future<void> init() async {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
 
     await Future.delayed(Duration(seconds: 2));
     finish(context);
@@ -26,8 +25,7 @@ class _RFSplashScreenState extends State<RFSplashScreen> {
 
   @override
   void dispose() {
-    setStatusBarColor(rf_primaryColor,
-        statusBarIconBrightness: Brightness.light);
+    
 
     super.dispose();
   }
