@@ -1,29 +1,29 @@
 import 'package:customer_app/models/image_model.dart';
 
 class RoomModel {
-  final int? id;
-  final int? farmstayId;
-  final String? description;
-  final int? roomCategoryId;
-  final int? price;
-  final ImagesModel? images;
-  final int? status;
-  final DateTime? createdDate;
+  final int id;
+  final int farmstayId;
+  final String description;
+  final int roomCategoryId;
+  final int price;
+  final ImagesModel images;
+  final int status;
+  final DateTime createdDate;
   final DateTime? updatedDate;
-  final String? name;
+  final String name;
   final int? bookingCount;
 
   RoomModel({
-    this.id,
-    this.farmstayId,
-    this.description,
-    this.roomCategoryId,
-    this.price,
-    this.images,
-    this.status,
-    this.createdDate,
+    required this.id,
+    required this.farmstayId,
+    required this.description,
+    required this.roomCategoryId,
+    required this.price,
+    required this.images,
+    required this.status,
+    required this.createdDate,
     this.updatedDate,
-    this.name,
+    required this.name,
     this.bookingCount,
   });
 
@@ -34,11 +34,9 @@ class RoomModel {
       description: json['description'],
       roomCategoryId: json['roomCategoryId'],
       price: json['price'],
-      images: json['images'] != null ? ImagesModel.fromJson(json['images']) : null,
+      images: ImagesModel.fromJson(json['images']),
       status: json['status'],
-      createdDate: json['createdDate'] != null && json['createdDate'] is String
-          ? DateTime.parse(json['createdDate'])
-          : null,
+      createdDate: DateTime.parse(json['createdDate']),
       updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
           ? DateTime.parse(json['updatedDate'])
           : null,

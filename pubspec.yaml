@@ -33,6 +33,7 @@ dependencies:
   flutter_native_splash: ^2.2.19
   intl: ^0.17.0
   shimmer: ^2.0.0
+  flutter_vector_icons: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -79,3 +80,5 @@ flutter:
     - images/stockMarket/icons/
     - images/stockMarket/stock/
     - images/shophop/
+    - images/eventApp/
+    - images/app/

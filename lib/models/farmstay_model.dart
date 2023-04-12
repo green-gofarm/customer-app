@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:customer_app/models/address_model.dart';
 import 'package:customer_app/models/image_model.dart';
 import 'package:customer_app/models/location_model.dart';

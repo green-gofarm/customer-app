@@ -56,14 +56,6 @@ mixin _$AuthStore on _AuthStore, Store {
         .run(() => super.signInCustomer(noMessage));
   }
 
-  late final _$isAuthenticatedAsyncAction =
-      AsyncAction('_AuthStore.isAuthenticated', context: context);
-
-  @override
-  Future<bool> isAuthenticated() {
-    return _$isAuthenticatedAsyncAction.run(() => super.isAuthenticated());
-  }
-
   late final _$checkNewlyAccountAsyncAction =
       AsyncAction('_AuthStore.checkNewlyAccount', context: context);
 
@@ -83,6 +75,17 @@ mixin _$AuthStore on _AuthStore, Store {
 
   late final _$_AuthStoreActionController =
       ActionController(name: '_AuthStore', context: context);
+
+  @override
+  bool isAuthenticated() {
+    final _$actionInfo = _$_AuthStoreActionController.startAction(
+        name: '_AuthStore.isAuthenticated');
+    try {
+      return super.isAuthenticated();
+    } finally {
+      _$_AuthStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setUser(UserModel? user) {

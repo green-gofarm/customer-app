@@ -96,4 +96,20 @@ class HttpClient {
       rethrow;
     }
   }
+
+  Future<Response> sendUnAuthRequestCustomUrl(
+      String url, METHOD method, RequestOptions? options) async {
+    final Uri uri = Uri.parse('$url')
+        .replace(queryParameters: options?.queryParams);
+    final Request request = Request(method.value, uri);
+
+    try {
+      await setupRequestHeader(request, options, false);
+
+      final response = await Client().send(request);
+      return Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

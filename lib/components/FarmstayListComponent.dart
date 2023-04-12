@@ -1,5 +1,6 @@
 import 'package:customer_app/models/farmstay_model.dart';
 import 'package:customer_app/utils/RFConstant.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -82,6 +83,10 @@ class FarmstayListComponent extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ).onTap(() {
+      Navigator.pushNamed(context, RoutePaths.FARMSTAY_DETAIL.value, arguments: {
+        "farmstayId": farmstay.id,
+      });
+    });
   }
 }

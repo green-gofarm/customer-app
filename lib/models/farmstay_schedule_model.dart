@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:customer_app/models/contact_info_item_model.dart';
 import 'package:customer_app/models/farmstay_schedule_item_model.dart';
 import 'package:customer_app/models/address_model.dart';
 
 class FarmstayScheduleModel {
-  final int? id;
+  final int id;
   final String? name;
   final List<ContactInfoItemModel>? contactInformation;
   final AddressModel? address;
@@ -14,10 +16,10 @@ class FarmstayScheduleModel {
   final DateTime? updatedDate;
   final double? latitude;
   final double? longitude;
-  final Map<DateTime, List<FarmstayScheduleItemModel>>? schedule;
+  final Map<String, List<FarmstayScheduleItemModel>>? schedule;
 
   FarmstayScheduleModel({
-    this.id,
+    required this.id,
     this.name,
     this.contactInformation,
     this.address,
@@ -33,18 +35,18 @@ class FarmstayScheduleModel {
 
   factory FarmstayScheduleModel.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> jsonSchedule = json['schedule'];
-    Map<DateTime, List<FarmstayScheduleItemModel>> schedule = {};
+    Map<String, List<FarmstayScheduleItemModel>> schedule = {};
     jsonSchedule.forEach((key, value) {
       List<dynamic> items = value;
       List<FarmstayScheduleItemModel> itemList = [];
       items.forEach((element) {
         itemList.add(FarmstayScheduleItemModel.fromJson(element));
       });
-      DateTime dateTime = DateTime.parse(key);
-      schedule[dateTime] = itemList;
+
+      schedule[key] = itemList;
     });
 
-    List<dynamic> jsonContactInformation = json['contactInformation'];
+    List<dynamic> jsonContactInformation = jsonDecode(json['contactInformation']);
     List<ContactInfoItemModel> contactInformation = [];
     jsonContactInformation.forEach((element) {
       contactInformation.add(ContactInfoItemModel.fromJson(element));

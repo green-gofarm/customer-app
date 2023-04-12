@@ -26,4 +26,5 @@ class ENP {
   static const String IMAGES = 'images';
   static const String ACTIVITIES = 'activities';
   static const String ROOMS = 'rooms';
+  static const String CART = "carts";
 }

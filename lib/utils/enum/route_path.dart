@@ -1,5 +1,12 @@
-
-enum RoutePaths { SPLASH, SIGN_IN, SIGN_UP, HOME, AUTH_WRAPPER }
+enum RoutePaths {
+  SPLASH,
+  SIGN_IN,
+  SIGN_UP,
+  HOME,
+  FARMSTAY_DETAIL,
+  ACTIVITY_DETAIL,
+  ROOM_DETAIL,
+}
 
 extension RoutePathsExtension on RoutePaths {
   String get value {
@@ -12,8 +19,12 @@ extension RoutePathsExtension on RoutePaths {
         return "/sign-up";
       case RoutePaths.HOME:
         return "/home";
-      case RoutePaths.AUTH_WRAPPER:
-        return "/auth";
+      case RoutePaths.FARMSTAY_DETAIL:
+        return "/farmstay";
+      case RoutePaths.ACTIVITY_DETAIL:
+        return "/activity";
+      case RoutePaths.ROOM_DETAIL:
+        return "/room";
     }
   }
 }

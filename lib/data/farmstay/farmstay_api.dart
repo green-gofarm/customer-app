@@ -29,7 +29,7 @@ class FarmstayApi {
     final options = RequestOptions(queryParams: params);
 
     try {
-      final response = await _httpClient.sendRequest(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -50,7 +50,7 @@ class FarmstayApi {
     final options = RequestOptions(queryParams: params);
 
     try {
-      final response = await _httpClient.sendRequest(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -71,7 +71,7 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -92,7 +92,7 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -113,7 +113,7 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -135,7 +135,7 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -158,7 +158,7 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -181,7 +181,7 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -200,12 +200,30 @@ class FarmstayApi {
 
     try {
       final response =
-          await _httpClient.sendRequestCustomUrl(url, METHOD.GET, null);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, null);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
         return right(FarmstayDetailModel.fromJson(data));
+      }
+      throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<ActivityModel> getActivityDetail(int farmstayId, int activityId) async {
+    final url = '${ENP.FARMSTAY}/$farmstayId/${ENP.ACTIVITIES}/$activityId';
+
+    try {
+      final response =
+      await _httpClient.sendUnAuthRequest(url, METHOD.GET, null);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = payload['data'] as Map<String, dynamic>;
+        return right(ActivityModel.fromJson(data));
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
     } catch (e) {

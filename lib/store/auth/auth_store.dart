@@ -1,7 +1,6 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/data/auth/auth_api.dart';
-import 'package:customer_app/services/auth_service.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../utils/error_message.dart';
@@ -43,21 +42,8 @@ abstract class _AuthStore with Store {
   }
 
   @action
-  Future<bool> isAuthenticated() async {
-    try {
-      if (user == null) {
-        return false;
-      }
-
-      final token = await AuthService.getFirebaseAuthToken(false);
-      if (token == null) {
-        return false;
-      }
-
-      return true;
-    } catch (e) {
-      return false;
-    }
+  bool isAuthenticated() {
+    return user != null;
   }
 
   @action

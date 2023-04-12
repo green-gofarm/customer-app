@@ -4,6 +4,7 @@ import 'package:customer_app/fragment/HomeFragment.dart';
 import 'package:customer_app/fragment/SearchFragment.dart';
 import 'package:customer_app/fragment/SettingFragment.dart';
 import 'package:customer_app/main.dart';
+import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/utils/ICImages.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFImages.dart';
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SearchFragment(),
     CartFragment(),
     BookingFragment(),
-    SettingFragment(),
+    authStore.user != null ? SettingFragment() : SignInScreen(),
   ];
 
   Widget _bottomTab() {
@@ -40,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(
           icon: ic_home.iconImage(size: 22),
           label: 'Trang chủ',
-          activeIcon: ic_fill_home.iconImage(color: appStore.isDarkModeOn ? white : rf_primaryColor, size: 22),
+          activeIcon: ic_fill_home.iconImage(
+              color: appStore.isDarkModeOn ? white : rf_primaryColor, size: 22),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.search_outlined),
@@ -57,11 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
           label: 'Đơn hàng',
           activeIcon: Icon(Icons.receipt_rounded),
         ),
-        BottomNavigationBarItem(
-          icon: rf_setting.iconImage(size: 22),
-          label: 'Cài đặt',
-          activeIcon: ic_fill_profile.iconImage(color: appStore.isDarkModeOn ? white : rf_primaryColor, size: 22),
-        ),
+        authStore.user != null
+            ? BottomNavigationBarItem(
+                icon: rf_setting.iconImage(size: 22),
+                label: 'Cài đặt',
+                activeIcon: ic_fill_profile.iconImage(
+                    color: appStore.isDarkModeOn ? white : rf_primaryColor,
+                    size: 22),
+              )
+            : BottomNavigationBarItem(
+                icon: Icon(Icons.login),
+                label: 'Đăng nhập',
+                activeIcon: Icon(Icons.login_rounded),
+              ),
       ],
     );
   }

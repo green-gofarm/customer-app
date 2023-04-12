@@ -6,7 +6,7 @@ class ServiceModel {
   final int? farmstayId;
   final int? categoryId;
   final String? image;
-  final double? price;
+  final int? price;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 

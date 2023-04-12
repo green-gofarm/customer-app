@@ -1,9 +1,9 @@
+import 'package:customer_app/screens/ActivityDetailScreen.dart';
+import 'package:customer_app/screens/FarmstayDetailScreen.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
-import 'package:customer_app/screens/RFHomeScreen.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/screens/SignUpScreen.dart';
 import 'package:customer_app/screens/SplashScreen.dart';
-import 'package:customer_app/screens/auth_wrapper.dart';
 import 'package:customer_app/store/auth/auth_store.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/logger/AppLoggerFilter.dart';
@@ -64,13 +64,14 @@ class MyApp extends StatelessWidget {
           theme: AppThemeData.lightTheme,
           darkTheme: AppThemeData.darkTheme,
           themeMode: appStore.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
-          initialRoute: RoutePaths.AUTH_WRAPPER.value,
+          initialRoute: RoutePaths.SPLASH.value,
           routes: {
-            RoutePaths.AUTH_WRAPPER.value: (context) => AuthWrapper(),
             RoutePaths.SPLASH.value: (context) => SplashScreen(),
             RoutePaths.SIGN_IN.value: (context) => SignInScreen(),
             RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),
             RoutePaths.HOME.value: (context) => HomeScreen(),
+            RoutePaths.FARMSTAY_DETAIL.value: (context) => FarmstayDetailScreen(),
+            RoutePaths.ACTIVITY_DETAIL.value: (context) => ActivityDetailScreen(),
           },
           navigatorObservers: [NavigationHistoryObserver()],
         ),
