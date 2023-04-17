@@ -55,4 +55,28 @@ extension OrderStatusExtension on OrderStatus {
         throw Exception('Invalid status');
     }
   }
+
+  static OrderStatus fromValue(int value) {
+    switch (value) {
+      case 0:
+        return OrderStatus.NONE;
+      case 1:
+        return OrderStatus.PENDING_PAYMENT;
+      case 2:
+        return OrderStatus.PENDING_APPROVE;
+      case 3:
+        return OrderStatus.APPROVED;
+      case 4:
+        return OrderStatus.REJECTED;
+      case 5:
+        return OrderStatus.DISBURSE;
+      case 6:
+        return OrderStatus.FAILED;
+      case 7:
+        return OrderStatus.CUSTOMER_CANCEL;
+      default:
+        throw Exception('Invalid value for status');
+    }
+  }
+
 }

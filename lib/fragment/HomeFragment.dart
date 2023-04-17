@@ -118,91 +118,94 @@ class _HomeFragmentState extends State<HomeFragment> {
           ),
         ],
       ),
-      body: CommonAppComponent(
-        subWidget: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Farmstays', style: boldTextStyle()),
-                TextButton(
-                  onPressed: () async {
-                    store.pagination.pageSize = store.pagination.totalItem ??
-                        PaginationModel.DEFAULT_PAGE_SIZE;
-                    logger.i("Totle item: ${store.pagination.totalItem}");
-                    await store.refresh();
-                    setState(() {
-                      listFarmstay = List.of(store.farmstays);
-                    });
-                  },
-                  child: Text('Xem tất cả',
-                      style: secondaryTextStyle(
-                          decoration: TextDecoration.underline,
-                          textBaseline: TextBaseline.alphabetic)),
-                )
-              ],
-            ).paddingOnly(left: 16, right: 16, top: 8, bottom: 8),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: store.isLoading
-                  ? List.generate(6, (index) {
-                      return SkeletonFarmstayListComponent();
-                    })
-                  : List.generate(listFarmstay.length, (index) {
-                      return FarmstayListComponent(
-                          farmstay: listFarmstay[index]);
-                    }),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Hoạt động', style: boldTextStyle()),
-                TextButton(
-                  onPressed: () {
-                    RFLocationViewAllScreen(locationWidth: true)
-                        .launch(context);
-                  },
-                  child: Text('Xem tất cả',
-                      style: secondaryTextStyle(
-                          decoration: TextDecoration.underline)),
-                )
-              ],
-            ).paddingOnly(left: 16, right: 16, bottom: 8),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: List.generate(locationListData.length, (index) {
-                return RFLocationComponent(
-                    locationData: locationListData[index]);
-              }),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Phòng nghỉ', style: boldTextStyle()),
-                TextButton(
-                  onPressed: () {
-                    RFRecentUpdateViewAllScreen().launch(context);
-                  },
-                  child: Text('Xem tất cả',
-                      style: secondaryTextStyle(
-                          decoration: TextDecoration.underline)),
-                )
-              ],
-            ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),
-            ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemCount: hotelListData.take(3).length,
-              itemBuilder: (BuildContext context, int index) {
-                RoomFinderModel data = hotelListData[index];
-                return RFRecentUpdateComponent(recentUpdateData: data);
-              },
-            ),
-          ],
+      body: Container(
+        color: mainBgColor,
+        child: CommonAppComponent(
+          subWidget: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Top farmstay yêu thích (${listFarmstay.length})', style: boldTextStyle()),
+                  TextButton(
+                    onPressed: () async {
+                      store.pagination.pageSize = store.pagination.totalItem ??
+                          PaginationModel.DEFAULT_PAGE_SIZE;
+                      logger.i("Totle item: ${store.pagination.totalItem}");
+                      await store.refresh();
+                      setState(() {
+                        listFarmstay = List.of(store.farmstays);
+                      });
+                    },
+                    child: Text('Xem tất cả',
+                        style: secondaryTextStyle(
+                            decoration: TextDecoration.underline,
+                            textBaseline: TextBaseline.alphabetic)),
+                  )
+                ],
+              ).paddingOnly(left: 16, right: 16, top: 0, bottom: 0),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: store.isLoading
+                    ? List.generate(6, (index) {
+                  return SkeletonFarmstayListComponent();
+                })
+                    : List.generate(listFarmstay.length, (index) {
+                  return FarmstayListComponent(
+                      farmstay: listFarmstay[index]);
+                }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Hoạt động', style: boldTextStyle()),
+                  TextButton(
+                    onPressed: () {
+                      RFLocationViewAllScreen(locationWidth: true)
+                          .launch(context);
+                    },
+                    child: Text('Xem tất cả',
+                        style: secondaryTextStyle(
+                            decoration: TextDecoration.underline)),
+                  )
+                ],
+              ).paddingOnly(left: 16, right: 16, bottom: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: List.generate(locationListData.length, (index) {
+                  return RFLocationComponent(
+                      locationData: locationListData[index]);
+                }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Phòng nghỉ', style: boldTextStyle()),
+                  TextButton(
+                    onPressed: () {
+                      RFRecentUpdateViewAllScreen().launch(context);
+                    },
+                    child: Text('Xem tất cả',
+                        style: secondaryTextStyle(
+                            decoration: TextDecoration.underline)),
+                  )
+                ],
+              ).paddingOnly(left: 16, right: 16, top: 16, bottom: 0),
+              ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: hotelListData.take(3).length,
+                itemBuilder: (BuildContext context, int index) {
+                  RoomFinderModel data = hotelListData[index];
+                  return RFRecentUpdateComponent(recentUpdateData: data);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

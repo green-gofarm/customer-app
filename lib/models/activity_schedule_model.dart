@@ -1,5 +1,4 @@
 import 'package:customer_app/models/schedule_item_model.dart';
-import 'package:intl/intl.dart';
 
 class ActivityScheduleModel {
   final int? id;
@@ -11,7 +10,7 @@ class ActivityScheduleModel {
   final int? slot;
   final DateTime? createdDate;
   final String? name;
-  final Map<DateTime, ScheduleItemModel>? schedule;
+  final Map<String, ScheduleItemModel>? schedule;
   final int? bookingCount;
 
   ActivityScheduleModel({
@@ -30,10 +29,9 @@ class ActivityScheduleModel {
 
   factory ActivityScheduleModel.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> jsonSchedule = json['schedule'];
-    Map<DateTime, ScheduleItemModel> schedule = {};
+    Map<String, ScheduleItemModel> schedule = {};
     jsonSchedule.forEach((key, value) {
-      DateTime dateTime = DateFormat('yyyy-MM-dd').parse(key);
-      schedule[dateTime] = ScheduleItemModel.fromJson(value);
+      schedule[key] = ScheduleItemModel.fromJson(value);
     });
 
     return ActivityScheduleModel(

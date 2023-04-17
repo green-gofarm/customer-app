@@ -1,5 +1,5 @@
-import 'package:customer_app/models/activity_model.dart';
-import 'package:customer_app/models/room_model.dart';
+import 'package:customer_app/models/activity_ticket_model.dart';
+import 'package:customer_app/models/room_ticket_model.dart';
 
 class Cart {
   int totalRoom;
@@ -7,8 +7,8 @@ class Cart {
   int totalActivity;
   int totalActivityPrice;
   int totalPrice;
-  List<RoomModel> rooms;
-  List<ActivityModel> activities;
+  List<RoomTicketModel> rooms;
+  List<ActivityTicketModel> activities;
 
   Cart({
     required this.totalRoom,
@@ -28,10 +28,10 @@ class Cart {
       totalActivityPrice: json['totalActivityPrice'] ?? 0,
       totalPrice: json['totalPrice'] ?? 0,
       rooms: (json['rooms'] as List<dynamic>)
-          .map((roomJson) => RoomModel.fromJson(roomJson))
+          .map((roomJson) => RoomTicketModel.fromJson(roomJson))
           .toList(),
       activities: (json['activities'] as List<dynamic>)
-          .map((activityJson) => ActivityModel.fromJson(activityJson))
+          .map((activityJson) => ActivityTicketModel.fromJson(activityJson))
           .toList(),
     );
   }

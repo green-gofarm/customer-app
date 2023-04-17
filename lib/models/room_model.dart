@@ -44,4 +44,20 @@ class RoomModel {
       bookingCount: json['bookingCount'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'farmstayId': farmstayId,
+      'description': description,
+      'roomCategoryId': roomCategoryId,
+      'price': price,
+      'images': images.toJson(),
+      'status': status,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate?.toIso8601String(),
+      'name': name,
+      'bookingCount': bookingCount,
+    };
+  }
 }

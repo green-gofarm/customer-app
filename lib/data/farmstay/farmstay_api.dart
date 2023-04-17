@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
 import 'package:customer_app/models/activity_schedule_model.dart';
 import 'package:customer_app/models/farmstay_detail_model.dart';
@@ -20,7 +19,7 @@ typedef FutureEither<T> = Future<Either<String, T>>;
 
 class FarmstayApi {
   final HttpClient _httpClient = HttpClient(headers: {
-    'Content-Type': 'application/json; charset=utf-8;',
+    'Content-Type': 'application/json; charset=utf-8',
   });
 
   FutureEither<PagingModel<FarmstayModel>> searchFarmstayWithElastic(
@@ -204,6 +203,9 @@ class FarmstayApi {
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        if(payload["data"] == null) {
+          throw (FARMSTAY_NOT_FOUND);
+        }
         final data = payload['data'] as Map<String, dynamic>;
         return right(FarmstayDetailModel.fromJson(data));
       }

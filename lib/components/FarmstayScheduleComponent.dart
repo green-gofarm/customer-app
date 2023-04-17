@@ -8,8 +8,8 @@ import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
-import 'package:customer_app/utils/enum/schedule_item_type.dart';
-import 'package:customer_app/utils/number_utils.dart';
+import 'package:customer_app/utils/enum/schedule_item_status.dart';
+import 'package:customer_app/utils/enum/farmstay_item_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -28,7 +28,7 @@ class FarmstayScheduleComponent extends StatefulWidget {
 class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
   FarmstayScheduleStore store = FarmstayScheduleStore();
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTimeUtil.getTomorrow();
 
   List<FarmstayActivityScheduleItem> activityScheduleList = [];
   List<FarmstayRoomScheduleItem> roomScheduleList = [];
@@ -49,12 +49,14 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
 
     if (scheduleList == null) {
       logger.i("Schedule list is null");
+      logger
+          .i("Selected date: ${DateFormat("yyyy-MM-dd").format(selectedDate)}");
       logger.i("Schedule map: ${store.farmstaySchedule!.schedule.toString()}");
       return;
     }
 
     activityScheduleList = List.from(scheduleList
-        .where((item) => item.itemType == FarmstayItemType.ACTIVITY)
+        .where((item) => item.itemType == ScheduleFarmstayItemType.ACTIVITY)
         .map((item) => FarmstayActivityScheduleItem(
               schedule: item,
               activity: widget.farmstay.activities.length > 0
@@ -65,7 +67,7 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         .toList());
 
     roomScheduleList = List.from(scheduleList
-        .where((item) => item.itemType == FarmstayItemType.ROOM)
+        .where((item) => item.itemType == ScheduleFarmstayItemType.ROOM)
         .map((item) => FarmstayRoomScheduleItem(
               schedule: item,
               room: widget.farmstay.rooms.length > 0
@@ -79,9 +81,13 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
     logger.i("Room ${roomScheduleList.length}");
   }
 
-  void handleDateSelected(DateTime selectedDate) {
+  Future<void> handleDateSelected(DateTime selectedDate) async {
     setState(() {
       this.selectedDate = selectedDate;
+    });
+    await store.getFarmstaySchedule(
+        farmstayId: widget.farmstay.id, date: selectedDate);
+    setState(() {
       handleGetScheduleItems(selectedDate);
     });
   }
@@ -93,7 +99,8 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
   }
 
   Future<void> init() async {
-    await store.getFarmstaySchedule(farmstayId: widget.farmstay.id);
+    await store.getFarmstaySchedule(
+        farmstayId: widget.farmstay.id, date: selectedDate);
     setState(() {
       handleGetScheduleItems(selectedDate);
     });
@@ -108,98 +115,63 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          16.height,
-          Text(DateTimeUtil.getFormattedMonthYear(selectedDate),
-              style: boldTextStyle()),
-          8.height,
+          12.height,
           HorizontalCalendarComponent(
               onDateSelected: handleDateSelected, selectedDate: selectedDate),
           8.height,
-          Row(
-            children: [
-              Text('Hoạt động', style: boldTextStyle()).expand(),
-            ],
-          ).paddingSymmetric(vertical: 0, horizontal: 16.0),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: activityScheduleList.length,
-            itemBuilder: (context, index) {
-              return Stack(
-                clipBehavior: Clip.none,
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-                    padding: EdgeInsets.all(8.0),
-                    decoration: boxDecorationWithRoundedCorners(
-                      backgroundColor: rf_primaryColor,
-                      borderRadius: radius(12),
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Icon(Icons.check, color: white)
-                          .paddingOnly(top: 28.0, bottom: 28.0),
-                    ),
-                  ), // instead of background
-                  ActivityFragment(context,
-                      item: activityScheduleList[index], date: selectedDate),
-                ],
-              );
-            },
-          ),
-          Row(
-            children: [
-              Text('Phòng ở', style: boldTextStyle()).expand(),
-            ],
-          ).paddingSymmetric(vertical: 0, horizontal: 16.0),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: roomScheduleList.length,
-            itemBuilder: (context, index) {
-              return Stack(
-                clipBehavior: Clip.none,
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-                    padding: EdgeInsets.all(8.0),
-                    decoration: boxDecorationWithRoundedCorners(
-                      backgroundColor: rf_primaryColor,
-                      borderRadius: radius(12),
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Icon(Icons.check, color: white)
-                          .paddingOnly(top: 28.0, bottom: 28.0),
-                    ),
-                  ), // instead of background
-                  RoomFragment(context,
-                          item: roomScheduleList[index], date: selectedDate),
-                ],
-              );
-            },
-          ),
+          Text('Hoạt động', style: boldTextStyle()).paddingLeft(4),
+          8.height,
+          activityScheduleList.length < 1
+              ? Text("Không có hoạt động trong ngày.",
+                      style: secondaryTextStyle(fontStyle: FontStyle.italic))
+                  .paddingBottom(8.0)
+              : ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: activityScheduleList.length,
+                  itemBuilder: (context, index) {
+                    return ActivityFragment(context,
+                        item: activityScheduleList[index], date: selectedDate);
+                  },
+                ),
+          Text('Phòng ở', style: boldTextStyle()).paddingLeft(4),
+          8.height,
+          roomScheduleList.length < 1
+              ? Text("Không có phòng trống trong ngày.",
+                      style: secondaryTextStyle(fontStyle: FontStyle.italic))
+                  .paddingBottom(8.0)
+              : ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: roomScheduleList.length,
+                  itemBuilder: (context, index) {
+                    return RoomFragment(context,
+                        item: roomScheduleList[index], date: selectedDate);
+                  },
+                ),
         ],
       ),
-    );
+    ).paddingAll(0);
   }
 
   Widget RoomFragment(BuildContext context,
       {required FarmstayRoomScheduleItem item, required DateTime date}) {
     final room = item.room!;
+    bool isAvailable =
+        item.schedule.getStatus(date) == ScheduleItemStatus.ON_SALE;
 
     return Container(
-      margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-      padding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.only(bottom: 8.0),
+      padding: EdgeInsets.all(4.0),
       decoration: boxDecorationWithRoundedCorners(
-        backgroundColor: context.cardColor,
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-        borderRadius: radius(12),
+        backgroundColor: Color(0xFFf7f7f7),
+        borderRadius: radius(4.0),
       ),
       child: Row(
         children: [
@@ -207,9 +179,9 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
           rfCommonCachedNetworkImage(
             (room.images.avatar ?? default_image).validate(),
             fit: BoxFit.cover,
-            height: 75,
-            width: 75,
-          ).cornerRadiusWithClipRRect(8.0),
+            height: 44,
+            width: 60,
+          ).cornerRadiusWithClipRRect(2.0),
           10.width,
           Row(
             children: [
@@ -218,11 +190,8 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
                 children: [
                   Text(room.name.validate(), style: boldTextStyle()),
                   8.height,
-                  item.schedule.getStatusString(date, size: 12),
-                  12.height,
-                  Text(NumberUtil.formatIntPriceToVnd(room.price),
-                      style: boldTextStyle(size: 12, color: rf_primaryColor)),
-                  8.height,
+                  getScheduleItemStatusText(item.schedule.getStatus(date),
+                      size: 12),
                 ],
               ),
             ],
@@ -232,7 +201,60 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              56.height,
+              32.height,
+              Icon(Icons.keyboard_arrow_right,
+                  color: Colors.grey.shade400, size: 18),
+              8.height,
+            ],
+          ),
+          8.width,
+        ],
+      ),
+    ).onTap(() {});
+  }
+
+  Widget ActivityFragment(BuildContext context,
+      {required FarmstayActivityScheduleItem item, required DateTime date}) {
+    final activity = item.activity;
+    bool isAvailable =
+        item.schedule.getStatus(date) == ScheduleItemStatus.ON_SALE;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.0),
+      padding: EdgeInsets.all(4.0),
+      decoration: boxDecorationWithRoundedCorners(
+        backgroundColor: Color(0xFFf7f7f7),
+        borderRadius: radius(4.0),
+      ),
+      child: Row(
+        children: [
+          4.width,
+          rfCommonCachedNetworkImage(
+            (item.activity!.images.avatar ?? default_image).validate(),
+            fit: BoxFit.cover,
+            height: 44,
+            width: 60,
+          ).cornerRadiusWithClipRRect(4.0),
+          10.width,
+          Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(activity!.name!.validate(), style: boldTextStyle()),
+                  8.height,
+                  getScheduleItemStatusText(item.schedule.getStatus(date),
+                      size: 12),
+                ],
+              ),
+            ],
+          ).expand(),
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              32.height,
               Icon(Icons.keyboard_arrow_right,
                   color: Colors.grey.shade400, size: 18),
               8.height,
@@ -242,68 +264,12 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         ],
       ),
     ).onTap(() {
-
-    });
-  }
-
-  Widget ActivityFragment(BuildContext context,
-      {required FarmstayActivityScheduleItem item, required DateTime date}) {
-    final activity = item.activity;
-
-    return Container(
-      margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-      padding: EdgeInsets.all(8.0),
-      decoration: boxDecorationWithRoundedCorners(
-        backgroundColor: context.cardColor,
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-        borderRadius: radius(12),
-      ),
-      child: Row(
-        children: [
-          4.width,
-          rfCommonCachedNetworkImage(
-            (item.activity!.images.avatar ?? default_image).validate(),
-            fit: BoxFit.cover,
-            height: 75,
-            width: 75,
-          ).cornerRadiusWithClipRRect(8.0),
-          10.width,
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(activity!.name!.validate(), style: boldTextStyle()),
-                  8.height,
-                  item.schedule.getStatusString(date, size: 12),
-                  12.height,
-                  Text(NumberUtil.formatIntPriceToVnd(activity.price),
-                      style: boldTextStyle(size: 12, color: rf_primaryColor)),
-                  8.height,
-                ],
-              ),
-            ],
-          ).expand(),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              56.height,
-              Icon(Icons.keyboard_arrow_right,
-                  color: Colors.grey.shade400, size: 18),
-              8.height,
-            ],
-          ),
-          8.width,
-        ],
-      ),
-    ).onTap((){
-      Navigator.pushNamed(
-          context, RoutePaths.ACTIVITY_DETAIL.value, arguments: {
-        "farmstayId": activity.farmstayId,
-        "activityId": activity.id
-      });
+      Navigator.pushNamed(context, RoutePaths.ACTIVITY_DETAIL.value,
+          arguments: {
+            "farmstayId": activity.farmstayId,
+            "activityId": activity.id,
+            "defaultDateTime": selectedDate
+          });
     });
   }
 }

@@ -1,6 +1,5 @@
-import 'package:customer_app/utils/enum/schedule_item_type.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:customer_app/utils/enum/schedule_item_status.dart';
+import 'package:customer_app/utils/enum/farmstay_item_type.dart';
 
 class FarmstayScheduleItemModel {
   final int totalItem;
@@ -10,7 +9,7 @@ class FarmstayScheduleItemModel {
   final bool readyForSell;
   final String itemName;
   final int itemId;
-  final FarmstayItemType itemType;
+  final ScheduleFarmstayItemType itemType;
 
   FarmstayScheduleItemModel({
     required this.totalItem,
@@ -32,16 +31,17 @@ class FarmstayScheduleItemModel {
       readyForSell: json['readyForSell'],
       itemName: json['itemName'],
       itemId: json['itemId'],
-      itemType: FarmstayItemTypeExtension.parse(json['itemType']) ?? FarmstayItemType.ACTIVITY,
+      itemType: ScheduleFarmstayItemTypeExtension.parse(json['itemType']) ??
+          ScheduleFarmstayItemType.ACTIVITY,
     );
   }
 
-  Widget getStatusString(DateTime date, {int? size}) {
+  ScheduleItemStatus getStatus(DateTime date) {
     if (date.isBefore(DateTime.now())) {
-      return Text("Ngưng bán", style: secondaryTextStyle(size: size));
+      return ScheduleItemStatus.STOP_SALE;
     }
     return available
-        ?    Text("Còn lượt", style: primaryTextStyle(size: size))
-        :    Text("Hết chổ", style: secondaryTextStyle(size: size));
+        ? ScheduleItemStatus.ON_SALE
+        : ScheduleItemStatus.OUT_OF_TICKET;
   }
 }

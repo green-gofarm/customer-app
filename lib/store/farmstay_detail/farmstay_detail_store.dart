@@ -27,18 +27,17 @@ abstract class _FarmstayDetailStore with Store {
     await result.fold(
       (error) {
         message = error;
-        isLoading = false;
       },
       (farmstayDetail) {
         this.farmstayDetail = farmstayDetail;
-        isLoading = false;
       },
     );
 
-    isLoading = false;
     logger.i("Farmstay detail ${farmstayDetail}");
     if (message != null) {
       logger.e("Farmstay detail error $message");
     }
+
+    isLoading = false;
   }
 }

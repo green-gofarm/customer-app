@@ -14,7 +14,6 @@ dependencies:
   nb_utils: ^4.6.16
   google_fonts: ^2.1.0
   cached_network_image: ^3.1.0
-  url_launcher: ^6.1.2
 
   # STATE MANAGEMENT
   mobx: ^2.0.3
@@ -34,6 +33,13 @@ dependencies:
   intl: ^0.17.0
   shimmer: ^2.0.0
   flutter_vector_icons: ^2.0.0
+  syncfusion_flutter_datepicker: ^21.1.39
+
+  flutter_localizations:
+    sdk: flutter
+  tuple: ^2.0.1
+  url_launcher: ^6.1.10
+  webview_flutter: ^4.0.7
 
 dev_dependencies:
   flutter_test:

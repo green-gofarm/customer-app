@@ -1,16 +1,18 @@
+import 'package:customer_app/utils/enum/schedule_item_status.dart';
+
 class ScheduleItemModel {
-  final int? totalItem;
-  final int? availableItem;
-  final bool? available;
+  final int totalItem;
+  final int availableItem;
+  final bool available;
   final String? state;
-  final bool? readyForSell;
+  final bool readyForSell;
 
   ScheduleItemModel({
-    this.totalItem,
-    this.availableItem,
-    this.available,
+    required this.totalItem,
+    required this.availableItem,
+    required this.available,
     this.state,
-    this.readyForSell,
+    required this.readyForSell,
   });
 
   factory ScheduleItemModel.fromJson(Map<String, dynamic> json) {
@@ -21,5 +23,14 @@ class ScheduleItemModel {
       state: json['state'],
       readyForSell: json['readyForSell'],
     );
+  }
+
+  ScheduleItemStatus getStatus(DateTime date) {
+    if (date.isBefore(DateTime.now())) {
+      return ScheduleItemStatus.STOP_SALE;
+    }
+    return available
+        ? ScheduleItemStatus.ON_SALE
+        : ScheduleItemStatus.OUT_OF_TICKET;
   }
 }

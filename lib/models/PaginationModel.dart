@@ -4,7 +4,7 @@ class PaginationModel {
   static final int DEFAULT_PAGE = 1;
   static final int DEFAULT_PAGE_SIZE = 6;
   static final String DEFAULT_ORDER_BY = "createdDate";
-  static final String DEFAULT_ORDER_DIRECTION = "desc";
+  static final String DEFAULT_ORDER_DIRECTION = "asc";
 
   int _page;
   int _pageSize;

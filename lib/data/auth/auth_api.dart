@@ -16,7 +16,7 @@ typedef FutureEither<T> = Future<Either<String, T>>;
 
 class AuthApi {
   final HttpClient _httpClient = HttpClient(headers: {
-    'Content-Type': 'application/json; charset=utf-8;',
+    'Content-Type': 'application/json; charset=utf-8',
   });
 
   FutureEither<UserModel> signUpCustomer(String token) async {

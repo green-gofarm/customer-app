@@ -48,3 +48,6 @@ const Color finishedTextColor = Color(0xFFC3B0E5);
 const Color finishedBgColor = Color(0xFF573E7D);
 const Color bannedTextColor = Color(0xFFEE7450);
 const Color bannedBgColor = Color(0xFFFDEEEA);
+
+
+const Color mainBgColor = Color(0xFFebeefa);

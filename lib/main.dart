@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/FarmstayDetailScreen.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
@@ -5,6 +6,7 @@ import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/screens/SignUpScreen.dart';
 import 'package:customer_app/screens/SplashScreen.dart';
 import 'package:customer_app/store/auth/auth_store.dart';
+import 'package:customer_app/store/tag_category/tag_category_store.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/logger/AppLoggerFilter.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,8 @@ import 'firebase_options.dart';
 // create instances of AppStore, AuthStore, and Logger
 final AppStore appStore = AppStore();
 final AuthStore authStore = AuthStore();
+final TagCategoryStore tagCategoryStore = TagCategoryStore();
+
 final materialAppKey = GlobalKey();
 final Logger logger = Logger(
   filter: AppLoggerFilter(),
@@ -56,6 +60,17 @@ class MyApp extends StatelessWidget {
           return await onWillPop(context);
         },
         child: MaterialApp(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', 'US'), // English
+            const Locale('vi', 'VN'), // Vietnamese
+            // Add more locales here
+          ],
+          locale: const Locale('vi', 'VN'),
           key: materialAppKey,
           scrollBehavior: SBehavior(),
           navigatorKey: navigatorKey,

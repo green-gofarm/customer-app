@@ -1,4 +1,5 @@
 import 'package:customer_app/models/farmstay_model.dart';
+import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
@@ -12,81 +13,88 @@ class FarmstayListComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: FadeInImage.assetNetwork(
-            placeholder: default_image,
-            image: farmstay!.images?.avatar?.validate() ?? default_image,
-            fit: BoxFit.cover,
-            height: 170,
-            width: context.width() - 32,
-          ),
-        ),
-        Container(
-          height: 170,
-          width: context.width() - 32,
-          decoration: boxDecorationWithRoundedCorners(
-              backgroundColor: black.withOpacity(0.2)),
-        ),
-        Positioned(
-          top: 16,
-          left: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          16.height,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4.0),
+            child: FadeInImage.assetNetwork(
+              placeholder: default_image,
+              image: farmstay.images?.avatar?.validate() ?? default_image,
+              fit: BoxFit.cover,
+              height: 170,
+              width: context.width() - 32,
+            ),
+          ).paddingSymmetric(horizontal: 16),
+          8.height,
+          Row(
             children: [
-              Row(
-                children: [
-                  Icon(Icons.home_outlined, color: white, size: 18),
-                  8.width,
-                  Text(farmstay.name.validate(),
-                      style: boldTextStyle(color: white)),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RatingBarWidget(
-                    onRatingChanged: (rating) {},
-                    rating: farmstay?.rating ?? 0.0,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    size: 16,
-                    disable: true,
-                    activeColor: Colors.yellow,
-                    filledIconData: Icons.star,
-                    halfFilledIconData: Icons.star_half,
-                    defaultIconData: Icons.star_border_outlined,
-                  ),
-                ],
-              ),
+              Icon(Icons.home_outlined, size: 18),
+              8.width,
+              Text(farmstay.name.validate(), style: boldTextStyle()),
             ],
-          ),
-        ),
-        Positioned(
-          bottom: 16,
-          right: 16,
-          child: Column(
+          ).paddingSymmetric(horizontal: 16),
+          4.height,
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (farmstay!.address!.province != null)
-                Row(
-                  children: [
-                    Icon(Icons.location_on, color: white, size: 12),
-                    8.width,
-                    Text(farmstay!.address!.province!.name!,
-                        style: boldTextStyle(color: white, size: 12)),
-                  ],
+              RatingBarWidget(
+                onRatingChanged: (rating) {},
+                rating: farmstay.rating ?? 0.0,
+                allowHalfRating: true,
+                itemCount:
+                    farmstay.rating == null || farmstay.rating == 0.0 ? 0 : 5,
+                size: 16,
+                disable: true,
+                activeColor: Colors.yellow,
+                filledIconData: Icons.star,
+                halfFilledIconData: Icons.star_half,
+                defaultIconData: Icons.star_border_outlined,
+                inActiveColor: Colors.yellow,
+              ),
+              4.width,
+              farmstay.rating != null && farmstay.rating! > 0.0
+                  ? Text(
+                      "(${farmstay.rating ?? 0})",
+                      style: primaryTextStyle(size: 12),
+                    )
+                  : Text(
+                      "Chưa có đánh giá",
+                      style: primaryTextStyle(
+                          fontStyle: FontStyle.italic, size: 12),
+                    ),
+              8.width,
+              if (farmstay.rating != null && farmstay.rating! > 0.0)
+                Text(
+                  "20 nhận xét",
+                  style: primaryTextStyle(
+                      size: 12,
+                      color: rf_primaryColor,
+                      weight: FontWeight.bold),
                 ),
             ],
-          ),
-        ),
-      ],
+          ).paddingSymmetric(horizontal: 16),
+          4.height,
+          if (farmstay.address!.province != null)
+            Row(
+              children: [
+                Icon(Icons.location_on, size: 12),
+                8.width,
+                Text(farmstay.address!.province!.name!,
+                    style: boldTextStyle(size: 12)),
+              ],
+            ).paddingSymmetric(horizontal: 16),
+          16.height,
+        ],
+      ),
     ).onTap(() {
-      Navigator.pushNamed(context, RoutePaths.FARMSTAY_DETAIL.value, arguments: {
-        "farmstayId": farmstay.id,
-      });
+      Navigator.pushNamed(context, RoutePaths.FARMSTAY_DETAIL.value,
+          arguments: {
+            "farmstayId": farmstay.id,
+          });
     });
   }
 }

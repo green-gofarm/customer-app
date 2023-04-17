@@ -1,33 +1,19 @@
+import 'package:customer_app/components/CompletedBookingListComponent.dart';
+import 'package:customer_app/components/OngoingBookingListComponents.dart';
+import 'package:customer_app/main.dart';
+import 'package:customer_app/utils/RFColors.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:customer_app/components/RFCommonAppComponent.dart';
-import 'package:customer_app/components/RFHotelListComponent.dart';
-import 'package:customer_app/components/RFLocationComponent.dart';
-import 'package:customer_app/components/RFRecentUpdateComponent.dart';
-import 'package:customer_app/main.dart';
-import 'package:customer_app/models/RoomFinderModel.dart';
-import 'package:customer_app/screens/RFLocationViewAllScreen.dart';
-import 'package:customer_app/screens/RFRecentupdateViewAllScreen.dart';
-import 'package:customer_app/screens/RFSearchDetailScreen.dart';
-import 'package:customer_app/screens/RFViewAllHotelListScreen.dart';
-import 'package:customer_app/utils/RFColors.dart';
-import 'package:customer_app/utils/RFDataGenerator.dart';
-import 'package:customer_app/utils/RFString.dart';
-import 'package:customer_app/utils/RFWidget.dart';
 
 class BookingFragment extends StatefulWidget {
   @override
-  _BookingFragmentState createState() => _BookingFragmentState();
+  BookingFragmentState createState() => BookingFragmentState();
 }
 
-class _BookingFragmentState extends State<BookingFragment> {
-  List<RoomFinderModel> categoryData = categoryList();
-  List<RoomFinderModel> hotelListData = hotelList();
-  List<RoomFinderModel> locationListData = locationList();
-
-  int selectCategoryIndex = 0;
-
-  bool locationWidth = true;
+class BookingFragmentState extends State<BookingFragment> {
+  static final String appbarName = "Đơn hàng";
+  static final String onGoingLabel = "Đang diễn ra";
+  static final String completedLabel = "Lịch sử";
 
   @override
   void initState() {
@@ -35,9 +21,7 @@ class _BookingFragmentState extends State<BookingFragment> {
     init();
   }
 
-  void init() async {
-    
-  }
+  init() async {}
 
   @override
   void setState(fn) {
@@ -46,160 +30,48 @@ class _BookingFragmentState extends State<BookingFragment> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: RFCommonAppComponent(
-        title: RFAppName,
-        mainWidgetHeight: 200,
-        subWidgetHeight: 130,
-        cardWidget: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Find a property anywhere', style: boldTextStyle(size: 18)),
-            16.height,
-            AppTextField(
-              textFieldType: TextFieldType.EMAIL,
-              decoration: rfInputDecoration(
-                hintText: "Search address or near you",
-                showPreFixIcon: true,
-                showLableText: false,
-                prefixIcon:
-                Icon(Icons.location_on, color: rf_primaryColor, size: 18),
-              ),
-            ),
-            16.height,
-            AppButton(
-              color: rf_primaryColor,
-              elevation: 0.0,
-              child: Text('Search Now', style: boldTextStyle(color: white)),
-              width: context.width(),
-              onTap: () {
-                RFSearchDetailScreen().launch(context);
-              },
-            ),
-            TextButton(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: context.scaffoldBackgroundColor,
+        appBar: appBarWidget(
+          appbarName,
+          center: true,
+          showBack: false,
+          color: context.cardColor,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search, color: context.iconColor),
               onPressed: () {
                 //
               },
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Text('Advance Search',
-                    style: primaryTextStyle(), textAlign: TextAlign.end),
-              ),
             )
           ],
+          bottom: TabBar(
+            indicatorColor: rf_primaryColor,
+            labelStyle: boldTextStyle(color: black, size: 18),
+            unselectedLabelStyle: secondaryTextStyle(size: 16),
+            labelColor: rf_primaryColor,
+            unselectedLabelColor: appStore.isDarkModeOn ? white : black,
+            isScrollable: false,
+            tabs: [
+              Tab(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(onGoingLabel),
+                ),
+              ),
+              Tab(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(completedLabel),
+                ),
+              ),
+            ],
+          ),
         ),
-        subWidget: Column(
-          children: [
-            HorizontalList(
-              padding: EdgeInsets.only(right: 16, left: 16),
-              wrapAlignment: WrapAlignment.spaceEvenly,
-              itemCount: categoryData.length,
-              itemBuilder: (BuildContext context, int index) {
-                RoomFinderModel data = categoryData[index];
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectCategoryIndex = index;
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(right: 8),
-                    decoration: boxDecorationWithRoundedCorners(
-                      backgroundColor: appStore.isDarkModeOn
-                          ? scaffoldDarkColor
-                          : selectCategoryIndex == index
-                          ? rf_selectedCategoryBgColor
-                          : rf_categoryBgColor,
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: Text(
-                      data.roomCategoryName.validate(),
-                      style: boldTextStyle(
-                          color: selectCategoryIndex == index
-                              ? rf_primaryColor
-                              : gray),
-                    ),
-                  ),
-                );
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Recently Added Properties', style: boldTextStyle()),
-                TextButton(
-                  onPressed: () {
-                    RFViewAllHotelListScreen().launch(context);
-                  },
-                  child: Text('View All',
-                      style: secondaryTextStyle(
-                          decoration: TextDecoration.underline,
-                          textBaseline: TextBaseline.alphabetic)),
-                )
-              ],
-            ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),
-            ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemCount: hotelListData.take(3).length,
-              itemBuilder: (BuildContext context, int index) {
-                RoomFinderModel data = hotelListData[index];
-                return RFHotelListComponent(hotelData: data);
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Locations', style: boldTextStyle()),
-                TextButton(
-                  onPressed: () {
-                    RFLocationViewAllScreen(locationWidth: true)
-                        .launch(context);
-                  },
-                  child: Text('View All',
-                      style: secondaryTextStyle(
-                          decoration: TextDecoration.underline)),
-                )
-              ],
-            ).paddingOnly(left: 16, right: 16, bottom: 8),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: List.generate(locationListData.length, (index) {
-                return RFLocationComponent(
-                    locationData: locationListData[index]);
-              }),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Recent Updates', style: boldTextStyle()),
-                TextButton(
-                  onPressed: () {
-                    RFRecentUpdateViewAllScreen().launch(context);
-                  },
-                  child: Text('See All',
-                      style: secondaryTextStyle(
-                          decoration: TextDecoration.underline)),
-                )
-              ],
-            ).paddingOnly(left: 16, right: 16, top: 16, bottom: 8),
-            ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemCount: hotelListData.take(3).length,
-              itemBuilder: (BuildContext context, int index) {
-                RoomFinderModel data = hotelListData[index];
-                return RFRecentUpdateComponent(recentUpdateData: data);
-              },
-            ),
-          ],
+        body: TabBarView(
+          children: [OngoingBookingListComponents(), CompletedBookingListComponent()],
         ),
       ),
     );

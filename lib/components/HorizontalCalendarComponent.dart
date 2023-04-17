@@ -1,4 +1,6 @@
+import 'package:customer_app/main.dart';
 import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -38,11 +40,13 @@ class HorizontalCalendarComponentState
   ];
   static List<String> listOfDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
+  static int MAX_DATE = 90;
+
   @override
   void initState() {
     super.initState();
     currentDateSelectedIndex =
-        widget.selectedDate.difference(DateTime.now()).inDays;
+        widget.selectedDate.difference(DateTimeUtil.getTomorrow()).inDays;
     scrollController =
         ScrollController(initialScrollOffset: currentDateSelectedIndex * 60.0);
   }
@@ -66,14 +70,15 @@ class HorizontalCalendarComponentState
         separatorBuilder: (BuildContext context, int index) {
           return SizedBox(width: 0);
         },
-        itemCount: 365,
+        itemCount: MAX_DATE,
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int index) {
-          final day = DateTime.now().add(Duration(days: index));
+
+          final day = DateTimeUtil.getTomorrow().add(Duration(days: index));
           return Container(
             height: 70,
-            width: 60,
+            width: 70,
             alignment: Alignment.center,
             decoration: boxDecorationWithRoundedCorners(
               backgroundColor:
@@ -86,7 +91,7 @@ class HorizontalCalendarComponentState
                 Text(
                   listOfDays[day.weekday - 1],
                   style: secondaryTextStyle(
-                    size: 16,
+                    size: 14,
                     color: currentDateSelectedIndex == index
                         ? white
                         : rf_primaryColor,
@@ -94,16 +99,16 @@ class HorizontalCalendarComponentState
                 ),
                 4.height,
                 Text(
-                  day.day.toString(),
+                  "${day.day.toString()}/${day.month}",
                   style: boldTextStyle(
-                    size: 22,
+                    size: currentDateSelectedIndex == index ? 20: 16,
                     color: currentDateSelectedIndex == index ? white : black,
                   ),
                 ),
                 4.height,
               ],
             ),
-          ).paddingLeft(8.0).onTap(
+          ).paddingRight(8.0).onTap(
             () {
               widget.onDateSelected(day);
               setState(() {

@@ -14,4 +14,11 @@ class ImagesModel {
       others: List<String>.from(others.map((x) => x as String)),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'avatar': avatar,
+      'others': others,
+    };
+  }
 }

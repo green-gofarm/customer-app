@@ -1,32 +1,30 @@
 import 'package:customer_app/models/image_model.dart';
 
 class ActivityModel {
-  final int? id;
+  final int id;
   final int farmstayId;
   final String? description;
   final int price;
   final ImagesModel images;
   final int status;
   final int slot;
-  final DateTime? createdDate;
+  final DateTime createdDate;
   final DateTime? updatedDate;
-  final String? name;
-  final int? categoryId;
+  final String name;
   final int? bookingCount;
   final List<int>? tags;
 
   ActivityModel(
-      {this.id,
+      {required this.id,
       required this.farmstayId,
       this.description,
       required this.price,
       required this.images,
       required this.status,
       required this.slot,
-      this.createdDate,
+      required this.createdDate,
       this.updatedDate,
-      this.name,
-      this.categoryId,
+      required this.name,
       this.bookingCount,
       required this.tags});
 
@@ -39,9 +37,7 @@ class ActivityModel {
       images: ImagesModel.fromJson(json['images']),
       status: json['status'],
       slot: json['slot'],
-      createdDate: json['createdDate'] != null
-          ? DateTime.parse(json['createdDate'])
-          : null,
+      createdDate: DateTime.parse(json['createdDate']),
       updatedDate: json['updatedDate'] != null
           ? DateTime.parse(json['updatedDate'])
           : null,
@@ -49,5 +45,22 @@ class ActivityModel {
       bookingCount: json['bookingCount'],
       tags: json['tags'] != null ? List<int>.from(json['tags']) : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'farmstayId': farmstayId,
+      'description': description,
+      'price': price,
+      'images': images.toJson(),
+      'status': status,
+      'slot': slot,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate?.toIso8601String(),
+      'name': name,
+      'bookingCount': bookingCount,
+      'tags': tags,
+    };
   }
 }

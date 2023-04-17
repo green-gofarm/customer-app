@@ -63,6 +63,57 @@ mixin _$CartStore on _CartStore, Store {
         .run(() => super.getCustomerCartInFarmstay(farmstayId));
   }
 
+  late final _$addToCartAsyncAction =
+      AsyncAction('_CartStore.addToCart', context: context);
+
+  @override
+  Future<bool> addToCart(int farmstayId, List<CreateCartItem> items,
+      {bool? forceRefresh}) {
+    return _$addToCartAsyncAction.run(
+        () => super.addToCart(farmstayId, items, forceRefresh: forceRefresh));
+  }
+
+  late final _$removeItemAsyncAction =
+      AsyncAction('_CartStore.removeItem', context: context);
+
+  @override
+  Future<bool> removeItem(int farmstayId, int uid) {
+    return _$removeItemAsyncAction.run(() => super.removeItem(farmstayId, uid));
+  }
+
+  late final _$clearCartAsyncAction =
+      AsyncAction('_CartStore.clearCart', context: context);
+
+  @override
+  Future<bool> clearCart(int farmstayId) {
+    return _$clearCartAsyncAction.run(() => super.clearCart(farmstayId));
+  }
+
+  late final _$_CartStoreActionController =
+      ActionController(name: '_CartStore', context: context);
+
+  @override
+  int getTotalItem() {
+    final _$actionInfo = _$_CartStoreActionController.startAction(
+        name: '_CartStore.getTotalItem');
+    try {
+      return super.getTotalItem();
+    } finally {
+      _$_CartStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String getTotalPriceVndString() {
+    final _$actionInfo = _$_CartStoreActionController.startAction(
+        name: '_CartStore.getTotalPriceVndString');
+    try {
+      return super.getTotalPriceVndString();
+    } finally {
+      _$_CartStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
