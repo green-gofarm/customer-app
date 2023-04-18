@@ -73,6 +73,14 @@ mixin _$AuthStore on _AuthStore, Store {
     return _$signUpCustomerAsyncAction.run(() => super.signUpCustomer(token));
   }
 
+  late final _$signOutAsyncAction =
+      AsyncAction('_AuthStore.signOut', context: context);
+
+  @override
+  Future<void> signOut() {
+    return _$signOutAsyncAction.run(() => super.signOut());
+  }
+
   late final _$_AuthStoreActionController =
       ActionController(name: '_AuthStore', context: context);
 

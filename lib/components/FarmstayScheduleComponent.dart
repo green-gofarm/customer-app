@@ -2,12 +2,12 @@ import 'package:customer_app/main.dart';
 import 'package:customer_app/models/farmstay_activity_schedule_item.dart';
 import 'package:customer_app/models/farmstay_detail_model.dart';
 import 'package:customer_app/models/farmstay_room_schedule_item.dart';
+import 'package:customer_app/screens/ActivityDetailScreen.dart';
+import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/farmstay_schedule/farmstay_schedule_store.dart';
-import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
-import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/enum/schedule_item_status.dart';
 import 'package:customer_app/utils/enum/farmstay_item_type.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +17,9 @@ import 'HorizontalCalendarComponent.dart';
 
 class FarmstayScheduleComponent extends StatefulWidget {
   final FarmstayDetailModel farmstay;
+  final VoidCallback refresh;
 
-  FarmstayScheduleComponent({required this.farmstay});
+  FarmstayScheduleComponent({required this.farmstay, required this.refresh});
 
   @override
   FarmstayScheduleComponentState createState() =>
@@ -163,8 +164,6 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
   Widget RoomFragment(BuildContext context,
       {required FarmstayRoomScheduleItem item, required DateTime date}) {
     final room = item.room!;
-    bool isAvailable =
-        item.schedule.getStatus(date) == ScheduleItemStatus.ON_SALE;
 
     return Container(
       margin: EdgeInsets.only(bottom: 8.0),
@@ -210,14 +209,19 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
           8.width,
         ],
       ),
-    ).onTap(() {});
+    ).onTap(() {
+      RoomDetailScreen(
+        farmstayId: room.farmstayId,
+        roomId: room.id,
+        defaultDatetime: selectedDate,
+        onBack: widget.refresh,
+      ).launch(context, pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
+    });
   }
 
   Widget ActivityFragment(BuildContext context,
       {required FarmstayActivityScheduleItem item, required DateTime date}) {
     final activity = item.activity;
-    bool isAvailable =
-        item.schedule.getStatus(date) == ScheduleItemStatus.ON_SALE;
 
     return Container(
       margin: EdgeInsets.only(bottom: 8.0),
@@ -241,7 +245,7 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(activity!.name!.validate(), style: boldTextStyle()),
+                  Text(activity!.name.validate(), style: boldTextStyle()),
                   8.height,
                   getScheduleItemStatusText(item.schedule.getStatus(date),
                       size: 12),
@@ -264,12 +268,12 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         ],
       ),
     ).onTap(() {
-      Navigator.pushNamed(context, RoutePaths.ACTIVITY_DETAIL.value,
-          arguments: {
-            "farmstayId": activity.farmstayId,
-            "activityId": activity.id,
-            "defaultDateTime": selectedDate
-          });
+      ActivityDetailScreen(
+        farmstayId: activity.farmstayId,
+        activityId: activity.id,
+        defaultDatetime: selectedDate,
+        onBack: widget.refresh,
+      ).launch(context, pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
     });
   }
 }

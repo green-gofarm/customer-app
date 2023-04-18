@@ -31,7 +31,12 @@ abstract class _CartStore with Store {
     loading = true;
 
     final result = await _api.getCartOfFarmstay(farmstayId);
-    await result.fold((errorMessage) => message, (r) => cart = r);
+    await result.fold((errorMessage) {
+      message = errorMessage;
+      cart = null;
+    }, (r) {
+      cart = r;
+    });
 
     logger.i("Get Cart: $cart");
     if (message != null) {

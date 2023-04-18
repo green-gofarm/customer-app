@@ -1,10 +1,12 @@
+import 'package:customer_app/screens/SignInScreen.dart';
+import 'package:customer_app/utils/JSWidget.dart';
+import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/SocialSignUpWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:customer_app/components/RFCommonAppComponent.dart';
 import 'package:customer_app/main.dart';
-import 'package:customer_app/utils/RFString.dart';
 import 'package:customer_app/utils/RFWidget.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -21,8 +23,9 @@ class _SignUpState extends State<SignUpScreen> {
   void init() async {
     authStore.errorMessage = null;
     final isAuthenticated = await authStore.isAuthenticated();
-    if(isAuthenticated) {
-      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+    if (isAuthenticated) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, RoutePaths.HOME.value, (route) => false);
       return;
     }
   }
@@ -42,20 +45,78 @@ class _SignUpState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: RFCommonAppComponent(
-          title: RFAppName,
-          subTitle: RFAppSubTitle,
-          cardWidget: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SocialSignUpWidget(
-                callBack: () {
-                  Navigator.pushNamed(context, RoutePaths.SIGN_IN.value);
-                },
-              ),
-            ],
-          ),
+        appBar: jsAppBar(context, backWidget: true, homeAction: true),
+        body: Column(
+          children: [
+            SocialSignUpWidget(
+              callBack: () {
+                Navigator.pushNamed(context, RoutePaths.SIGN_IN.value);
+              },
+            ),
+            Row(
+              children: [
+                Container(width: context.width(), height: 1, color: gray.withOpacity(0.2)).expand(),
+                8.width,
+                Text("&", style: secondaryTextStyle()),
+                8.width,
+                Container(width: context.width(), height: 1, color: gray.withOpacity(0.2)).expand(),
+              ],
+            ),
+            8.height,
+            RichTextWidget(
+              list: [
+                TextSpan(
+                  text: 'Bằng cách Đăng ký, bạn đồng ý với ',
+                  style: primaryTextStyle(size: 12),
+                ),
+                TextSpan(
+                    text: ' Điều khoản Dịch vụ ',
+                    style: primaryTextStyle(
+                        size: 12,
+                        color: rf_primaryColor,
+                        decoration: TextDecoration.underline)),
+                TextSpan(text: ' và ', style: primaryTextStyle(size: 12)),
+                TextSpan(
+                    text: ' công nhận rằng ',
+                    style: primaryTextStyle(size: 12)),
+                TextSpan(
+                    text: 'Chính sách Bảo mật ',
+                    style: primaryTextStyle(
+                        size: 12,
+                        color: rf_primaryColor,
+                        decoration: TextDecoration.underline)),
+                TextSpan(
+                    text: ' của chúng tôi áp dụng cho bạn',
+                    style: primaryTextStyle(size: 12)),
+              ],
+              textAlign: TextAlign.center,
+              maxLines: 3,
+            )
+                .paddingOnly(top: 0, bottom: 16, left: 12, right: 12)
+                .visible(true),
+          ],
         ),
+        persistentFooterButtons: <Widget>[
+          Container(
+            height: 40,
+            padding: EdgeInsets.only(left: 15, right: 15),
+            width: MediaQuery.of(context).copyWith().size.width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Đã có tài khoản?', style: secondaryTextStyle()),
+                TextButton(
+                  onPressed: () {
+                    SignInScreen().launch(context);
+                  },
+                  child: Text('Đăng nhập',
+                      style: boldTextStyle(size: 14, color: rf_primaryColor)),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

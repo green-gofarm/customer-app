@@ -1,10 +1,12 @@
 import 'package:customer_app/fragment/BookingFragment.dart';
+import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../main.dart';
+import '../utils/JSWidget.dart';
 
 class BookingPaymentResultScreen extends StatelessWidget {
   final bool isSuccessful;
@@ -13,57 +15,67 @@ class BookingPaymentResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text("Checkout", style: boldTextStyle()),
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back_ios, color: context.iconColor, size: 20),
+    return WillPopScope(
+        child: Scaffold(
+          appBar: _buildAppbar(context),
+          body: _buildBody(context),
         ),
+        onWillPop: () async {
+          HomeScreen().launch(context);
+          return false;
+        });
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          _buildStepBar(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image(
+                  image: AssetImage("images/app/ic_shopping.png"),
+                  height: 150,
+                  width: 150,
+                  color: appStore.isDarkModeOn ? Colors.white : Colors.black,
+                  fit: BoxFit.cover),
+              SizedBox(height: 16),
+              Text("Thanh toán thành công",
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.clip,
+                  style: boldTextStyle(size: 18)),
+              SizedBox(height: 16),
+              Text("Cảm ơn bạn đã mua hàng.",
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.clip,
+                  style: secondaryTextStyle()),
+            ],
+          ),
+          sSAppButton(
+            context: context,
+            title: 'Xem đơn hàng',
+            onPressed: () {
+              BookingFragment().launch(context);
+            },
+          ),
+        ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            _buildStepBar(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image(
-                    image: AssetImage("images/app/ic_shopping.png"),
-                    height: 150,
-                    width: 150,
-                    color: appStore.isDarkModeOn ? Colors.white : Colors.black,
-                    fit: BoxFit.cover),
-                SizedBox(height: 16),
-                Text("Thanh toán thành công",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: boldTextStyle(size: 18)),
-                SizedBox(height: 16),
-                Text("Cảm ơn bạn đã mua hàng.",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: secondaryTextStyle()),
-              ],
-            ),
-            sSAppButton(
-              context: context,
-              title: 'Xem đơn hàng',
-              onPressed: () {
-                BookingFragment().launch(context);
-              },
-            ),
-          ],
-        ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppbar(BuildContext context) {
+    return jsAppBar(
+      context,
+      homeAction: true,
+      appBarHeight: 50,
+      titleWidget: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text("Kết thúc", style: boldTextStyle(color: white))],
       ),
     );
   }

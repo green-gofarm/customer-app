@@ -66,7 +66,7 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
       children: [
         Column(
           children: [
-            28.height,
+            20.height,
             GoogleButtonWidget(
               context,
               isLoading: isLoading,
@@ -74,12 +74,7 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
             ).onTap(() async {
               await handleGoogleSignIn();
             }),
-            24.height,
-            rfCommonRichText(title: CTA_TITLE, subTitle: CTA_SUBTITLE)
-                .paddingAll(8)
-                .onTap(() {
-              widget.callBack!.call();
-            }),
+            20.height,
             if (mounted && authStore.errorMessage != null &&
                 authStore.errorMessage!.isNotEmpty)
               Padding(

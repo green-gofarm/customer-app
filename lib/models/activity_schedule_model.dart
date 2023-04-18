@@ -10,7 +10,7 @@ class ActivityScheduleModel {
   final int? slot;
   final DateTime? createdDate;
   final String? name;
-  final Map<String, ScheduleItemModel>? schedule;
+  final Map<String, ScheduleItemModel> schedule;
   final int? bookingCount;
 
   ActivityScheduleModel({
@@ -23,7 +23,7 @@ class ActivityScheduleModel {
     this.slot,
     this.createdDate,
     this.name,
-    this.schedule,
+    required this.schedule,
     this.bookingCount,
   });
 

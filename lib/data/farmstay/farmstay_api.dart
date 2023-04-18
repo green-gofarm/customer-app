@@ -232,4 +232,22 @@ class FarmstayApi {
       return left(e.toString());
     }
   }
+
+  FutureEither<RoomModel> getRoomDetail(int farmstayId, int roomId) async {
+    final url = '${ENP.FARMSTAY}/$farmstayId/${ENP.ROOMS}/$roomId';
+
+    try {
+      final response =
+      await _httpClient.sendUnAuthRequest(url, METHOD.GET, null);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = payload['data'] as Map<String, dynamic>;
+        return right(RoomModel.fromJson(data));
+      }
+      throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
 }

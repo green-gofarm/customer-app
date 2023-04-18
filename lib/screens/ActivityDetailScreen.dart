@@ -1,5 +1,5 @@
-import 'package:customer_app/components/ActivityScheduleComponent.dart';
-import 'package:customer_app/components/AddToCartBottomSheet.dart';
+import 'package:customer_app/components/MultiSelectScheduleComponent.dart';
+import 'package:customer_app/components/ActivityAddToCartBottomSheet.dart';
 import 'package:customer_app/fragment/CartDetailFragment.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
@@ -20,7 +20,31 @@ import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+class ActivityDetailArguments {
+  final int farmstayId;
+  final int activityId;
+  final DateTime? defaultDatetime;
+  final VoidCallback? onBack;
+
+  ActivityDetailArguments(
+      {required this.farmstayId,
+      required this.activityId,
+      this.defaultDatetime,
+      this.onBack});
+}
+
 class ActivityDetailScreen extends StatefulWidget {
+  final int farmstayId;
+  final int activityId;
+  final DateTime? defaultDatetime;
+  final VoidCallback? onBack;
+
+  ActivityDetailScreen(
+      {required this.farmstayId,
+      required this.activityId,
+      this.defaultDatetime,
+      this.onBack});
+
   @override
   _ActivityDetailScreenState createState() => _ActivityDetailScreenState();
 }
@@ -37,10 +61,13 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   List<String> imageUrls = [];
   late int farmstayId;
   late int activityId;
-  late DateTime? defaultDateTime;
+  DateTime? defaultDateTime;
 
   Map<DateTime, int> _tempTickets = {};
   DateRangePickerController _controller = DateRangePickerController();
+
+  PageController pageController = PageController(initialPage: 0);
+  int currentIndexPage = 0;
 
   @override
   void initState() {
@@ -49,97 +76,55 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   }
 
   Future<void> init() async {
-    await tagCategoryStore.getAllTagCategories();
     setState(() {
-      _controller.selectedDates = [];
+      farmstayId = widget.farmstayId;
+      activityId = widget.activityId;
+      defaultDateTime = widget.defaultDatetime ?? DateTimeUtil.getTomorrow();
+      _tempTickets = defaultDateTime != null ? {defaultDateTime!: 1} : {};
+      _controller.selectedDates =
+          defaultDateTime != null ? [defaultDateTime!] : [];
     });
+
+    tagCategoryStore.getAllTagCategories();
+    _refresh(widget.farmstayId, widget.activityId, isInit: true);
   }
-
-  Future<void> getCart(int farmstayId) async {
-    if (authStore.isAuthenticated()) {
-      await cartStore.getCustomerCartInFarmstay(farmstayId);
-      setState(() {});
-    }
-  }
-
-  Future<void> getSchedule(
-      int farmstayId, int activityId, DateTime? date, int limit) async {
-    await scheduleStore.getActivitySchedule(
-        farmstayId: farmstayId,
-        activityId: activityId,
-        date: defaultDateTime,
-        limit: limit);
-    setState(() {});
-  }
-
-  Future<void> getActivityInfo(int farmstayId, int activityId) async {
-    await activityStore.getActivityDetail(
-        farmstayId: farmstayId, activityId: activityId);
-    final activity = activityStore.activityDetail;
-    setState(() {
-      if (activity != null) {
-        imageUrls.add(activity.images.avatar!);
-        imageUrls.addAll(activity.images.others);
-      }
-    });
-  }
-
-  void setupDefaultSelectedDate(DateTime defaultDateTime) {
-    setState(() {
-      _tempTickets = {defaultDateTime: 1};
-      _controller.selectedDates = _tempTickets.keys.toList();
-    });
-  }
-
-  Future<void> initActivityDetail(BuildContext context) async {
-    final map =
-        (ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>);
-    farmstayId = map['farmstayId'];
-    activityId = map['activityId'];
-    defaultDateTime = map['defaultDateTime'];
-
-    _refresh(farmstayId, activityId);
-  }
-
-  Future<void> _refresh(int farmstayId, int activityId) async {
-    await getCart(farmstayId);
-    await getActivityInfo(farmstayId, activityId);
-  }
-
-  PageController pageController = PageController(initialPage: 0);
-  int currentIndexPage = 0;
 
   @override
   Widget build(BuildContext context) {
     final activity = activityStore.activityDetail;
 
-    if (activity == null && !initialized) {
-      setState(() {
-        initialized = true;
-      });
-      initActivityDetail(context);
-    }
+    return WillPopScope(
+        child: Observer(
+            builder: (_) => Scaffold(
+                  backgroundColor: mainBgColor,
+                  body: NestedScrollView(
+                    headerSliverBuilder: _headerSliverBuilder,
+                    body: _buildBody(activity),
+                  ),
+                  bottomNavigationBar: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          offset: Offset(0, -1),
+                          // Offset for the shadow, change as needed
+                          blurRadius: 2, // Adjust the blur radius as needed
+                        ),
+                      ],
+                    ),
+                    child: _buildBottomNavigationBar(activity),
+                  ),
+                )),
+        onWillPop: () async {
+          if (widget.onBack != null) {
+            widget.onBack!();
+            return true;
+          }
 
-    return Scaffold(
-      backgroundColor: mainBgColor,
-      body: NestedScrollView(
-        headerSliverBuilder: _headerSliverBuilder,
-        body: _buildBody(activity),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              offset: Offset(0, -1), // Offset for the shadow, change as needed
-              blurRadius: 2, // Adjust the blur radius as needed
-            ),
-          ],
-        ),
-        child: _buildBottomNavigationBar(activity),
-      ),
-    );
+          Navigator.pop(context);
+          return true;
+        });
   }
 
   List<Widget> _headerSliverBuilder(
@@ -228,7 +213,6 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     );
   }
 
-
   Widget _buildHeader(ActivityModel? activity) {
     return Container(
       color: Colors.white,
@@ -315,40 +299,6 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     );
   }
 
-  int getTotalQuantity() {
-    int totalQuantity = 0;
-
-    _tempTickets.forEach((date, quantity) {
-      totalQuantity += quantity;
-    });
-
-    return totalQuantity;
-  }
-
-  void handleOnClose(Map<DateTime, int> items) {
-    logger.i("ON CLOSE");
-    setState(() {
-      _tempTickets = items;
-    });
-  }
-
-  void handleUpdateQuantity(DateTime date, int newQuantity) {
-    Map<DateTime, int> newTempTickets = {};
-
-    _tempTickets.keys.forEach((key) {
-      newTempTickets[key] = _tempTickets[key] ?? 0;
-    });
-
-    newTempTickets[date] = newQuantity;
-
-    setState(() {
-      _tempTickets = newTempTickets;
-      _controller.selectedDates = newTempTickets.keys
-          .where((date) => newTempTickets[date]! > 0)
-          .toList();
-    });
-  }
-
   List<CreateCartItem> convertTempTicketsToList() {
     List<CreateCartItem> resultList = [];
 
@@ -367,19 +317,10 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     return resultList;
   }
 
-  void handleAddToCart() async {
-    final items = convertTempTicketsToList();
-    final isSuccessful = await cartStore.addToCart(farmstayId, items);
-    if (!isSuccessful) {
-      toast("Có lỗi xảy ra, không thể đặt vé");
-      return;
-    }
-
-    toast("Thêm thành công");
-  }
-
   Widget _buildBottomNavigationBar(ActivityModel? activity) {
-    if (_tempTickets.isEmpty || activity == null) {
+    if (_tempTickets.isEmpty ||
+        activity == null ||
+        scheduleStore.activitySchedule == null) {
       return _buildCartOnlyBottom();
     }
 
@@ -415,11 +356,13 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   ),
                   context: context,
                   builder: (_) {
-                    return AddToCartBottomSheet(
-                        activity: activity,
-                        listItem: _tempTickets,
-                        onSubmit: handleAddToCart,
-                        onUpdatedQuantity: handleUpdateQuantity);
+                    return ActivityAddToCartBottomSheet(
+                      activity: activity,
+                      listItem: _tempTickets,
+                      onSubmit: handleAddToCart,
+                      onUpdatedQuantity: handleUpdateQuantity,
+                      schedule: scheduleStore.activitySchedule!.schedule,
+                    );
                   },
                 );
               },
@@ -439,30 +382,52 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
             BoxShadow(
               color: Colors.grey.withOpacity(0.8),
               offset: Offset(0, 0),
-              // Offset for the shadow, change as needed
-              blurRadius: 2, // Adjust the blur radius as needed
+              blurRadius: 2,
             ),
           ],
           color: cartStore.hasAvailableCart() ? rf_primaryColor : Colors.white),
-      padding: EdgeInsets.all(12),
-      child: Icon(Icons.shopping_cart_outlined,
-          color: cartStore.hasAvailableCart() ? Colors.white : Colors.black),
+      padding: EdgeInsets.all(6),
+      child: IntrinsicHeight(
+        child: Stack(
+          children: [
+            Center(
+              child: Icon(Icons.shopping_cart_outlined,
+                  size: 36,
+                  color: cartStore.hasAvailableCart()
+                      ? Colors.white
+                      : Colors.black),
+            ),
+            if (cartStore.hasAvailableCart())
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 20.0,
+                  height: 20.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      cartStore.getTotalItem().toString(),
+                      style: TextStyle(
+                        color: rf_primaryColor,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     ).onTap(() {
       if (cartStore.hasAvailableCart()) {
         handleGoToCartDetailScreen();
       }
     });
-  }
-
-  void handleGoToCartDetailScreen() {
-    CartDetailFragment(
-      farmstayId: farmstayId,
-      onBack: () {
-        if (farmstayId != null) {
-          _refresh(farmstayId, activityId);
-        }
-      },
-    ).launch(context);
   }
 
   Widget _buildCartOnlyBottom() {
@@ -491,6 +456,15 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   style: boldTextStyle(color: Colors.white))
             ],
           ),
+          if (cartStore.loading)
+            SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeWidth: 2,
+              ),
+            ),
           Text(cartStore.getTotalPriceVndString(),
               style: boldTextStyle(color: Colors.white)),
         ],
@@ -499,62 +473,52 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   }
 
   Widget Calendar() {
-    return Observer(
-        builder: (_) => Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(12),
-              width: context.width(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text('Đặt vé'.toUpperCase(), style: boldTextStyle()),
-                      16.width,
-                      // if (scheduleStore.isLoading)
-                      //   SizedBox(
-                      //     width: 14,
-                      //     height: 14,
-                      //     child: CircularProgressIndicator(strokeWidth: 2),
-                      //   )
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Container(
-                    height: 300,
-                    child: ActivityScheduleComponent(
-                        controller: _controller,
-                        onViewChanged: (start, end) async {
-                          final centerDay =
-                              DateTimeUtil.getCenterDate(start, end);
-                          final limit = DateTimeUtil.getLongestPeriod(
-                              start, end, centerDay);
-                          await getSchedule(
-                              farmstayId, activityId, centerDay, limit);
-                        },
-                        onSelectedDates: (List<DateTime> dates) {
-                          Map<DateTime, int> newTempTickets = {};
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('Đặt vé'.toUpperCase(), style: boldTextStyle()),
+              16.width,
+            ],
+          ),
+          SizedBox(height: 8),
+          Container(
+            height: 300,
+            child: MultiSelectScheduleComponent(
+                controller: _controller,
+                onViewChanged: (start, end) async {
+                  final centerDay = DateTimeUtil.getCenterDate(start, end);
+                  final limit =
+                      DateTimeUtil.getLongestPeriod(start, end, centerDay);
+                  await getSchedule(farmstayId, activityId,
+                      date: centerDay, limit: limit);
+                },
+                onSelectedDates: (List<DateTime> dates) {
+                  Map<DateTime, int> newTempTickets = {};
 
-                          dates.forEach((date) {
-                            newTempTickets[date] =
-                                _tempTickets.containsKey(date)
-                                    ? _tempTickets[date]!
-                                    : 1;
-                          });
+                  dates.forEach((date) {
+                    newTempTickets[date] = _tempTickets.containsKey(date)
+                        ? _tempTickets[date]!
+                        : 1;
+                  });
 
-                          setState(() {
-                            _tempTickets = newTempTickets;
-                            _controller.selectedDates = _tempTickets.keys
-                                .where((date) => _tempTickets[date]! > 0)
-                                .toList();
-                          });
-                        },
-                        schedule:
-                            scheduleStore.activitySchedule?.schedule ?? {}),
-                  ),
-                ],
-              ),
-            ));
+                  setState(() {
+                    _tempTickets = newTempTickets;
+                    _controller.selectedDates = _tempTickets.keys
+                        .where((date) => _tempTickets[date]! > 0)
+                        .toList();
+                  });
+                },
+                schedule: scheduleStore.activitySchedule?.schedule ?? {}),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget BottomImageSlider() {
@@ -590,5 +554,100 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> getCart(int farmstayId) async {
+    if (authStore.isAuthenticated()) {
+      await cartStore.getCustomerCartInFarmstay(farmstayId);
+      setState(() {});
+    }
+  }
+
+  Future<void> getSchedule(int farmstayId, int activityId,
+      {DateTime? date, int? limit}) async {
+    await scheduleStore.getActivitySchedule(
+        farmstayId: farmstayId,
+        activityId: activityId,
+        date: date,
+        limit: limit ?? 15);
+  }
+
+  Future<void> getActivityInfo(int farmstayId, int activityId) async {
+    await activityStore.getActivityDetail(
+        farmstayId: farmstayId, activityId: activityId);
+    final activity = activityStore.activityDetail;
+    setState(() {
+      if (activity != null) {
+        imageUrls.add(activity.images.avatar!);
+        imageUrls.addAll(activity.images.others);
+      }
+    });
+  }
+
+  Future<void> _refresh(int farmstayId, int activityId, {bool? isInit}) async {
+    setState(() {
+      if (isInit != true) {
+        _tempTickets.clear();
+        _controller.selectedDates = [];
+      }
+    });
+    getCart(farmstayId);
+    getActivityInfo(farmstayId, activityId);
+    await getSchedule(farmstayId, activityId);
+  }
+
+  int getTotalQuantity() {
+    int totalQuantity = 0;
+
+    _tempTickets.forEach((date, quantity) {
+      totalQuantity += quantity;
+    });
+
+    return totalQuantity;
+  }
+
+  void handleOnClose(Map<DateTime, int> items) {
+    logger.i("ON CLOSE");
+    setState(() {
+      _tempTickets = items;
+    });
+  }
+
+  void handleUpdateQuantity(DateTime date, int newQuantity) {
+    Map<DateTime, int> newTempTickets = {};
+
+    _tempTickets.keys.forEach((key) {
+      newTempTickets[key] = _tempTickets[key] ?? 0;
+    });
+
+    newTempTickets[date] = newQuantity;
+
+    setState(() {
+      _tempTickets = newTempTickets;
+      _controller.selectedDates = newTempTickets.keys
+          .where((date) => newTempTickets[date]! > 0)
+          .toList();
+    });
+  }
+
+  void handleAddToCart() async {
+    final items = convertTempTicketsToList();
+    final isSuccessful = await cartStore.addToCart(farmstayId, items);
+    if (!isSuccessful) {
+      toast("Có lỗi xảy ra, không thể đặt vé");
+      return;
+    }
+
+    toast("Thêm thành công");
+    await _refresh(farmstayId, activityId);
+  }
+
+  void handleGoToCartDetailScreen() {
+    CartDetailFragment(
+      farmstayId: farmstayId,
+      onBack: () {
+        _refresh(farmstayId, activityId);
+      },
+    ).launch(context);
   }
 }

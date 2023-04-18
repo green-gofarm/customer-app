@@ -1,4 +1,4 @@
-import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/JSWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -39,9 +39,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text('VN Pay'),
-            backgroundColor: rf_primaryColor,
+          appBar: jsAppBar(
+            context,
+            titleWidget: Text('VN Pay'),
+            appBarHeight: 50,
+            backWidget: true,
+            callBack: widget.onCloseCallback
           ),
           body: WebViewWidget(controller: controller),
         ),

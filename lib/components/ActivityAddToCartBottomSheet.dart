@@ -1,5 +1,6 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
+import 'package:customer_app/models/schedule_item_model.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
@@ -11,28 +12,32 @@ import 'package:nb_utils/nb_utils.dart';
 typedef OnSubmitCallback = void Function();
 typedef OnUpdateQuantityCallback = void Function(DateTime, int);
 
-class AddToCartBottomSheet extends StatefulWidget {
+class ActivityAddToCartBottomSheet extends StatefulWidget {
   final Map<DateTime, int> listItem;
   final OnSubmitCallback onSubmit;
   final ActivityModel activity;
   final OnUpdateQuantityCallback onUpdatedQuantity;
+  final Map<String, ScheduleItemModel> schedule;
 
-  AddToCartBottomSheet(
-      {required this.listItem,
-      required this.onSubmit,
-      required this.activity,
-      required this.onUpdatedQuantity});
+  ActivityAddToCartBottomSheet({
+    required this.listItem,
+    required this.onSubmit,
+    required this.activity,
+    required this.onUpdatedQuantity,
+    required this.schedule,
+  });
 
   @override
-  AddToCartBottomSheetState createState() => AddToCartBottomSheetState();
+  ActivityAddToCartBottomSheetState createState() => ActivityAddToCartBottomSheetState();
 }
 
-class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
+class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomSheet> {
   Map<DateTime, int> _item = {};
 
   @override
   void initState() {
     super.initState();
+    logger.i(widget.schedule.toString());
     _item = Map.of(widget.listItem);
   }
 
@@ -154,6 +159,10 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
               DateTime date = filteredDates[index];
               int quantity = _item[date]!;
 
+              final key = DateFormat("yyyy-MM-dd").format(date);
+              final scheduleItem = widget.schedule[key];
+              logger.i("Key: $key, item: ${widget.schedule}");
+
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: boxDecorationRoundedWithShadow(8,
@@ -185,7 +194,7 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                         Text(DateFormat.yMMMMd("vi_VN").format(date),
                             style: primaryTextStyle(color: black)),
                         8.height,
-                        Text("Còn vé",
+                        Text("Còn ${scheduleItem?.availableItem ?? 0} vé",
                             style: secondaryTextStyle(color: rf_primaryColor)),
                       ],
                     ).paddingAll(8).expand(),
@@ -201,7 +210,9 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                                         topRight: Radius.circular(8))),
                                 child: Icon(Icons.add, color: rf_primaryColor))
                             .onTap(() {
-                              incrementQuantity(date);
+                          if (quantity < (scheduleItem?.availableItem ?? 0)) {
+                            incrementQuantity(date);
+                          }
                         }),
                         Container(
                                 alignment: Alignment.center,
@@ -213,10 +224,12 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                                 child: Icon(Icons.minimize,
                                     color: rf_primaryColor))
                             .onTap(() {
-                          decrementQuantity(date);
+                          if(quantity > 0) {
+                            decrementQuantity(date);
+                          }
                         }),
                       ],
-                    ).visible(quantity != 0),
+                    ),
                   ],
                 ),
               );

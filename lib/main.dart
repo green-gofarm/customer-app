@@ -1,6 +1,7 @@
+import 'package:customer_app/screens/FarmstayDetailScreen.dart';
+import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
-import 'package:customer_app/screens/FarmstayDetailScreen.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/screens/SignUpScreen.dart';
@@ -85,8 +86,39 @@ class MyApp extends StatelessWidget {
             RoutePaths.SIGN_IN.value: (context) => SignInScreen(),
             RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),
             RoutePaths.HOME.value: (context) => HomeScreen(),
-            RoutePaths.FARMSTAY_DETAIL.value: (context) => FarmstayDetailScreen(),
-            RoutePaths.ACTIVITY_DETAIL.value: (context) => ActivityDetailScreen(),
+          },
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case RouteConstants.FARMSTAY_DETAIL:
+                final args = settings.arguments as FarmstayDetailArguments;
+                return MaterialPageRoute(
+                  builder: (context) => FarmstayDetailScreen(
+                    farmstayId: args.farmstayId,
+                  ),
+                );
+              case RouteConstants.ACTIVITY_DETAIL:
+                final args = settings.arguments as ActivityDetailArguments;
+                return MaterialPageRoute(
+                  builder: (context) => ActivityDetailScreen(
+                    farmstayId: args.farmstayId,
+                    activityId: args.activityId,
+                    defaultDatetime: args.defaultDatetime,
+                    onBack: args.onBack,
+                  ),
+                );
+              case RouteConstants.ROOM_DETAIL:
+                final args = settings.arguments as RoomDetailArguments;
+                return MaterialPageRoute(
+                  builder: (context) => RoomDetailScreen(
+                    farmstayId: args.farmstayId,
+                    roomId: args.roomId,
+                    defaultDatetime: args.defaultDatetime,
+                    onBack: args.onBack,
+                  ),
+                );
+              default:
+                return MaterialPageRoute(builder: (context) => HomeScreen());
+            }
           },
           navigatorObservers: [NavigationHistoryObserver()],
         ),

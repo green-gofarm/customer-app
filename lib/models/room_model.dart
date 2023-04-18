@@ -3,7 +3,7 @@ import 'package:customer_app/models/image_model.dart';
 class RoomModel {
   final int id;
   final int farmstayId;
-  final String description;
+  final String? description;
   final int roomCategoryId;
   final int price;
   final ImagesModel images;
@@ -16,7 +16,7 @@ class RoomModel {
   RoomModel({
     required this.id,
     required this.farmstayId,
-    required this.description,
+    this.description,
     required this.roomCategoryId,
     required this.price,
     required this.images,

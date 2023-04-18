@@ -1,12 +1,14 @@
+import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_ticket_model.dart';
 import 'package:customer_app/models/combine_cart_item.dart';
+import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/BookingPaymentScreen.dart';
 import 'package:customer_app/store/booking/booking_store.dart';
 import 'package:customer_app/store/cart/cart_store.dart';
+import 'package:customer_app/utils/JSWidget.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
-import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/error_message.dart';
 import 'package:customer_app/utils/number_utils.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,8 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
     if (!store.hasAvailableCart()) {
       toast("Giỏ hàng đã bị xóa hoặc không tồn tại");
       await Future.delayed(Duration(seconds: 1));
-      Navigator.pop(context, true);
+      Navigator.pop(context);
+      return;
     }
   }
 
@@ -151,24 +154,32 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
         },
         child: Observer(
             builder: (_) => Scaffold(
-                  appBar: _buildAppBar(),
+                  appBar: _buildAppbar(context),
                   body: _buildBody(),
                   bottomSheet: _buildBottomSheet(context),
                 )));
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-        side: BorderSide(color: Color(0x00000000), width: 1),
-      ),
-      title: Text("Giỏ hàng", style: boldTextStyle()),
-    );
+  PreferredSizeWidget _buildAppbar(BuildContext context) {
+    return jsAppBar(context,
+        appBarHeight: 50,
+        titleWidget: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text("Giỏ hàng", style: boldTextStyle(color: white))],
+        ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                final isConfirmed = await _showDialog(context);
+                if(isConfirmed) {
+                  await store.clearCart(widget.farmstayId);
+                  await _refresh();
+                  widget.onBack();
+                }
+              },
+              icon: Icon(LineIcons.trash, size: 20),
+              color: Colors.white)
+        ]);
   }
 
   Widget _buildBody() {
@@ -313,11 +324,11 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
               "Xem chi tiết",
               style: primaryTextStyle(color: rf_primaryColor),
             ).onTap(() {
-              Navigator.pushNamed(context, RoutePaths.ACTIVITY_DETAIL.value,
-                  arguments: {
-                    "activityId": activity.itemId,
-                    "farmstayId": widget.farmstayId
-                  });
+              ActivityDetailScreen(
+                farmstayId: widget.farmstayId,
+                activityId: activity.itemId,
+              ).launch(context,
+                  pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
             })
           ],
         ),
@@ -332,11 +343,7 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () {
-          // Navigator.pushNamed(context, RoutePaths.ACTIVITY_DETAIL.value,
-          //     arguments: {
-          //       "roomId": room.itemId,
-          //       "farmstayId": widget.farmstayId
-          //     });
+          //Todo: navigate to room detail
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -457,5 +464,43 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
         ),
       ),
     );
+  }
+
+  Future<bool> _showDialog(BuildContext parentContext) async {
+    bool result = false;
+
+    await showDialog<bool>(
+      context: parentContext,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentTextStyle: secondaryTextStyle(),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4))),
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16.0),
+          title: Text("Xóa giỏ hàng", style: boldTextStyle()),
+          content: Text("Bán có chắc muốn xóa giỏ hàng?",
+              style: secondaryTextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Quay lại",
+                  style: TextStyle(color: Colors.blue, fontSize: 14)),
+              onPressed: () {
+                Navigator.pop(context, false); // Return false when canceled
+              },
+            ),
+            TextButton(
+              child: Text("Xác nhận",
+                  style: TextStyle(color: Colors.blue, fontSize: 14)),
+              onPressed: () {
+                Navigator.pop(context, true); // Return false when canceled
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) => result = value is bool ? value : false);
+
+    return result;
   }
 }

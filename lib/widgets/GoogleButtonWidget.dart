@@ -14,9 +14,7 @@ Widget GoogleButtonWidget(
     onPressed: onPressed,
     style: OutlinedButton.styleFrom(
       backgroundColor: context.scaffoldBackgroundColor,
-      side: BorderSide(color: context.dividerColor, width: 1),
-      padding: EdgeInsets.symmetric(vertical: 15),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      padding: EdgeInsets.symmetric(vertical: 8),
     ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -31,9 +29,9 @@ Widget GoogleButtonWidget(
                 ),
               )
             : commonCacheImageWidget(rf_google_logo, 20, fit: BoxFit.cover),
-        8.width,
-        Text(text!, style: primaryTextStyle()),
+        16.width,
+        Text(text!, style: boldTextStyle()),
       ],
     ),
-  ).paddingSymmetric(horizontal: 24);
+  ).paddingSymmetric();
 }

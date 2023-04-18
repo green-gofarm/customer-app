@@ -5,12 +5,13 @@ import 'package:customer_app/models/activity_model.dart';
 import 'package:customer_app/models/contact_info_item_model.dart';
 import 'package:customer_app/models/farmstay_detail_model.dart';
 import 'package:customer_app/models/room_model.dart';
+import 'package:customer_app/screens/ActivityDetailScreen.dart';
+import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/cart/cart_store.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/RFWidget.dart';
-import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/event/EAImages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -18,15 +19,23 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:customer_app/utils/number_utils.dart';
 
+class FarmstayDetailArguments {
+  final int farmstayId;
+
+  FarmstayDetailArguments({required this.farmstayId});
+}
+
 class FarmstayDetailScreen extends StatefulWidget {
+  final int farmstayId;
+
+  FarmstayDetailScreen({required this.farmstayId});
+
   @override
   _FarmstayDetailScreenState createState() => _FarmstayDetailScreenState();
 }
 
 class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   static double IMAGE_CONTAINER_HEIGHT = 250;
-
-  bool initialized = false;
 
   FarmstayDetailStore farmstayStore = FarmstayDetailStore();
   CartStore cartStore = CartStore();
@@ -38,37 +47,33 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   @override
   void initState() {
     super.initState();
+    _refresh(widget.farmstayId);
   }
 
   void prepareShowDetail(FarmstayDetailModel farmstay) {
+    imageUrls.clear();
+    activities.clear();
+    rooms.clear();
+
     imageUrls.add(farmstay.images.avatar!);
     imageUrls.addAll(farmstay.images.others);
     activities.addAll(farmstay.activities);
     rooms.addAll(farmstay.rooms);
   }
 
-  Future<void> refresh(int id) async {
+  Future<void> _refresh(int id) async {
     await farmstayStore.getFarmstayDetail(id);
     setState(() {
       if (farmstayStore.farmstayDetail != null) {
         prepareShowDetail(farmstayStore.farmstayDetail!);
-        initFarmstayCart(farmstayStore.farmstayDetail!.id);
+        initFarmstayCart();
       }
     });
   }
 
-  Future<void> initFarmstayDetail(BuildContext context) async {
-    final int? id = (ModalRoute.of(context)!.settings.arguments
-        as Map<String, dynamic>)['farmstayId'];
-
-    if (id != null) {
-      refresh(id);
-    }
-  }
-
-  Future<void> initFarmstayCart(int farmstayId) async {
+  Future<void> initFarmstayCart() async {
     if (authStore.isAuthenticated()) {
-      await cartStore.getCustomerCartInFarmstay(farmstayId);
+      await cartStore.getCustomerCartInFarmstay(widget.farmstayId);
     }
   }
 
@@ -77,13 +82,6 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (farmstayStore.farmstayDetail == null && !initialized) {
-      setState(() {
-        initialized = true;
-      });
-      initFarmstayDetail(context);
-    }
-
     return Observer(
       builder: (_) => Scaffold(
         backgroundColor: mainBgColor,
@@ -94,7 +92,6 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
         bottomNavigationBar: _buildBottom(),
       ),
     );
-
   }
 
   List<Widget> _buildHeader(BuildContext context, bool innerBoxIsScrolled) {
@@ -128,12 +125,20 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                   setState(() => currentIndexPage = value);
                 },
               ),
-              DotIndicator(
-                pageController: pageController,
-                pages: imageUrls,
-                indicatorColor: white,
-                unselectedIndicatorColor: grey,
-              ).paddingBottom(8),
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DotIndicator(
+                      pageController: pageController,
+                      pages: imageUrls,
+                      indicatorColor: white,
+                      unselectedIndicatorColor: grey,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -147,7 +152,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
         return RefreshIndicator(
           onRefresh: () async {
             if (farmstayStore.farmstayDetail != null) {
-              return await refresh(farmstayStore.farmstayDetail!.id);
+              return await _refresh(farmstayStore.farmstayDetail!.id);
             }
           },
           child: CustomScrollView(
@@ -160,7 +165,6 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       },
     );
   }
-
 
   List<Widget> _buildSlivers() {
     return [
@@ -303,14 +307,27 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             style: boldTextStyle(),
           ),
           8.height,
-          ...listContact.map(
-            (contact) => Row(
-              children: [
-                Text("${contact.method}:", style: boldTextStyle()),
-                8.width,
-                Text("${contact.value}", style: secondaryTextStyle()),
-              ],
-            ),
+          Table(
+            columnWidths: {
+              0: IntrinsicColumnWidth(),
+              1: FlexColumnWidth(),
+            },
+            children: listContact.map((contact) {
+              return TableRow(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8.0),
+                    child: Text("${contact.method}:",
+                        style: boldTextStyle(size: 13)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8.0, left: 8.0),
+                    child: Text("${contact.value}",
+                        style: secondaryTextStyle(size: 13)),
+                  ),
+                ],
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -326,7 +343,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hoạt động'.toUpperCase(),
+            'Hoạt động (${activities.length})'.toUpperCase(),
             style: boldTextStyle(),
           ),
           8.height,
@@ -345,7 +362,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Phòng'.toUpperCase(),
+            'Phòng (${rooms.length})'.toUpperCase(),
             style: boldTextStyle(),
           ),
           8.height,
@@ -369,7 +386,11 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
           ),
           farmstayStore.farmstayDetail != null
               ? FarmstayScheduleComponent(
-                  farmstay: farmstayStore.farmstayDetail!)
+                  farmstay: farmstayStore.farmstayDetail!,
+                  refresh: () {
+                    _refresh(widget.farmstayId);
+                  },
+                )
               : Text(
                   'Chưa có hoạt động nào',
                   style: secondaryTextStyle(fontStyle: FontStyle.italic),
@@ -392,12 +413,16 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                rfCommonCachedNetworkImage(
-                  activity.images.avatar!,
-                  height: 180,
-                  width: context.width() * 0.7,
-                  fit: BoxFit.cover,
-                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(2.0),
+                  child: FadeInImage.assetNetwork(
+                    placeholder: default_image,
+                    image: activity.images.avatar!,
+                    height: 180,
+                    width: context.width() * 0.7,
+                    fit: BoxFit.cover,
+                  ),
+                )
               ],
             ),
             Column(
@@ -446,25 +471,16 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
               ],
             )
           ],
-        ).paddingRight(8).onTap(() => handleGoActivityDetail(activity));
+        ).paddingRight(8).onTap(() {
+          ActivityDetailScreen(
+            farmstayId: activity.farmstayId,
+            activityId: activity.id,
+            onBack: () => _refresh(activity.farmstayId),
+          ).launch(context,
+              pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
+        });
       },
     );
-  }
-
-  void handleGoActivityDetail(ActivityModel activity) async {
-    final farmstayId = farmstayStore.farmstayDetail?.id;
-    bool? result = await Navigator.pushNamed(
-        context, RoutePaths.ACTIVITY_DETAIL.value,
-        arguments: {
-          "farmstayId": farmstayId,
-          "activityId": activity.id,
-        });
-
-    logger.i("Back result: ${result.toString()}");
-
-    if (result != null && farmstayId != null) {
-      refresh(farmstayId);
-    }
   }
 
   Widget ListRooms() {
@@ -479,12 +495,16 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                rfCommonCachedNetworkImage(
-                  room.images.avatar!,
-                  height: 180,
-                  width: context.width() * 0.7,
-                  fit: BoxFit.cover,
-                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(2.0),
+                  child: FadeInImage.assetNetwork(
+                    placeholder: default_image,
+                    image: room.images.avatar!,
+                    height: 180,
+                    width: context.width() * 0.7,
+                    fit: BoxFit.cover,
+                  ),
+                )
               ],
             ),
             Column(
@@ -526,11 +546,12 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             )
           ],
         ).paddingRight(8).onTap(() {
-          Navigator.pushNamed(context, RoutePaths.ROOM_DETAIL.value,
-              arguments: {
-                "farmstayId": farmstayStore.farmstayDetail?.id,
-                "roomId": room.id
-              });
+          RoomDetailScreen(
+            farmstayId: room.farmstayId,
+            roomId: room.id,
+            onBack: () => _refresh(room.farmstayId),
+          ).launch(context,
+              pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
         });
       },
     );
@@ -538,12 +559,12 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
 
   void handleGoToCartDetailScreen() {
     final farmstayId = farmstayStore.farmstayDetail?.id;
-    if(farmstayId == null) return;
+    if (farmstayId == null) return;
     CartDetailFragment(
       farmstayId: farmstayId,
       onBack: () {
         if (farmstayId != null) {
-          refresh(farmstayId);
+          _refresh(farmstayId);
         }
       },
     ).launch(context);

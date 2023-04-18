@@ -1,5 +1,4 @@
 import 'package:customer_app/models/schedule_item_model.dart';
-import 'package:intl/intl.dart';
 
 class RoomScheduleModel {
   final int? id;
@@ -12,7 +11,7 @@ class RoomScheduleModel {
   final DateTime? createdDate;
   final DateTime? updatedDate;
   final String? name;
-  final Map<DateTime, ScheduleItemModel>? schedule;
+  final Map<String, ScheduleItemModel> schedule;
   final int? bookingCount;
 
   RoomScheduleModel({
@@ -26,16 +25,15 @@ class RoomScheduleModel {
     this.createdDate,
     this.updatedDate,
     this.name,
-    this.schedule,
+    required this.schedule,
     this.bookingCount,
   });
 
   factory RoomScheduleModel.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> jsonSchedule = json['schedule'];
-    Map<DateTime, ScheduleItemModel> schedule = {};
+    Map<String, ScheduleItemModel> schedule = {};
     jsonSchedule.forEach((key, value) {
-      DateTime dateTime = DateFormat('yyyy-MM-dd').parse(key);
-      schedule[dateTime] = ScheduleItemModel.fromJson(value);
+      schedule[key] = ScheduleItemModel.fromJson(value);
     });
 
     return RoomScheduleModel(

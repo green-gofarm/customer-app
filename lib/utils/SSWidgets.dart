@@ -18,6 +18,7 @@ sSAppButton(
     color: color ?? rf_primaryColor,
     textColor: textColor ?? Color(0xfffffbfb),
     enabled: enabled != null ? enabled : true,
+    disabledColor: (color ?? rf_primaryColor).withOpacity(0.5),
     onTap: () {
       onPressed!();
     },

@@ -1,6 +1,7 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/data/auth/auth_api.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../utils/error_message.dart';
@@ -89,5 +90,11 @@ abstract class _AuthStore with Store {
   @action
   void setUser(UserModel? user) {
     this.user = user;
+  }
+
+  @action
+  Future<void> signOut() async {
+    await AuthService.signOut();
+    user = null;
   }
 }

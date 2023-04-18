@@ -1,4 +1,5 @@
 import 'package:customer_app/models/schedule_item_model.dart';
+import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/schedule_item_status.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -7,13 +8,13 @@ typedef OnViewChangedCallback = void Function(
     DateTime startDate, DateTime endDate);
 typedef OnSelectedDateCallback = void Function(List<DateTime> dates);
 
-class ActivityScheduleComponent extends StatelessWidget {
+class MultiSelectScheduleComponent extends StatelessWidget {
   final Map<String, ScheduleItemModel>? schedule;
   final OnViewChangedCallback? onViewChanged;
   final OnSelectedDateCallback? onSelectedDates;
   final DateRangePickerController? controller;
 
-  const ActivityScheduleComponent(
+  const MultiSelectScheduleComponent(
       {Key? key,
       this.schedule,
       this.onViewChanged,
@@ -37,7 +38,7 @@ class ActivityScheduleComponent extends StatelessWidget {
       body: SfDateRangePicker(
         controller: controller,
         view: DateRangePickerView.month,
-        minDate: DateTime.now(),
+        minDate: DateTimeUtil.getTomorrow(),
         enablePastDates: false,
         monthViewSettings: DateRangePickerMonthViewSettings(
           blackoutDates: disabledDates,

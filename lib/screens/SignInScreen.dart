@@ -1,3 +1,6 @@
+import 'package:customer_app/screens/SignUpScreen.dart';
+import 'package:customer_app/utils/JSWidget.dart';
+import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/SocialSignInWidget.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:customer_app/components/RFCommonAppComponent.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/utils/RFString.dart';
 import 'package:customer_app/utils/RFWidget.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -42,6 +46,7 @@ class _SignInState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: jsAppBar(context, backWidget: true, homeAction: true),
         body: RFCommonAppComponent(
           title: RFAppName,
           subTitle: RFAppSubTitle,
@@ -56,6 +61,26 @@ class _SignInState extends State<SignInScreen> {
             ],
           ),
         ),
+        persistentFooterButtons: <Widget>[
+          Container(
+            height: 40,
+            padding: EdgeInsets.only(left: 15, right: 15),
+            width: MediaQuery.of(context).copyWith().size.width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Chưa có tài khoản?', style: secondaryTextStyle()),
+                TextButton(
+                  onPressed: () {
+                    SignUpScreen().launch(context);
+                  },
+                  child: Text('Đăng ký', style: boldTextStyle(size: 14, color: rf_primaryColor)),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -6,8 +6,10 @@ import 'package:customer_app/models/PaymentOption.dart';
 import 'package:customer_app/models/booking_model.dart';
 import 'package:customer_app/models/farmstay_detail_model.dart';
 import 'package:customer_app/screens/BookingPaymentResultScreen.dart';
+import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/screens/PaymentScreen.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
+import 'package:customer_app/utils/JSWidget.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
@@ -92,27 +94,27 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-        builder: (_) => Scaffold(
-              // backgroundColor: mainBgColor,
-              appBar: _buildAppBar(),
+    return WillPopScope(
+        child: Observer(
+            builder: (_) => Scaffold(
+              appBar: _buildAppbar(context),
               body: _buildBody(),
               bottomSheet: _buildBottom(),
-            ));
+            )),
+        onWillPop: () async {
+          HomeScreen().launch(context);
+          return false;
+        });
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
-      title: Text("Thanh toán", style: boldTextStyle()),
-      leading: InkWell(
-        onTap: () {
-          finish(context);
-        },
-        child: Icon(Icons.arrow_back_ios, color: context.iconColor, size: 20),
+  PreferredSizeWidget _buildAppbar(BuildContext context) {
+    return jsAppBar(
+      context,
+      homeAction: true,
+      appBarHeight: 50,
+      titleWidget: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text("Thanh toán", style: boldTextStyle(color: white))],
       ),
     );
   }

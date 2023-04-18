@@ -48,3 +48,7 @@ const dashboard = 'images/stockMarket/stock/dashboard.png';
 const forgot_password = 'images/stockMarket/stock/forgot_password.png';
 const scan = 'images/stockMarket/stock/scan.png';
 const verify_image = 'images/stockMarket/stock/verify_image.png';
+
+
+const long_logo = "images/brand/logo.png";
+const big_logo = "images/brand/icon.png";
