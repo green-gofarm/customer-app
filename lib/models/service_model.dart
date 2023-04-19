@@ -1,25 +1,25 @@
 class ServiceModel {
-  final int? id;
-  final String? name;
+  final int id;
+  final String name;
   final String? description;
   final int? status;
   final int? farmstayId;
   final int? categoryId;
-  final String? image;
-  final int? price;
-  final DateTime? createdDate;
+  final String image;
+  final int price;
+  final DateTime createdDate;
   final DateTime? updatedDate;
 
   ServiceModel({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
     this.description,
     this.status,
     this.farmstayId,
     this.categoryId,
-    this.image,
-    this.price,
-    this.createdDate,
+    required this.image,
+    required this.price,
+    required this.createdDate,
     this.updatedDate,
   });
 
@@ -33,9 +33,7 @@ class ServiceModel {
       categoryId: json['categoryId'],
       image: json['image'],
       price: json['price'],
-      createdDate: json['createdDate'] != null && json['createdDate'] is String
-          ? DateTime.parse(json['createdDate'])
-          : null,
+      createdDate: DateTime.parse(json['createdDate']),
       updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
           ? DateTime.parse(json['updatedDate'])
           : null,

@@ -4,15 +4,21 @@ import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
 import 'package:customer_app/models/contact_info_item_model.dart';
 import 'package:customer_app/models/farmstay_detail_model.dart';
+import 'package:customer_app/models/policy_model.dart';
 import 'package:customer_app/models/room_model.dart';
+import 'package:customer_app/models/service_model.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
+import 'package:customer_app/screens/FaqDetailScreen.dart';
+import 'package:customer_app/screens/PolicyDetailScreen.dart';
 import 'package:customer_app/screens/RoomDetailScreen.dart';
+import 'package:customer_app/screens/ServiceDetailScreen.dart';
 import 'package:customer_app/store/cart/cart_store.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/event/EAImages.dart';
+import 'package:customer_app/utils/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -119,6 +125,13 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                     placeholder: default_image,
                     image: link,
                     fit: BoxFit.cover,
+                    imageErrorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset(
+                        default_image,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   );
                 },
                 onPageChanged: (value) {
@@ -174,6 +187,10 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstaySchedule()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayReview()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayService()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayLocation()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayContactInfo()),
@@ -181,6 +198,11 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       SliverToBoxAdapter(child: _farmstayActivities()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayRooms()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayFaq()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayPolicies()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
     ];
   }
 
@@ -260,6 +282,146 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                 )
               : Text("Chưa có mô tả",
                   style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+        ],
+      ),
+    );
+  }
+
+  Widget _farmstayReview() {
+    final feedbacks = farmstayStore.farmstayDetail?.feedbacks ?? [];
+
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Đánh giá (${feedbacks.length})'.toUpperCase(),
+                  style: boldTextStyle()),
+            ],
+          ),
+          8.height,
+          if (feedbacks.length <= 0)
+            Text("Chưa có đánh giá",
+                style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+          ListView.builder(
+            padding: EdgeInsets.only(bottom: 8, top: 16),
+            itemCount: feedbacks.length,
+            itemBuilder: (_, index) {
+              final feeback = feedbacks[index];
+
+              return Container(
+                padding: EdgeInsets.all(12),
+                decoration: boxDecorationRoundedWithShadow(8,
+                    backgroundColor: Colors.white),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Icon(Icons.person_outline, color: white),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: rf_primaryColor),
+                      padding: EdgeInsets.all(4),
+                    ),
+                    16.width,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(feeback.customerId.toString(),
+                            style: boldTextStyle()),
+                        Row(
+                          children: [
+                            IgnorePointer(
+                              child: RatingBar(
+                                onRatingUpdate: (r) {},
+                                itemSize: 14.0,
+                                itemBuilder: (context, _) =>
+                                    Icon(Icons.star, color: Colors.amber),
+                                initialRating: feeback.rating.toDouble(),
+                              ),
+                            ),
+                            16.width,
+                            Text(feeback.rating.toString(),
+                                style: secondaryTextStyle()),
+                          ],
+                        ),
+                        Text(feeback.comment, style: secondaryTextStyle()),
+                      ],
+                    ).expand(),
+                  ],
+                ),
+              );
+            },
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _farmstayService() {
+    final List<ServiceModel> services =
+        farmstayStore.farmstayDetail?.services ?? [];
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Dịch vụ'.toUpperCase(), style: boldTextStyle()),
+            ],
+          ),
+          if (services.length <= 0)
+            Text("Không cung cấp dịch vụ khác.",
+                style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+          ListView.builder(
+            itemCount: services.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, i) {
+              final service = services[i];
+
+              return GestureDetector(
+                onTap: () {
+                  ServiceDetailScreen(service: service).launch(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  margin: EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.white, boxShadow: defaultBoxShadow()),
+                  width: context.width(),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                          child: Row(
+                        children: [
+                          Text(service.name,
+                              style: primaryTextStyle(size: 14), maxLines: 2),
+                          8.width,
+                          Text(NumberUtil.formatIntPriceToVnd(service.price),
+                              style: primaryTextStyle(size: 14), maxLines: 2),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      )),
+                      Icon(Icons.chevron_right, color: appStore.iconColor)
+                    ],
+                  ).paddingAll(8),
+                ),
+              );
+            },
+          )
         ],
       ),
     );
@@ -400,6 +562,119 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
     );
   }
 
+  Widget _farmstayFaq() {
+    final faqs = farmstayStore.farmstayDetail?.faqs ?? [];
+
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Câu hỏi thường gặp'.toUpperCase(), style: boldTextStyle()),
+            ],
+          ),
+          if (faqs.length <= 0)
+            Text("Chưa có câu hỏi nào",
+                style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+          ListView.builder(
+            itemCount: faqs.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, i) {
+              final faq = faqs[i];
+
+              return GestureDetector(
+                onTap: () {
+                  FaqDetailScreen(faq: faq).launch(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  margin: EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.white, boxShadow: defaultBoxShadow()),
+                  width: context.width(),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(faq.question,
+                            style: primaryTextStyle(size: 14), maxLines: 2),
+                      ),
+                      Icon(Icons.chevron_right, color: appStore.iconColor)
+                    ],
+                  ).paddingAll(8),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _farmstayPolicies() {
+    final List<PolicyModel> policies =
+        farmstayStore.farmstayDetail?.policies ?? [];
+
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Quy định'.toUpperCase(), style: boldTextStyle()),
+            ],
+          ),
+          if (policies.length <= 0)
+            Text("Farmstay không có quy định cụ thể.",
+                style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+          ListView.builder(
+            itemCount: policies.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, i) {
+              final policy = policies[i];
+
+              return GestureDetector(
+                onTap: () {
+                  PolicyDetailScreen(policy: policy).launch(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  margin: EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.white, boxShadow: defaultBoxShadow()),
+                  width: context.width(),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(policy.name,
+                            style: primaryTextStyle(size: 14), maxLines: 2),
+                      ),
+                      Icon(Icons.chevron_right, color: appStore.iconColor)
+                    ],
+                  ).paddingAll(8),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Widget ListActivities() {
     return HorizontalList(
       padding: EdgeInsets.only(bottom: 8, top: 8, right: 12),
@@ -421,6 +696,15 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                     height: 180,
                     width: context.width() * 0.7,
                     fit: BoxFit.cover,
+                    imageErrorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset(
+                        default_image,
+                        fit: BoxFit.cover,
+                        height: 180,
+                        width: context.width() * 0.7,
+                      );
+                    },
                   ),
                 )
               ],
@@ -503,6 +787,15 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                     height: 180,
                     width: context.width() * 0.7,
                     fit: BoxFit.cover,
+                    imageErrorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset(
+                        default_image,
+                        fit: BoxFit.cover,
+                        height: 180,
+                        width: context.width() * 0.7,
+                      );
+                    },
                   ),
                 )
               ],

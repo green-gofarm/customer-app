@@ -160,6 +160,13 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
               placeholder: default_image,
               image: avatar!,
               fit: BoxFit.cover,
+              imageErrorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                return Image.asset(
+                  default_image,
+                  fit: BoxFit.cover,
+                );
+              },
             );
           },
           onPageChanged: (value) {
@@ -546,6 +553,15 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                     fit: BoxFit.cover,
                     height: 170,
                     width: 300,
+                    imageErrorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset(
+                        default_image,
+                        fit: BoxFit.cover,
+                        height: 170,
+                        width: 300,
+                      );
+                    },
                   ),
                 ).paddingRight(8.0);
               },

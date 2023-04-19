@@ -1,29 +1,29 @@
 class FeedbackModel {
-  final int? id;
-  final int? rating;
+  final int id;
+  final int rating;
   final String? attachments;
-  final String? comment;
+  final String comment;
   final int? repliedFeedbackId;
-  final int? hostId;
-  final int? customerId;
-  final int? orderId;
+  final int hostId;
+  final int customerId;
+  final int orderId;
   final int? type;
-  final int? status;
-  final DateTime? createdDate;
+  final int status;
+  final DateTime createdDate;
   final DateTime? updatedDate;
 
   FeedbackModel({
-    this.id,
-    this.rating,
+    required this.id,
+    required this.rating,
     this.attachments,
-    this.comment,
+    required this.comment,
     this.repliedFeedbackId,
-    this.hostId,
-    this.customerId,
-    this.orderId,
+    required this.hostId,
+    required this.customerId,
+    required this.orderId,
     this.type,
-    this.status,
-    this.createdDate,
+    required this.status,
+    required this.createdDate,
     this.updatedDate,
   });
 
@@ -39,9 +39,7 @@ class FeedbackModel {
       orderId: json['orderId'],
       type: json['type'],
       status: json['status'],
-      createdDate: json['createdDate'] != null && json['createdDate'] is String
-          ? DateTime.parse(json['createdDate'])
-          : null,
+      createdDate: DateTime.parse(json['createdDate']),
       updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
           ? DateTime.parse(json['updatedDate'])
           : null,

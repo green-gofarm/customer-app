@@ -81,7 +81,7 @@ PreferredSizeWidget jsAppBar(BuildContext context,
         elevation: 0.0,
         backWidget: backWidget.validate()
             ? IconButton(
-                icon: Icon(Icons.arrow_back_ios, size: 18),
+                icon: Icon(Icons.arrow_back, size: 20),
                 color: Colors.white,
                 onPressed: () {
                   if (callBack != null) {
@@ -97,7 +97,7 @@ PreferredSizeWidget jsAppBar(BuildContext context,
                   onPressed: () {
                     HomeScreen().launch(context);
                   },
-                  icon: Icon(Icons.home, size: 18),
+                  icon: Icon(Icons.home, size: 20),
                   color: Colors.white)
               : SizedBox.shrink(),
           ...(actions?? []),

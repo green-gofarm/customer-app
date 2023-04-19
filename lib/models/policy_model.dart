@@ -1,17 +1,17 @@
 class PolicyModel {
-  final int? id;
-  final String? name;
+  final int id;
+  final String name;
   final int? farmstayId;
-  final String? description;
+  final String description;
   final int? status;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
   PolicyModel({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
     this.farmstayId,
-    this.description,
+    required this.description,
     this.status,
     this.createdDate,
     this.updatedDate,

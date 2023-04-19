@@ -1,5 +1,5 @@
 import 'package:customer_app/components/MultiSelectScheduleComponent.dart';
-import 'package:customer_app/components/ActivityAddToCartBottomSheet.dart';
+
 import 'package:customer_app/components/RoomAddToCartBottomSheet.dart';
 import 'package:customer_app/fragment/CartDetailFragment.dart';
 import 'package:customer_app/main.dart';
@@ -161,6 +161,13 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               placeholder: default_image,
               image: avatar!,
               fit: BoxFit.cover,
+              imageErrorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                return Image.asset(
+                  default_image,
+                  fit: BoxFit.cover,
+                );
+              },
             );
           },
           onPageChanged: (value) {
@@ -518,6 +525,15 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     fit: BoxFit.cover,
                     height: 170,
                     width: 300,
+                    imageErrorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset(
+                        default_image,
+                        fit: BoxFit.cover,
+                        height: 170,
+                        width: 300,
+                      );
+                    },
                   ),
                 ).paddingRight(8.0);
               },

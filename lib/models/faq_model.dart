@@ -1,16 +1,16 @@
 class FaqModel {
-  final int? id;
+  final int id;
   final int? farmstayId;
-  final String? question;
+  final String question;
   final String? answer;
   final int? status;
   final DateTime? createdDate;
   final DateTime? updatedDate;
 
   FaqModel({
-    this.id,
+    required this.id,
     this.farmstayId,
-    this.question,
+    required this.question,
     this.answer,
     this.status,
     this.createdDate,

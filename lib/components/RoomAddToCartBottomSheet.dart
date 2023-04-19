@@ -28,7 +28,8 @@ class RoomAddToCartBottomSheet extends StatefulWidget {
   });
 
   @override
-  RoomAddToCartBottomSheetState createState() => RoomAddToCartBottomSheetState();
+  RoomAddToCartBottomSheetState createState() =>
+      RoomAddToCartBottomSheetState();
 }
 
 class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
@@ -43,11 +44,8 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
 
   void decrementQuantity(DateTime date) {
     setState(() {
-      final quantity = 0;
-      if (quantity >= 0) {
-        _item[date] = quantity;
-        widget.onUpdatedQuantity(date, quantity);
-      }
+        _item.remove(date);
+        widget.onUpdatedQuantity(date, 0);
     });
   }
 
@@ -69,18 +67,10 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.grey.withOpacity(0.5),
-              //     offset: Offset(0, -1),
-              //     // Offset for the shadow, change as needed
-              //     blurRadius: 2, // Adjust the blur radius as needed
-              //   ),
-              // ],
             ),
             child: sSAppButton(
               context: context,
-              title: 'Thêm vào giỏ',
+              title: 'Thêm vào giỏ (${_item.length})',
               onPressed: () {
                 Navigator.pop(context);
                 widget.onSubmit();
@@ -149,63 +139,40 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
             itemCount: filteredDates.length,
             itemBuilder: (context, index) {
               DateTime date = filteredDates[index];
-              int quantity = _item[date]!;
 
               final key = DateFormat("yyyy-MM-dd").format(date);
-              final scheduleItem = widget.schedule[key];
               logger.i("Key: $key, item: ${widget.schedule}");
 
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                 decoration: boxDecorationRoundedWithShadow(8,
+                    shadowColor: rf_primaryColor.withOpacity(0.8),
+                    blurRadius: 0.2,
                     backgroundColor:
-                    appStore.isDarkModeOn ? cardDarkColor : white),
+                        appStore.isDarkModeOn ? cardDarkColor : white),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      height: 100,
-                      width: 80,
-                      alignment: Alignment.center,
-                      decoration: boxDecorationWithRoundedCorners(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomLeft: Radius.circular(8)),
-                          backgroundColor: quantity == 0
-                              ? grey.withOpacity(0.2)
-                              : rf_primaryColor),
-                      child: Text(quantity.toString(),
-                          style: boldTextStyle(
-                              size: 50, color: quantity == 0 ? grey : white)),
-                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Vé tham gia", style: boldTextStyle(color: black)),
+                        Text("1 ngày 1 đêm",
+                            style: boldTextStyle(color: black)),
                         8.height,
                         Text(DateFormat.yMMMMd("vi_VN").format(date),
                             style: primaryTextStyle(color: black)),
-                        8.height,
-                        Text("Còn ${scheduleItem?.availableItem ?? 0} vé",
-                            style: secondaryTextStyle(color: rf_primaryColor)),
                       ],
-                    ).paddingAll(8).expand(),
+                    ).paddingAll(12).expand(),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(12),
-                            decoration: boxDecorationWithShadow(
-                                backgroundColor: context.cardColor,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(8))),
-                            child: Icon(Icons.minimize,
-                                color: rf_primaryColor))
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(12),
+                                child: Icon(LineIcons.trash,
+                                    color: Colors.redAccent))
                             .onTap(() {
-                          if(quantity > 0) {
-                            decrementQuantity(date);
-                          }
+                          decrementQuantity(date);
                         }),
                       ],
                     ),
@@ -216,7 +183,7 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
             separatorBuilder: (context, index) {
               return SizedBox(
                   height:
-                  8); // Add a SizedBox with a specific height for spacing
+                      8.0); // Add a SizedBox with a specific height for spacing
             },
           ),
         )

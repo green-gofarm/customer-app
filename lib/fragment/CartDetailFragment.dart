@@ -1,8 +1,8 @@
-import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_ticket_model.dart';
 import 'package:customer_app/models/combine_cart_item.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/BookingPaymentScreen.dart';
+import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/booking/booking_store.dart';
 import 'package:customer_app/store/cart/cart_store.dart';
 import 'package:customer_app/utils/JSWidget.dart';
@@ -161,17 +161,16 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
   }
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return jsAppBar(context,
-        appBarHeight: 50,
-        titleWidget: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("Giỏ hàng", style: boldTextStyle(color: white))],
-        ),
+    return jsAppBar(context, appBarHeight: 50, backWidget: true, callBack: () {
+      widget.onBack();
+      Navigator.pop(context);
+    },
+        titleWidget: Text("Giỏ hàng", style: boldTextStyle(color: white)),
         actions: [
           IconButton(
               onPressed: () async {
                 final isConfirmed = await _showDialog(context);
-                if(isConfirmed) {
+                if (isConfirmed) {
                   await store.clearCart(widget.farmstayId);
                   await _refresh();
                   widget.onBack();
@@ -327,6 +326,9 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
               ActivityDetailScreen(
                 farmstayId: widget.farmstayId,
                 activityId: activity.itemId,
+                onBack: () {
+                  _refresh();
+                },
               ).launch(context,
                   pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
             })
@@ -337,74 +339,96 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
   }
 
   Widget _buildRoomItem(RoomTicketModel room) {
-    return Padding(
-      padding: EdgeInsets.only(top: 8, bottom: 8),
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+            BorderRadius.circular(4), // Set the desired borderRadius value here
+      ),
       child: InkWell(
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        onTap: () {
-          //Todo: navigate to room detail
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
+        child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.all(4),
-              width: 80,
-              height: 70,
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white12, width: 1),
-              ),
-              child: rfCommonCachedNetworkImage(
-                room.images.avatar,
-                fit: BoxFit.cover,
-              ).cornerRadiusWithClipRRect(8),
-            ),
-            SizedBox(height: 16, width: 16),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(4),
+                  width: 80,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.2),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.white12, width: 1),
+                  ),
+                  child: rfCommonCachedNetworkImage(
+                    room.images.avatar,
+                    fit: BoxFit.cover,
+                  ).cornerRadiusWithClipRRect(8),
+                ),
+                SizedBox(height: 16, width: 16),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      Text(room.name ?? "No_name",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(room.name ?? "No_name",
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.ellipsis,
+                              style: boldTextStyle()),
+                          Icon(Icons.clear).onTap(() {
+                            removeItem(room.id);
+                          })
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Text(DateFormat.yMMMMd().format(room.date),
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
-                          style: boldTextStyle()),
-                      Icon(Icons.clear).onTap(() {
-                        removeItem(room.id);
-                      })
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Text(DateFormat.yMMMMd().format(room.date),
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
-                      style: secondaryTextStyle()),
-                  SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        NumberUtil.formatIntPriceToVnd(room.price),
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                        style: boldTextStyle(size: 14),
+                          style: secondaryTextStyle()),
+                      SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            NumberUtil.formatIntPriceToVnd(room.price),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: boldTextStyle(size: 14),
+                          ),
+                          SizedBox(width: 32),
+                        ],
                       ),
-                      SizedBox(width: 32),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            4.height,
+            Divider(),
+            4.height,
+            Text(
+              "Xem chi tiết",
+              style: primaryTextStyle(color: rf_primaryColor),
+            ).onTap(() {
+              RoomDetailScreen(
+                farmstayId: widget.farmstayId,
+                roomId: room.itemId,
+                onBack: () {
+                  _refresh();
+                },
+              ).launch(context,
+                  pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
+            })
           ],
         ),
       ),
