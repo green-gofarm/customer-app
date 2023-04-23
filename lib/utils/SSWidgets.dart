@@ -1,4 +1,3 @@
-import 'package:customer_app/main.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,7 +9,9 @@ sSAppButton(
     Color? color,
     Color? textColor,
     bool? enabled,
-    Widget? child}) {
+    Widget? child,
+    double? height,
+    }) {
   return AppButton(
     shapeBorder:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -24,5 +25,6 @@ sSAppButton(
     },
     child: child,
     width: context.width(),
+    height: height,
   );
 }

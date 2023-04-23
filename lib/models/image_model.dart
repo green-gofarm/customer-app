@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class ImagesModel {
-  final String? avatar;
+  final String avatar;
   final List<String> others;
 
   ImagesModel({required this.avatar, required this.others});

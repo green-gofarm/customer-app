@@ -43,4 +43,8 @@ class DateTimeUtil {
   static String getFormattedDateInVietnamese(DateTime date) {
     return DateFormat.yMMMMd("vi_VN").format(date);
   }
+
+  static String getFormattedDateMdInVietnamese(DateTime date) {
+    return DateFormat.Md("vi_VN").format(date);
+  }
 }

@@ -18,6 +18,9 @@ abstract class _TagCategoryStore with Store {
   Map<int, TagCategoryModel> categoryMap = {};
 
   @observable
+  List<TagCategoryModel> categories = [];
+
+  @observable
   bool isLoading = false;
 
   @observable
@@ -46,6 +49,32 @@ abstract class _TagCategoryStore with Store {
     logger.i("Get all tag categories ${categoryMap.toString()}");
     if (message != null) {
       logger.e("Get all tag categories error $message");
+    }
+
+    isLoading = false;
+  }
+
+  @action
+  Future<void> getListCategories() async {
+    if(categories.length > 0) return;
+    isLoading = true;
+
+    final result = await _api.getAllTagCategories();
+
+    await result.fold(
+      (error) {
+        message = error;
+        categories.clear();
+      },
+      (categories) {
+        this.categories = categories;
+        message = null;
+      },
+    );
+
+    logger.i("Get list tag categories ${categories}");
+    if (message != null) {
+      logger.e("Get list tag categories error $message");
     }
 
     isLoading = false;

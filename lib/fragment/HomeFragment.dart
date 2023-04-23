@@ -1,35 +1,32 @@
-import 'package:customer_app/components/CommonAppComponent.dart';
-import 'package:customer_app/components/FarmstayListComponent.dart';
-import 'package:customer_app/components/SkeletonFarmstayListComponent.dart';
-import 'package:customer_app/models/PaginationModel.dart';
-import 'package:customer_app/models/farmstay_model.dart';
-import 'package:customer_app/store/farmstay_paging/farmstays_paging_store.dart';
+import 'package:customer_app/fragment/CustomerSearchDelegate.dart';
+import 'package:customer_app/main.dart';
+import 'package:customer_app/screens/HomeSearchResultScreen.dart';
+import 'package:customer_app/screens/HomeTopScreen.dart';
+import 'package:customer_app/screens/SelectCityScreen.dart';
+
+import 'package:customer_app/utils/RFColors.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:customer_app/components/RFLocationComponent.dart';
-import 'package:customer_app/components/RFRecentUpdateComponent.dart';
-import 'package:customer_app/main.dart';
-import 'package:customer_app/models/RoomFinderModel.dart';
-import 'package:customer_app/screens/RFLocationViewAllScreen.dart';
-import 'package:customer_app/screens/RFRecentupdateViewAllScreen.dart';
-import 'package:customer_app/utils/RFColors.dart';
-import 'package:customer_app/utils/RFDataGenerator.dart';
 
 class HomeFragment extends StatefulWidget {
+  final String? name;
+
+  HomeFragment({this.name});
+
   @override
-  _HomeFragmentState createState() => _HomeFragmentState();
+  HomeFragmentState createState() => HomeFragmentState();
 }
 
-class _HomeFragmentState extends State<HomeFragment> {
-  FarmstayPagingStore store = FarmstayPagingStore();
+class HomeFragmentState extends State<HomeFragment> {
+  final _kTabs = <Tab>[
+    Tab(text: 'GỢI Ý CHO BẠN'),
+    Tab(text: 'TOP'),
+  ];
 
-  List<FarmstayModel> listFarmstay = [];
-
-  List<RoomFinderModel> hotelListData = hotelList();
-  List<RoomFinderModel> locationListData = locationList();
-
-  int selectCategoryIndex = 0;
-  bool locationWidth = true;
+  final _kTabPages = <Widget>[
+    HomeSearchResultScreen(),
+    HomeTopScreen(),
+  ];
 
   @override
   void initState() {
@@ -37,11 +34,8 @@ class _HomeFragmentState extends State<HomeFragment> {
     init();
   }
 
-  void init() async {
-    await store.refresh();
-    setState(() {
-      listFarmstay = List.of(store.farmstays);
-    });
+  Future<void> init() async {
+    //
   }
 
   @override
@@ -52,162 +46,135 @@ class _HomeFragmentState extends State<HomeFragment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: 50,
-        backgroundColor: rf_primaryColor,
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 36,
-              child: TextFormField(
-                style: primaryTextStyle(size: 14),
-                onFieldSubmitted: (val) {},
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.zero,
-                  hintText: 'Bạn muốn đi đâu',
-                  hintStyle: secondaryTextStyle(),
-                  fillColor:
-                      appStore.isDarkModeOn ? cardDarkColor : editTextBgColor,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: radius(4),
-                    borderSide:
-                        BorderSide(color: Colors.transparent, width: 0.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: radius(4),
-                    borderSide:
-                        BorderSide(color: Colors.transparent, width: 0.0),
-                  ),
-                  prefixIcon: IconButton(
-                    icon: Icon(Icons.search,
-                        size: 20,
-                        color: appStore.isDarkModeOn
-                            ? white
-                            : gray.withOpacity(0.5)),
-                    onPressed: () {},
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.location_pin,
-                        size: 20,
-                        color: appStore.isDarkModeOn
-                            ? white
-                            : gray.withOpacity(0.5)),
-                    onPressed: () {},
+      appBar: _buildAppbar(context),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          DefaultTabController(
+            length: 2,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  width: context.width(),
+                  child: Material(
+                    color: context.cardColor,
+                    child: TabBar(
+                      tabs: _kTabs,
+                      indicatorColor: rf_primaryColor,
+                      labelColor: rf_primaryColor,
+                      unselectedLabelColor: grey,
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications_none_rounded,
-                    size: 24, color: Colors.white),
-                onPressed: () {
-                  //TODO: Navigate to notification
-                },
-              ),
-            ],
+                Expanded(
+                  child: TabBarView(
+                    physics: BouncingScrollPhysics(),
+                    children: _kTabPages,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      body: Container(
-        color: mainBgColor,
-        child: CommonAppComponent(
-          subWidget: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Top farmstay yêu thích (${listFarmstay.length})', style: boldTextStyle()),
-                  TextButton(
-                    onPressed: () async {
-                      store.pagination.pageSize = store.pagination.totalItem ??
-                          PaginationModel.DEFAULT_PAGE_SIZE;
-                      logger.i("Totle item: ${store.pagination.totalItem}");
-                      await store.refresh();
-                      setState(() {
-                        listFarmstay = List.of(store.farmstays);
-                      });
-                    },
-                    child: Text('Xem tất cả',
-                        style: secondaryTextStyle(
-                            decoration: TextDecoration.underline,
-                            textBaseline: TextBaseline.alphabetic)),
-                  )
-                ],
-              ).paddingOnly(left: 16, right: 16, top: 0, bottom: 0),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: store.isLoading
-                    ? List.generate(6, (index) {
-                  return SkeletonFarmstayListComponent();
-                })
-                    : List.generate(listFarmstay.length, (index) {
-                  return FarmstayListComponent(
-                      farmstay: listFarmstay[index]);
-                }),
+    );
+  }
+
+  PreferredSizeWidget _buildAppbar(BuildContext context) {
+    return appBarWidget("",
+        center: false,
+        showBack: false,
+        color: rf_primaryColor,
+        textColor: Colors.white,
+        textSize: 14,
+        titleWidget: _buildSearchBar(),
+        actions: [
+          _buildSuggest(),
+          _buildNotification(),
+        ]);
+  }
+
+  Widget _buildSearchBar() {
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 36,
+            child: TextFormField(
+              enabled: false,
+              style: primaryTextStyle(size: 14),
+              onFieldSubmitted: (val) {},
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.zero,
+                hintText: 'Khám phá trải nghiệm mới',
+                hintStyle: secondaryTextStyle(),
+                fillColor:
+                    appStore.isDarkModeOn ? cardDarkColor : editTextBgColor,
+                filled: true,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: radius(4),
+                  borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: radius(4),
+                  borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                ),
+                prefixIcon: IconButton(
+                  icon: Icon(Icons.search,
+                      size: 20,
+                      color: appStore.isDarkModeOn
+                          ? white
+                          : gray.withOpacity(0.5)),
+                  onPressed: () {},
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Hoạt động', style: boldTextStyle()),
-                  TextButton(
-                    onPressed: () {
-                      RFLocationViewAllScreen(locationWidth: true)
-                          .launch(context);
-                    },
-                    child: Text('Xem tất cả',
-                        style: secondaryTextStyle(
-                            decoration: TextDecoration.underline)),
-                  )
-                ],
-              ).paddingOnly(left: 16, right: 16, bottom: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(locationListData.length, (index) {
-                  return RFLocationComponent(
-                      locationData: locationListData[index]);
-                }),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Phòng nghỉ', style: boldTextStyle()),
-                  TextButton(
-                    onPressed: () {
-                      RFRecentUpdateViewAllScreen().launch(context);
-                    },
-                    child: Text('Xem tất cả',
-                        style: secondaryTextStyle(
-                            decoration: TextDecoration.underline)),
-                  )
-                ],
-              ).paddingOnly(left: 16, right: 16, top: 16, bottom: 0),
-              ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                itemCount: hotelListData.take(3).length,
-                itemBuilder: (BuildContext context, int index) {
-                  RoomFinderModel data = hotelListData[index];
-                  return RFRecentUpdateComponent(recentUpdateData: data);
-                },
-              ),
-            ],
+            ),
           ),
-        ),
+        ]).onTap(() {
+      showSearch(context: context, delegate: CustomerSearchDelegate());
+    });
+  }
+
+  Widget _buildSuggest() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.bookmark,
+            size: 20,
+            color: Colors.white,
+          ),
+        ],
       ),
+    ).onTap(
+      () {
+        SelectCityScreen().launch(context,
+            pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
+      },
+    );
+  }
+
+  Widget _buildNotification() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.notifications,
+            size: 20,
+            color: Colors.white,
+          ),
+        ],
+      ),
+    ).onTap(
+      () {
+        // HomeFilterScreen().launch(context,
+        //     pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
+      },
     );
   }
 }

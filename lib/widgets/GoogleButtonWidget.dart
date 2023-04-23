@@ -21,11 +21,11 @@ Widget GoogleButtonWidget(
       children: [
         isLoading == true
             ? SizedBox(
-                width: 20,
-                height: 20,
+                width: 18,
+                height: 18,
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(rf_primaryColor),
-                  strokeWidth: 4,
+                  strokeWidth: 2,
                 ),
               )
             : commonCacheImageWidget(rf_google_logo, 20, fit: BoxFit.cover),

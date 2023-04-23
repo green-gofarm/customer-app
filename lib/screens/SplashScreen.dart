@@ -1,7 +1,9 @@
 import 'package:customer_app/main.dart';
+import 'package:customer_app/screens/SelectCityScreen.dart';
 import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/utils/RFImages.dart';
 import 'package:customer_app/utils/RFWidget.dart';
+import 'package:customer_app/utils/StorageUtil.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:customer_app/utils/RFColors.dart';
@@ -29,14 +31,26 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     } catch (e) {
       logger.e("Auto sign in failed", e);
-    } finally {
-      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+    }
+  }
+
+  Future<void> handleNavigate() async {
+    final storedCities = await StorageUtil.getCities();
+    final storedHashtags = await StorageUtil.getHashtags();
+
+    if (storedCities.isNotEmpty && storedHashtags.isNotEmpty) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, RoutePaths.HOME.value, (route) => false);
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SelectCityScreen()));
     }
   }
 
   Future<void> init() async {
     await Future.delayed(Duration(milliseconds: 500));
     await autoSignIn();
+    await handleNavigate();
   }
 
   @override

@@ -1,6 +1,6 @@
 class RequestOptions {
   final Map<String, String>? headers;
-  final Map<String, String>? queryParams;
+  final Map<String, dynamic>? queryParams;
   final dynamic body;
 
   RequestOptions({

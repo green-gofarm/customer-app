@@ -29,9 +29,9 @@ class RoomDetailArguments {
 
   RoomDetailArguments(
       {required this.farmstayId,
-        required this.roomId,
-        this.defaultDatetime,
-        this.onBack});
+      required this.roomId,
+      this.defaultDatetime,
+      this.onBack});
 }
 
 class RoomDetailScreen extends StatefulWidget {
@@ -42,9 +42,9 @@ class RoomDetailScreen extends StatefulWidget {
 
   RoomDetailScreen(
       {required this.farmstayId,
-        required this.roomId,
-        this.defaultDatetime,
-        this.onBack});
+      required this.roomId,
+      this.defaultDatetime,
+      this.onBack});
 
   @override
   _RoomDetailScreenState createState() => _RoomDetailScreenState();
@@ -80,10 +80,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     setState(() {
       farmstayId = widget.farmstayId;
       roomId = widget.roomId;
-      defaultDateTime = widget.defaultDatetime ?? DateTimeUtil.getTomorrow();
-      _tempTickets = defaultDateTime != null ? {defaultDateTime!: 1} : {};
-      _controller.selectedDates =
-      defaultDateTime != null ? [defaultDateTime!] : [];
+      _tempTickets = {};
+      _controller.selectedDates = [];
     });
 
     tagCategoryStore.getAllTagCategories();
@@ -97,26 +95,26 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return WillPopScope(
         child: Observer(
             builder: (_) => Scaffold(
-              backgroundColor: mainBgColor,
-              body: NestedScrollView(
-                headerSliverBuilder: _headerSliverBuilder,
-                body: _buildBody(room),
-              ),
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      offset: Offset(0, -1),
-                      // Offset for the shadow, change as needed
-                      blurRadius: 2, // Adjust the blur radius as needed
+                  backgroundColor: mainBgColor,
+                  body: NestedScrollView(
+                    headerSliverBuilder: _headerSliverBuilder,
+                    body: _buildBody(room),
+                  ),
+                  bottomNavigationBar: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          offset: Offset(0, -1),
+                          // Offset for the shadow, change as needed
+                          blurRadius: 2, // Adjust the blur radius as needed
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: _buildBottomNavigationBar(room),
-              ),
-            )),
+                    child: _buildBottomNavigationBar(room),
+                  ),
+                )),
         onWillPop: () async {
           if (widget.onBack != null) {
             widget.onBack!();
@@ -242,13 +240,12 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text((room?.name ?? ""), style: boldTextStyle(size: 20)),
+            Text((room?.name ?? ""), style: boldTextStyle(size: 18)),
             room?.price != null
-                ? Text(
-                "${NumberUtil.formatIntPriceToVnd(room!.price)} / vé",
-                style: boldTextStyle(size: 16, color: rf_primaryColor))
+                ? Text("${NumberUtil.formatIntPriceToVnd(room!.price)} / ngày",
+                    style: boldTextStyle(size: 16, color: rf_primaryColor))
                 : Text("Miễn phí",
-                style: boldTextStyle(size: 16, color: rf_primaryColor)),
+                    style: boldTextStyle(size: 16, color: rf_primaryColor)),
           ],
         ),
       ],
@@ -267,21 +264,21 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           SizedBox(height: 8),
           room?.description != null
               ? Text(
-            room!.description!,
-            style: primaryTextStyle(size: 14),
-            textAlign: TextAlign.justify,
-          )
+                  room!.description!,
+                  style: primaryTextStyle(size: 14),
+                  textAlign: TextAlign.justify,
+                )
               : Text("Chưa có mô tả",
-              style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+                  style: secondaryTextStyle(fontStyle: FontStyle.italic)),
         ],
       ),
     );
   }
 
-  List<CreateCartItem> convertTempTicketsToList() {
+  List<CreateCartItem> convertTempTicketsToList(Map<DateTime, int> tickets) {
     List<CreateCartItem> resultList = [];
 
-    _tempTickets.forEach((key, value) {
+    tickets.forEach((key, value) {
       for (int i = 0; i < value; i++) {
         resultList.add(
           CreateCartItem(
@@ -296,10 +293,15 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return resultList;
   }
 
+  void handleOnSubmit(Map<DateTime, int> tickets) async {
+    if (cartStore.cart?.rooms != null) {
+      await handleRemoveFromCart();
+    }
+    handleAddToCart(tickets);
+  }
+
   Widget _buildBottomNavigationBar(RoomModel? room) {
-    if (_tempTickets.isEmpty ||
-        room == null ||
-        scheduleStore.roomSchedule == null) {
+    if (room == null) {
       return _buildCartOnlyBottom();
     }
 
@@ -313,20 +315,26 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           SizedBox(width: 8),
           Expanded(
             child: sSAppButton(
-              enabled: totalTempTicket > 0,
+              enabled: !cartStore.loading,
               context: context,
-              title: 'Mua ngay (${totalTempTicket})',
+              title: totalTempTicket > 0
+                  ? 'Vé (${totalTempTicket})'
+                  : 'Cập nhật giỏ hàng',
               child: cartStore.loading
                   ? SizedBox(
-                width: 14,
-                height: 14,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  strokeWidth: 2,
-                ),
-              )
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 2,
+                      ),
+                    )
                   : null,
               onPressed: () async {
+                if (totalTempTicket <= 0) {
+                  handleOnSubmit({});
+                  return;
+                }
                 await showModalBottomSheet<Map<DateTime, int>>(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -338,8 +346,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     return RoomAddToCartBottomSheet(
                       room: room,
                       listItem: _tempTickets,
-                      onSubmit: handleAddToCart,
-                      onUpdatedQuantity: handleUpdateQuantity,
+                      onSubmit: handleOnSubmit,
                       schedule: scheduleStore.roomSchedule!.schedule,
                     );
                   },
@@ -371,7 +378,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           children: [
             Center(
               child: Icon(Icons.shopping_cart_outlined,
-                  size: 36,
+                  size: 32,
                   color: cartStore.hasAvailableCart()
                       ? Colors.white
                       : Colors.black),
@@ -461,7 +468,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         children: [
           Row(
             children: [
-              Text('Đặt vé'.toUpperCase(), style: boldTextStyle()),
+              Text('Đặt phòng'.toUpperCase(), style: boldTextStyle()),
               16.width,
             ],
           ),
@@ -473,7 +480,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                 onViewChanged: (start, end) async {
                   final centerDay = DateTimeUtil.getCenterDate(start, end);
                   final limit =
-                  DateTimeUtil.getLongestPeriod(start, end, centerDay);
+                      DateTimeUtil.getLongestPeriod(start, end, centerDay);
                   await getSchedule(farmstayId, roomId,
                       date: centerDay, limit: limit);
                 },
@@ -547,26 +554,35 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
   Future<void> getCart(int farmstayId) async {
     if (authStore.isAuthenticated()) {
       await cartStore.getCustomerCartInFarmstay(farmstayId);
-      setState(() {});
+      if (cartStore.cart != null) {
+        setState(() {
+          cartStore.cart!.rooms.forEach((room) {
+            if (room.itemId == roomId) {
+              _tempTickets.update(room.date, (value) => value + 1,
+                  ifAbsent: () => 1);
+            }
+          });
+
+          _controller.selectedDates = _tempTickets.keys
+              .where((date) => _tempTickets[date]! > 0)
+              .toList();
+        });
+      }
     }
   }
 
   Future<void> getSchedule(int farmstayId, int roomId,
       {DateTime? date, int? limit}) async {
     await scheduleStore.getRoomSchedule(
-        farmstayId: farmstayId,
-        roomId: roomId,
-        date: date,
-        limit: limit ?? 15);
+        farmstayId: farmstayId, roomId: roomId, date: date, limit: limit ?? 15);
   }
 
   Future<void> getRoomInfo(int farmstayId, int roomId) async {
-    await roomStore.getRoomDetail(
-        farmstayId: farmstayId, roomId: roomId);
+    await roomStore.getRoomDetail(farmstayId: farmstayId, roomId: roomId);
     final room = roomStore.roomDetail;
     setState(() {
       if (room != null) {
-        imageUrls.add(room.images.avatar!);
+        imageUrls.add(room.images.avatar);
         imageUrls.addAll(room.images.others);
       }
     });
@@ -618,16 +634,31 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     });
   }
 
-  void handleAddToCart() async {
-    final items = convertTempTicketsToList();
+  void handleAddToCart(Map<DateTime, int> tickets) async {
+    final items = convertTempTicketsToList(tickets);
     final isSuccessful = await cartStore.addToCart(farmstayId, items);
     if (!isSuccessful) {
-      toast("Có lỗi xảy ra, không thể đặt vé");
       return;
     }
 
-    toast("Thêm thành công");
+    toast("Cập nhật thành công");
     await _refresh(farmstayId, roomId);
+  }
+
+  Future<void> handleRemoveFromCart() async {
+    final removeList = cartStore.cart!.rooms
+        .where((ticket) => ticket.itemId == roomId)
+        .map((ticket) => ticket.id)
+        .toList();
+    if (removeList.length <= 0) {
+      return;
+    }
+
+    final isSuccessful = await cartStore.removeItems(farmstayId, removeList);
+    if (!isSuccessful) {
+      toast("Có lỗi xảy ra");
+      return;
+    }
   }
 
   void handleGoToCartDetailScreen() {

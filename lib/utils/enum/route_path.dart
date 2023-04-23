@@ -6,6 +6,7 @@ class RouteConstants {
   static const String FARMSTAY_DETAIL = "/farmstay";
   static const String ACTIVITY_DETAIL = "/activity";
   static const String ROOM_DETAIL = "/room";
+  static const String CART_LIST = "/carts";
 }
 
 
@@ -17,6 +18,7 @@ enum RoutePaths {
   FARMSTAY_DETAIL,
   ACTIVITY_DETAIL,
   ROOM_DETAIL,
+  CART_LIST,
 }
 
 extension RoutePathsExtension on RoutePaths {
@@ -36,6 +38,8 @@ extension RoutePathsExtension on RoutePaths {
         return RouteConstants.ACTIVITY_DETAIL;
       case RoutePaths.ROOM_DETAIL:
         return RouteConstants.ROOM_DETAIL;
+      case RoutePaths.CART_LIST:
+        return RouteConstants.CART_LIST;
     }
   }
 
@@ -55,6 +59,8 @@ extension RoutePathsExtension on RoutePaths {
         return RoutePaths.ACTIVITY_DETAIL;
       case RouteConstants.ROOM_DETAIL:
         return RoutePaths.ROOM_DETAIL;
+      case RouteConstants.CART_LIST:
+        return RoutePaths.CART_LIST;
       default:
         throw ArgumentError('Invalid route value: $value');
     }

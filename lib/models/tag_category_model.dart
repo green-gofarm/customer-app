@@ -4,7 +4,7 @@ class TagCategoryModel {
   final int id;
   final String name;
   final TagCategoryStatuses status;
-  final String description;
+  final String? description;
   final DateTime createdDate;
   final DateTime? updatedDate;
 
@@ -28,5 +28,16 @@ class TagCategoryModel {
           ? DateTime.parse(json['updatedDate'])
           : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'status': status.value,
+      'description': description,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedDate': updatedDate?.toIso8601String(),
+    };
   }
 }

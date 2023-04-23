@@ -39,6 +39,7 @@ abstract class _ActivityScheduleStore with Store {
 
     await result.fold(
       (error) {
+        activitySchedule = null;
         message = error;
       },
       (schedule) {

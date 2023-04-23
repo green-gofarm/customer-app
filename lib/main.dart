@@ -1,5 +1,7 @@
+import 'package:customer_app/fragment/CartFragment.dart';
 import 'package:customer_app/screens/FarmstayDetailScreen.dart';
 import 'package:customer_app/screens/RoomDetailScreen.dart';
+import 'package:customer_app/store/province/province_store.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
@@ -27,6 +29,7 @@ import 'firebase_options.dart';
 final AppStore appStore = AppStore();
 final AuthStore authStore = AuthStore();
 final TagCategoryStore tagCategoryStore = TagCategoryStore();
+final ProvinceStore provinceStore = ProvinceStore();
 
 final materialAppKey = GlobalKey();
 final Logger logger = Logger(
@@ -86,6 +89,7 @@ class MyApp extends StatelessWidget {
             RoutePaths.SIGN_IN.value: (context) => SignInScreen(),
             RoutePaths.SIGN_UP.value: (context) => SignUpScreen(),
             RoutePaths.HOME.value: (context) => HomeScreen(),
+            RoutePaths.CART_LIST.value: (context) => CartFragment(),
           },
           onGenerateRoute: (settings) {
             switch (settings.name) {
@@ -94,6 +98,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                   builder: (context) => FarmstayDetailScreen(
                     farmstayId: args.farmstayId,
+                    onBack: args.onBack,
                   ),
                 );
               case RouteConstants.ACTIVITY_DETAIL:

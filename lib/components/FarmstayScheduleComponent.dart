@@ -5,7 +5,6 @@ import 'package:customer_app/models/farmstay_room_schedule_item.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/farmstay_schedule/farmstay_schedule_store.dart';
-import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/schedule_item_status.dart';
@@ -19,7 +18,11 @@ class FarmstayScheduleComponent extends StatefulWidget {
   final FarmstayDetailModel farmstay;
   final VoidCallback refresh;
 
-  FarmstayScheduleComponent({required this.farmstay, required this.refresh});
+  final GlobalKey<FarmstayScheduleComponentState> key;
+
+  FarmstayScheduleComponent(
+      {required this.farmstay, required this.refresh, required this.key})
+      : super(key: key);
 
   @override
   FarmstayScheduleComponentState createState() =>
@@ -100,6 +103,10 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
   }
 
   Future<void> init() async {
+    await refresh();
+  }
+
+  Future<void> refresh() async {
     await store.getFarmstaySchedule(
         farmstayId: widget.farmstay.id, date: selectedDate);
     setState(() {
@@ -124,41 +131,53 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
           8.height,
           Text('Hoạt động', style: boldTextStyle()).paddingLeft(4),
           8.height,
-          activityScheduleList.length < 1
-              ? Text("Không có hoạt động trong ngày.",
-                      style: secondaryTextStyle(fontStyle: FontStyle.italic))
-                  .paddingBottom(8.0)
-              : ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: activityScheduleList.length,
-                  itemBuilder: (context, index) {
-                    return ActivityFragment(context,
-                        item: activityScheduleList[index], date: selectedDate);
-                  },
-                ),
+          _buildListActivities(),
           Text('Phòng ở', style: boldTextStyle()).paddingLeft(4),
           8.height,
-          roomScheduleList.length < 1
-              ? Text("Không có phòng trống trong ngày.",
-                      style: secondaryTextStyle(fontStyle: FontStyle.italic))
-                  .paddingBottom(8.0)
-              : ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: roomScheduleList.length,
-                  itemBuilder: (context, index) {
-                    return RoomFragment(context,
-                        item: roomScheduleList[index], date: selectedDate);
-                  },
-                ),
+          _buildListRooms(),
         ],
       ),
     ).paddingAll(0);
+  }
+
+  Widget _buildListActivities() {
+    final availableList =
+        activityScheduleList.where((element) => element.activity != null);
+    return availableList.length < 1
+        ? Text("Không có hoạt động trong ngày.",
+                style: secondaryTextStyle(fontStyle: FontStyle.italic))
+            .paddingBottom(8.0)
+        : ListView.builder(
+            padding: EdgeInsets.all(0),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: activityScheduleList.length,
+            itemBuilder: (context, index) {
+              return ActivityFragment(context,
+                  item: activityScheduleList[index], date: selectedDate);
+            },
+          );
+  }
+
+  Widget _buildListRooms() {
+    final availableList =
+        roomScheduleList.where((element) => element.room != null);
+    return availableList.length < 1
+        ? Text("Không có phòng trống trong ngày.",
+                style: secondaryTextStyle(fontStyle: FontStyle.italic))
+            .paddingBottom(8.0)
+        : ListView.builder(
+            padding: EdgeInsets.all(0),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: roomScheduleList.length,
+            itemBuilder: (context, index) {
+              return RoomFragment(context,
+                  item: roomScheduleList[index], date: selectedDate);
+            },
+          );
   }
 
   Widget RoomFragment(BuildContext context,
@@ -176,7 +195,7 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         children: [
           4.width,
           rfCommonCachedNetworkImage(
-            (room.images.avatar ?? default_image).validate(),
+            (room.images.avatar).validate(),
             fit: BoxFit.cover,
             height: 44,
             width: 60,
@@ -234,7 +253,7 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         children: [
           4.width,
           rfCommonCachedNetworkImage(
-            (item.activity!.images.avatar ?? default_image).validate(),
+            (item.activity!.images.avatar).validate(),
             fit: BoxFit.cover,
             height: 44,
             width: 60,

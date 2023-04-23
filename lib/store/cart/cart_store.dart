@@ -1,6 +1,7 @@
 import 'package:customer_app/data/cart/cart_api.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/Cart.dart';
+import 'package:customer_app/models/all_cart/CartItemModel.dart';
 import 'package:customer_app/models/create_cart_item.dart';
 import 'package:customer_app/utils/number_utils.dart';
 import 'package:mobx/mobx.dart';
@@ -16,6 +17,9 @@ abstract class _CartStore with Store {
   Cart? cart = null;
 
   @observable
+  List<CartItemModel> allCarts = [];
+
+  @observable
   bool loading = false;
 
   @observable
@@ -23,6 +27,27 @@ abstract class _CartStore with Store {
 
   void clear() {
     message = null;
+  }
+
+  @action
+  Future<void> getAllCustomerCarts() async {
+    clear();
+    loading = true;
+
+    final result = await _api.getAllCustomerCarts();
+    await result.fold((errorMessage) {
+      message = errorMessage;
+      allCarts = [];
+    }, (r) {
+      allCarts = r;
+    });
+
+    logger.i("Get ALL Cart: $allCarts");
+    if (message != null) {
+      logger.e("Error message get ALL cart: $message}");
+    }
+
+    loading = false;
   }
 
   @action
@@ -80,7 +105,7 @@ abstract class _CartStore with Store {
     clear();
 
     bool isRemoved = false;
-    final result = await _api.removeItems(farmstayId, uid);
+    final result = await _api.removeItem(farmstayId, uid);
     await result.fold((errorMessage) => message, (r) => isRemoved = r);
 
     logger.i("Remove Cart: $cart");
@@ -108,6 +133,24 @@ abstract class _CartStore with Store {
 
     loading = false;
     return isCleared;
+  }
+
+  @action
+  Future<bool> removeItems(int farmstayId, List<int> items) async {
+    loading = true;
+    clear();
+
+    bool isRemoved = false;
+    final result = await _api.removeItems(farmstayId, items);
+    await result.fold((errorMessage) => message, (r) => isRemoved = r);
+
+    logger.i("Remove multiple item: $cart");
+    if (message != null) {
+      logger.e("Error message Remove multiple item: $message}");
+    }
+
+    loading = false;
+    return isRemoved;
   }
 
   @action

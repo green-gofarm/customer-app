@@ -1,6 +1,8 @@
+import 'package:customer_app/screens/SelectCityScreen.dart';
 import 'package:customer_app/screens/SignUpScreen.dart';
 import 'package:customer_app/utils/JSWidget.dart';
 import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/StorageUtil.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/SocialSignInWidget.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +24,24 @@ class _SignInState extends State<SignInScreen> {
     init();
   }
 
+  Future<void> handleNavigate() async {
+    final storedCities = await StorageUtil.getCities();
+    final storedHashtags = await StorageUtil.getHashtags();
+
+    if (storedCities.isNotEmpty && storedHashtags.isNotEmpty) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, RoutePaths.HOME.value, (route) => false);
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SelectCityScreen()));
+    }
+  }
+
   void init() async {
     authStore.errorMessage = null;
     final isAuthenticated = await authStore.isAuthenticated();
-    if(isAuthenticated) {
-      Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+    if (isAuthenticated) {
+      handleNavigate();
       return;
     }
   }
@@ -75,7 +90,8 @@ class _SignInState extends State<SignInScreen> {
                   onPressed: () {
                     SignUpScreen().launch(context);
                   },
-                  child: Text('Đăng ký', style: boldTextStyle(size: 14, color: rf_primaryColor)),
+                  child: Text('Đăng ký',
+                      style: boldTextStyle(size: 14, color: rf_primaryColor)),
                 ),
               ],
             ),

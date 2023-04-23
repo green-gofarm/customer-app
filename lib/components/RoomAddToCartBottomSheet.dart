@@ -9,21 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-typedef OnSubmitCallback = void Function();
-typedef OnUpdateQuantityCallback = void Function(DateTime, int);
+typedef OnSubmitCallback = void Function(Map<DateTime, int>);
 
 class RoomAddToCartBottomSheet extends StatefulWidget {
   final Map<DateTime, int> listItem;
   final OnSubmitCallback onSubmit;
   final RoomModel room;
-  final OnUpdateQuantityCallback onUpdatedQuantity;
   final Map<String, ScheduleItemModel> schedule;
 
   RoomAddToCartBottomSheet({
     required this.listItem,
     required this.onSubmit,
     required this.room,
-    required this.onUpdatedQuantity,
     required this.schedule,
   });
 
@@ -45,7 +42,6 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
   void decrementQuantity(DateTime date) {
     setState(() {
         _item.remove(date);
-        widget.onUpdatedQuantity(date, 0);
     });
   }
 
@@ -59,7 +55,7 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
           _itemDetail(),
           Divider(color: Colors.grey),
           Container(
-            height: MediaQuery.of(context).size.height * 0.5 - 140,
+            height: MediaQuery.of(context).size.height * 0.5 - 150,
             child: _listItem(),
           ),
           Divider(color: Colors.grey),
@@ -70,10 +66,10 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
             ),
             child: sSAppButton(
               context: context,
-              title: 'Thêm vào giỏ (${_item.length})',
+              title: 'Cập nhật giỏ hàng (${_item.length})',
               onPressed: () {
                 Navigator.pop(context);
-                widget.onSubmit();
+                widget.onSubmit(_item);
               },
             ),
           ),
@@ -102,7 +98,7 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
               borderRadius: BorderRadius.circular(8),
               child: FadeInImage.assetNetwork(
                 placeholder: default_image,
-                image: widget.room.images.avatar!,
+                image: widget.room.images.avatar,
                 fit: BoxFit.cover,
               )),
         ),

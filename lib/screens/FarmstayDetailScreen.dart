@@ -27,14 +27,16 @@ import 'package:customer_app/utils/number_utils.dart';
 
 class FarmstayDetailArguments {
   final int farmstayId;
+  final VoidCallback onBack;
 
-  FarmstayDetailArguments({required this.farmstayId});
+  FarmstayDetailArguments({required this.farmstayId, required this.onBack});
 }
 
 class FarmstayDetailScreen extends StatefulWidget {
   final int farmstayId;
+  final VoidCallback onBack;
 
-  FarmstayDetailScreen({required this.farmstayId});
+  FarmstayDetailScreen({required this.farmstayId, required this.onBack});
 
   @override
   _FarmstayDetailScreenState createState() => _FarmstayDetailScreenState();
@@ -50,6 +52,9 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   List<ActivityModel> activities = [];
   List<RoomModel> rooms = [];
 
+  GlobalKey<FarmstayScheduleComponentState> farmstayScheduleComponentKey =
+      GlobalKey<FarmstayScheduleComponentState>();
+
   @override
   void initState() {
     super.initState();
@@ -61,7 +66,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
     activities.clear();
     rooms.clear();
 
-    imageUrls.add(farmstay.images.avatar!);
+    imageUrls.add(farmstay.images.avatar);
     imageUrls.addAll(farmstay.images.others);
     activities.addAll(farmstay.activities);
     rooms.addAll(farmstay.rooms);
@@ -69,6 +74,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
 
   Future<void> _refresh(int id) async {
     await farmstayStore.getFarmstayDetail(id);
+    farmstayScheduleComponentKey.currentState?.refresh();
     setState(() {
       if (farmstayStore.farmstayDetail != null) {
         prepareShowDetail(farmstayStore.farmstayDetail!);
@@ -86,18 +92,25 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   PageController pageController = PageController(initialPage: 0);
   int currentIndexPage = 0;
 
+  Future<bool> _onWillPop() async {
+    widget.onBack();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => Scaffold(
-        backgroundColor: mainBgColor,
-        body: NestedScrollView(
-          headerSliverBuilder: _buildHeader,
-          body: _buildBody(),
+    return WillPopScope(
+        child: Observer(
+          builder: (_) => Scaffold(
+            backgroundColor: mainBgColor,
+            body: NestedScrollView(
+              headerSliverBuilder: _buildHeader,
+              body: _buildBody(),
+            ),
+            bottomNavigationBar: _buildBottom(),
+          ),
         ),
-        bottomNavigationBar: _buildBottom(),
-      ),
-    );
+        onWillPop: _onWillPop);
   }
 
   List<Widget> _buildHeader(BuildContext context, bool innerBoxIsScrolled) {
@@ -282,6 +295,35 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                 )
               : Text("Chưa có mô tả",
                   style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+        ],
+      ),
+    );
+  }
+
+  Widget _farmstaySchedule() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Lịch hoạt động'.toUpperCase(),
+            style: boldTextStyle(),
+          ),
+          farmstayStore.farmstayDetail != null
+              ? FarmstayScheduleComponent(
+                  farmstay: farmstayStore.farmstayDetail!,
+                  refresh: () {
+                    _refresh(widget.farmstayId);
+                  },
+                  key: farmstayScheduleComponentKey,
+                )
+              : Text(
+                  'Chưa có hoạt động nào',
+                  style: secondaryTextStyle(fontStyle: FontStyle.italic),
+                )
         ],
       ),
     );
@@ -534,34 +576,6 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
     );
   }
 
-  Widget _farmstaySchedule() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(12),
-      width: context.width(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Lịch hoạt động'.toUpperCase(),
-            style: boldTextStyle(),
-          ),
-          farmstayStore.farmstayDetail != null
-              ? FarmstayScheduleComponent(
-                  farmstay: farmstayStore.farmstayDetail!,
-                  refresh: () {
-                    _refresh(widget.farmstayId);
-                  },
-                )
-              : Text(
-                  'Chưa có hoạt động nào',
-                  style: secondaryTextStyle(fontStyle: FontStyle.italic),
-                )
-        ],
-      ),
-    );
-  }
-
   Widget _farmstayFaq() {
     final faqs = farmstayStore.farmstayDetail?.faqs ?? [];
 
@@ -692,7 +706,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                   borderRadius: BorderRadius.circular(2.0),
                   child: FadeInImage.assetNetwork(
                     placeholder: default_image,
-                    image: activity.images.avatar!,
+                    image: activity.images.avatar,
                     height: 180,
                     width: context.width() * 0.7,
                     fit: BoxFit.cover,
@@ -783,7 +797,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                   borderRadius: BorderRadius.circular(2.0),
                   child: FadeInImage.assetNetwork(
                     placeholder: default_image,
-                    image: room.images.avatar!,
+                    image: room.images.avatar,
                     height: 180,
                     width: context.width() * 0.7,
                     fit: BoxFit.cover,
@@ -856,9 +870,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
     CartDetailFragment(
       farmstayId: farmstayId,
       onBack: () {
-        if (farmstayId != null) {
-          _refresh(farmstayId);
-        }
+        _refresh(farmstayId);
       },
     ).launch(context);
   }

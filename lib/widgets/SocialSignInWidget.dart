@@ -1,14 +1,11 @@
 import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/utils/RFColors.dart';
-import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/GoogleButtonWidget.dart';
 import 'package:customer_app/widgets/LoadingMixin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:customer_app/screens/RFHomeScreen.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 const BUTTON_TEXT = "Đăng nhập với Google";

@@ -157,6 +157,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Column(
               children: [
@@ -200,7 +201,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
                     Icon(Icons.local_activity_outlined, size: 20),
                     8.width,
                     if (booking.rooms.length > 0)
-                      Text("${booking.rooms.length} phòng"),
+                      Text("${booking.rooms.length} ngày"),
                     if (booking.activities.length > 0)
                       Row(
                         children: [
@@ -222,7 +223,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text('Tổng giá', style: secondaryTextStyle()),
+                        child: Text('Tổng tiền', style: secondaryTextStyle()),
                       ),
                       Text(
                           '${NumberUtil.formatIntPriceToVnd(booking.totalPrice)}',

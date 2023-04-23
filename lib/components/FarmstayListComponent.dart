@@ -1,6 +1,5 @@
 import 'package:customer_app/models/farmstay_model.dart';
 import 'package:customer_app/screens/FarmstayDetailScreen.dart';
-import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -27,6 +26,15 @@ class FarmstayListComponent extends StatelessWidget {
               fit: BoxFit.cover,
               height: 170,
               width: context.width() - 32,
+              imageErrorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                return Image.asset(
+                  default_image,
+                  fit: BoxFit.cover,
+                  height: 170,
+                  width: context.width() - 32,
+                );
+              },
             ),
           ).paddingSymmetric(horizontal: 16),
           8.height,
@@ -66,15 +74,6 @@ class FarmstayListComponent extends StatelessWidget {
                       style: primaryTextStyle(
                           fontStyle: FontStyle.italic, size: 12),
                     ),
-              8.width,
-              if (farmstay.rating != null && farmstay.rating! > 0.0)
-                Text(
-                  "20 nhận xét",
-                  style: primaryTextStyle(
-                      size: 12,
-                      color: rf_primaryColor,
-                      weight: FontWeight.bold),
-                ),
             ],
           ).paddingSymmetric(horizontal: 16),
           4.height,
@@ -83,7 +82,7 @@ class FarmstayListComponent extends StatelessWidget {
               children: [
                 Icon(Icons.location_on, size: 12),
                 8.width,
-                Text(farmstay.address!.province!.name!,
+                Text(farmstay.address!.province!.name,
                     style: boldTextStyle(size: 12)),
               ],
             ).paddingSymmetric(horizontal: 16),
@@ -91,7 +90,10 @@ class FarmstayListComponent extends StatelessWidget {
         ],
       ),
     ).onTap(() {
-      FarmstayDetailScreen(farmstayId: farmstay.id).launch(context);
+      FarmstayDetailScreen(
+        farmstayId: farmstay.id,
+        onBack: () {},
+      ).launch(context);
     });
   }
 }

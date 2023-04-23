@@ -1,7 +1,9 @@
 import 'package:customer_app/data/booking/booking_api.dart';
 import 'package:customer_app/main.dart';
+import 'package:customer_app/models/booking_detail/booking_detail_model.dart';
 import 'package:customer_app/models/booking_model.dart';
 import 'package:customer_app/models/customer_booking/CustomerBookingModel.dart';
+import 'package:customer_app/models/refund_model.dart';
 import 'package:mobx/mobx.dart';
 
 part 'booking_store.g.dart';
@@ -18,7 +20,13 @@ abstract class _BookingStore with Store {
   String? referenceId = null;
 
   @observable
+  BookingDetailModel? bookingDetail = null;
+
+  @observable
   BookingModel? booking = null;
+
+  @observable
+  RefundDetail? refundDetail = null;
 
   @observable
   bool loading = false;
@@ -107,19 +115,89 @@ abstract class _BookingStore with Store {
   @action
   Future<void> getBookingById(int id) async {
     clear();
-    booking = null;
     loading = true;
 
     final result = await _api.getBookingById(id);
-    await result.fold((errorMessage) => message = errorMessage, (r) {
-      booking = r;
+    await result.fold((errorMessage) {
+      message = errorMessage;
+      bookingDetail = null;
+    }, (r) {
+      bookingDetail = r;
     });
 
-    logger.i("Get booking by id: ${booking?.toJson().toString()}");
+    logger.i("Get booking by id: ${bookingDetail?.toJson().toString()}");
     if (message != null) {
-      logger.e("Error message Get booking: $message");
+      logger.e("Error message Get bookingby id: $message");
     }
 
     loading = false;
+  }
+
+  @action
+  Future<void> getBookingRefundDetail(int id) async {
+    clear();
+    loading = true;
+
+    final result = await _api.getBookingRefundDetail(id);
+    await result.fold((errorMessage) {
+      message = errorMessage;
+      refundDetail = null;
+    }, (r) {
+      refundDetail = r;
+    });
+
+    logger.i("Get refundDetail: $refundDetail}");
+    if (message != null) {
+      logger.e("Error message Get refundDetail: $message");
+    }
+
+    loading = false;
+  }
+
+  @action
+  Future<bool> createFeedback(int id,
+      {required double rating, required String comment}) async {
+    clear();
+    loading = true;
+
+    bool created = false;
+    final result = await _api.createFeedback(id, rating, comment);
+    await result.fold((errorMessage) {
+      message = errorMessage;
+    }, (r) {
+      created = r;
+    });
+
+    logger.i("Create feedback: $created}");
+    if (message != null) {
+      logger.e("Error message create feedback: $message");
+    }
+
+    loading = false;
+
+    return created;
+  }
+
+  @action
+  Future<bool> cancelBooking(int id) async {
+    clear();
+    loading = true;
+
+    bool created = false;
+    final result = await _api.cancelBooking(id);
+    await result.fold((errorMessage) {
+      message = errorMessage;
+    }, (r) {
+      created = r;
+    });
+
+    logger.i("Cancel booking: $created}");
+    if (message != null) {
+      logger.e("Error message Cancel booking: $message");
+    }
+
+    loading = false;
+
+    return created;
   }
 }

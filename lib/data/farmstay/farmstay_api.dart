@@ -23,17 +23,22 @@ class FarmstayApi {
   });
 
   FutureEither<PagingModel<FarmstayModel>> searchFarmstayWithElastic(
-      Map<String, String> params) async {
+      Map<String, dynamic> params) async {
     final url = '${ENP.FARMSTAY}/elastic-search';
     final options = RequestOptions(queryParams: params);
 
     try {
-      final response = await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
+      final response =
+          await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (payload["data"] == null) {
+          throw (UNKNOWN_ERROR_MESSAGE);
+        }
+
         final data = payload['data'] as Map<String, dynamic>;
-        final farmstayPaging =PagingModel<FarmstayModel>.fromJson(
+        final farmstayPaging = PagingModel<FarmstayModel>.fromJson(
             data, (json) => FarmstayModel.fromJson(json));
         return right(farmstayPaging);
       }
@@ -49,12 +54,13 @@ class FarmstayApi {
     final options = RequestOptions(queryParams: params);
 
     try {
-      final response = await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
+      final response =
+          await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
-        final farmstayPaging =PagingModel<FarmstayModel>.fromJson(
+        final farmstayPaging = PagingModel<FarmstayModel>.fromJson(
             data, (json) => FarmstayModel.fromJson(json));
         return right(farmstayPaging);
       }
@@ -69,8 +75,8 @@ class FarmstayApi {
     final options = RequestOptions(queryParams: {"limit": "$limit"});
 
     try {
-      final response =
-          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequestCustomUrl(
+          url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -90,8 +96,8 @@ class FarmstayApi {
     final options = RequestOptions(queryParams: {"limit": "$limit"});
 
     try {
-      final response =
-          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequestCustomUrl(
+          url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -111,8 +117,8 @@ class FarmstayApi {
     final options = RequestOptions(queryParams: {"limit": "$limit"});
 
     try {
-      final response =
-          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequestCustomUrl(
+          url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -133,8 +139,8 @@ class FarmstayApi {
         RequestOptions(queryParams: {"date": "$date", "limit": "$limit"});
 
     try {
-      final response =
-          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequestCustomUrl(
+          url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -156,8 +162,8 @@ class FarmstayApi {
         RequestOptions(queryParams: {"date": "$date", "limit": "$limit"});
 
     try {
-      final response =
-          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequestCustomUrl(
+          url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -179,8 +185,8 @@ class FarmstayApi {
         RequestOptions(queryParams: {"date": "$date", "limit": "$limit"});
 
     try {
-      final response =
-          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
+      final response = await _httpClient.sendUnAuthRequestCustomUrl(
+          url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -203,7 +209,7 @@ class FarmstayApi {
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        if(payload["data"] == null) {
+        if (payload["data"] == null) {
           throw (FARMSTAY_NOT_FOUND);
         }
         final data = payload['data'] as Map<String, dynamic>;
@@ -215,12 +221,13 @@ class FarmstayApi {
     }
   }
 
-  FutureEither<ActivityModel> getActivityDetail(int farmstayId, int activityId) async {
+  FutureEither<ActivityModel> getActivityDetail(
+      int farmstayId, int activityId) async {
     final url = '${ENP.FARMSTAY}/$farmstayId/${ENP.ACTIVITIES}/$activityId';
 
     try {
       final response =
-      await _httpClient.sendUnAuthRequest(url, METHOD.GET, null);
+          await _httpClient.sendUnAuthRequest(url, METHOD.GET, null);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -238,12 +245,64 @@ class FarmstayApi {
 
     try {
       final response =
-      await _httpClient.sendUnAuthRequest(url, METHOD.GET, null);
+          await _httpClient.sendUnAuthRequest(url, METHOD.GET, null);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = payload['data'] as Map<String, dynamic>;
         return right(RoomModel.fromJson(data));
+      }
+      throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<PagingModel<FarmstayModel>> searchFarmstayElasticHome(
+      Map<String, dynamic> params) async {
+    final url = '${ENP.FARMSTAY}/elastic-search/home';
+    final options = RequestOptions(queryParams: params);
+
+    try {
+      final response =
+          await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (payload["data"] == null) {
+          throw (UNKNOWN_ERROR_MESSAGE);
+        }
+
+        final data = payload['data'] as Map<String, dynamic>;
+        final farmstayPaging = PagingModel<FarmstayModel>.fromJson(
+            data, (json) => FarmstayModel.fromJson(json));
+        return right(farmstayPaging);
+      }
+      throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<List<String>> getAutoComplete(String query) async {
+    final url = '${ENP.FARMSTAY}/autocomplete';
+    final options = RequestOptions(queryParams: {
+      "query": query,
+    });
+
+    try {
+      final response =
+          await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (payload["data"] is List) {
+          final data = (payload['data'] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList();
+          return right(data);
+        }
+        throw (UNKNOWN_ERROR_MESSAGE);
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
     } catch (e) {

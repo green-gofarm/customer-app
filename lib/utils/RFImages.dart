@@ -31,3 +31,4 @@ const rf_congratulate = "images/roomFinding/rf_congratulate.png";
 
 const big_logo = "images/brand/big-logo.png";
 const go_ram_logo = "images/brand/go-ram.png";
+const wrongkeyword = 'images/app/wrongkeyword.png';

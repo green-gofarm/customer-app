@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:customer_app/main.dart';
+import 'package:customer_app/models/booking_detail/booking_detail_model.dart';
 import 'package:customer_app/models/booking_model.dart';
 import 'package:customer_app/models/customer_booking/CustomerBookingModel.dart';
+import 'package:customer_app/models/refund_model.dart';
 import 'package:customer_app/utils/api/end_points.dart';
 import 'package:customer_app/utils/api/http_client.dart';
 import 'package:customer_app/utils/api/request_options.dart';
@@ -67,7 +69,7 @@ class BookingApi {
     }
   }
 
-  FutureEither<BookingModel> getBookingById(int id) async {
+  FutureEither<BookingDetailModel> getBookingById(int id) async {
     final url = '${ENP.BOOKING}/${id}';
 
     try {
@@ -79,8 +81,8 @@ class BookingApi {
           throw (UNKNOWN_ERROR_MESSAGE);
         }
 
-        final booking = BookingModel.fromJson(payload["data"]);
-        right(booking);
+        final booking = BookingDetailModel.fromJson(payload["data"]);
+        return right(booking);
       }
 
       throw (payload['resultMessage'] ?? GET_BOOKING_ERROR_MESSAGE);
@@ -131,6 +133,71 @@ class BookingApi {
         return right(url);
       }
       throw (payload['resultMessage'] ?? GET_CART_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<RefundDetail> getBookingRefundDetail(int bookingId) async {
+    final url =
+        '${ENP.CUSTOMER}/${ENP.BOOKING}/${bookingId}/check-cancel-status';
+
+    try {
+      final response = await _httpClient.sendRequest(url, METHOD.GET, null);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (payload["data"] == null) {
+          throw (UNKNOWN_ERROR_MESSAGE);
+        }
+
+        final booking = RefundDetail.fromJson(payload["data"]);
+        return right(booking);
+      }
+
+      throw (payload['resultMessage'] ?? GET_BOOKING_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<bool> createFeedback(
+      int bookingId, double rating, String comment) async {
+    final url = '${ENP.CUSTOMER}/${ENP.BOOKING}/${bookingId}/feedback';
+    final options = RequestOptions(body: {
+      "attachments": "",
+      "comment": comment,
+      "rating": rating,
+      "type": 2,
+    });
+
+    try {
+      final response = await _httpClient.sendRequest(url, METHOD.POST, options);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return right(true);
+      }
+
+      throw (payload['resultMessage'] ?? GET_BOOKING_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<bool> cancelBooking(int bookingId) async {
+    final url = '${ENP.CUSTOMER}/${ENP.BOOKING}/${bookingId}/cancel';
+    final options = RequestOptions(body: {});
+
+    try {
+      final response = await _httpClient.sendRequest(url, METHOD.POST, options);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return right(true);
+      }
+
+      throw (payload['resultMessage'] ?? GET_BOOKING_ERROR_MESSAGE);
     } catch (e) {
       return left(e.toString());
     }

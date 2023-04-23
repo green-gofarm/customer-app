@@ -5,91 +5,61 @@ import 'package:shimmer/shimmer.dart';
 class SkeletonFarmstayListComponent extends StatelessWidget {
   SkeletonFarmstayListComponent();
 
+  Widget shimmerContainer({required double width, required double height}) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        width: width,
+        height: height,
+        color: Colors.grey[300],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: Container(
-              height: 170,
+    return Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          16.height,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4.0),
+            child: shimmerContainer(
               width: context.width() - 32,
+              height: 170,
             ),
-          ),
-        ),
-        Container(
-          height: 170,
-          width: context.width() - 32,
-          decoration: boxDecorationWithRoundedCorners(
-              backgroundColor: black.withOpacity(0.2)),
-        ),
-        Positioned(
-          top: 16,
-          left: 16,
-          child: Column(
+          ).paddingSymmetric(horizontal: 16),
+          8.height,
+          Row(
+            children: [
+              shimmerContainer(width: 18, height: 18),
+              8.width,
+              shimmerContainer(width: context.width() * 0.6, height: 16),
+            ],
+          ).paddingSymmetric(horizontal: 16),
+          4.height,
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Icon(Icons.home_outlined, color: white, size: 18),
-                  8.width,
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Text(
-                      '',
-                      style: boldTextStyle(color: white),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RatingBarWidget(
-                    onRatingChanged: (rating) {},
-                    rating: 5.0,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    size: 16,
-                    disable: true,
-                    activeColor: Colors.yellow,
-                    filledIconData: Icons.star,
-                    halfFilledIconData: Icons.star_half,
-                    defaultIconData: Icons.star_border_outlined,
-                  ),
-                ],
-              ),
+              shimmerContainer(width: 18, height: 18),
+              4.width,
+              shimmerContainer(width: 40, height: 12),
             ],
-          ),
-        ),
-        Positioned(
-          bottom: 16,
-          right: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          ).paddingSymmetric(horizontal: 16),
+          4.height,
+          Row(
             children: [
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: white, size: 12),
-                  8.width,
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Text(
-                      '',
-                      style: boldTextStyle(color: white, size: 12),
-                    ),
-                  ),
-                ],
-              ),
+              shimmerContainer(width: 18, height: 18),
+              8.width,
+              shimmerContainer(width: context.width() * 0.4, height: 12),
             ],
-          ),
-        ),
-      ],
+          ).paddingSymmetric(horizontal: 16),
+          16.height,
+        ],
+      ),
     );
   }
 }

@@ -79,10 +79,8 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     setState(() {
       farmstayId = widget.farmstayId;
       activityId = widget.activityId;
-      defaultDateTime = widget.defaultDatetime ?? DateTimeUtil.getTomorrow();
-      _tempTickets = defaultDateTime != null ? {defaultDateTime!: 1} : {};
-      _controller.selectedDates =
-          defaultDateTime != null ? [defaultDateTime!] : [];
+      _tempTickets = {};
+      _controller.selectedDates = [];
     });
 
     tagCategoryStore.getAllTagCategories();
@@ -306,10 +304,10 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     );
   }
 
-  List<CreateCartItem> convertTempTicketsToList() {
+  List<CreateCartItem> convertTempTicketsToList(Map<DateTime, int> tickets) {
     List<CreateCartItem> resultList = [];
 
-    _tempTickets.forEach((key, value) {
+    tickets.forEach((key, value) {
       for (int i = 0; i < value; i++) {
         resultList.add(
           CreateCartItem(
@@ -324,10 +322,15 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     return resultList;
   }
 
+  void handleOnSubmit (Map<DateTime, int> tickets) async {
+    if (cartStore.cart?.activities != null) {
+      await handleRemoveFromCart();
+    }
+    handleAddToCart(tickets);
+  }
+
   Widget _buildBottomNavigationBar(ActivityModel? activity) {
-    if (_tempTickets.isEmpty ||
-        activity == null ||
-        scheduleStore.activitySchedule == null) {
+    if (activity == null) {
       return _buildCartOnlyBottom();
     }
 
@@ -341,9 +344,12 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
           SizedBox(width: 8),
           Expanded(
             child: sSAppButton(
-              enabled: totalTempTicket > 0,
+              enabled: !cartStore.loading,
               context: context,
-              title: 'Mua ngay (${totalTempTicket})',
+              title: totalTempTicket > 0
+                  ? 'Vé (${totalTempTicket})'
+                  : 'Cập nhật giỏ hàng'
+              ,
               child: cartStore.loading
                   ? SizedBox(
                       width: 14,
@@ -355,6 +361,10 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                     )
                   : null,
               onPressed: () async {
+                if(totalTempTicket <= 0) {
+                  handleOnSubmit({});
+                  return;
+                }
                 await showModalBottomSheet<Map<DateTime, int>>(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
@@ -366,8 +376,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                     return ActivityAddToCartBottomSheet(
                       activity: activity,
                       listItem: _tempTickets,
-                      onSubmit: handleAddToCart,
-                      onUpdatedQuantity: handleUpdateQuantity,
+                      onSubmit: handleOnSubmit,
                       schedule: scheduleStore.activitySchedule!.schedule,
                     );
                   },
@@ -575,7 +584,20 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   Future<void> getCart(int farmstayId) async {
     if (authStore.isAuthenticated()) {
       await cartStore.getCustomerCartInFarmstay(farmstayId);
-      setState(() {});
+      if (cartStore.cart != null) {
+        setState(() {
+          cartStore.cart!.activities.forEach((activity) {
+            if (activity.itemId == activityId) {
+              _tempTickets.update(activity.date, (value) => value + 1,
+                  ifAbsent: () => 1);
+            }
+          });
+
+          _controller.selectedDates = _tempTickets.keys
+              .where((date) => _tempTickets[date]! > 0)
+              .toList();
+        });
+      }
     }
   }
 
@@ -594,7 +616,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     final activity = activityStore.activityDetail;
     setState(() {
       if (activity != null) {
-        imageUrls.add(activity.images.avatar!);
+        imageUrls.add(activity.images.avatar);
         imageUrls.addAll(activity.images.others);
       }
     });
@@ -629,33 +651,31 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     });
   }
 
-  void handleUpdateQuantity(DateTime date, int newQuantity) {
-    Map<DateTime, int> newTempTickets = {};
-
-    _tempTickets.keys.forEach((key) {
-      newTempTickets[key] = _tempTickets[key] ?? 0;
-    });
-
-    newTempTickets[date] = newQuantity;
-
-    setState(() {
-      _tempTickets = newTempTickets;
-      _controller.selectedDates = newTempTickets.keys
-          .where((date) => newTempTickets[date]! > 0)
-          .toList();
-    });
-  }
-
-  void handleAddToCart() async {
-    final items = convertTempTicketsToList();
+  void handleAddToCart(Map<DateTime, int> tickets) async {
+    final items = convertTempTicketsToList(tickets);
     final isSuccessful = await cartStore.addToCart(farmstayId, items);
     if (!isSuccessful) {
-      toast("Có lỗi xảy ra, không thể đặt vé");
       return;
     }
 
-    toast("Thêm thành công");
+    toast("Cập nhật thành công");
     await _refresh(farmstayId, activityId);
+  }
+
+  Future<void> handleRemoveFromCart() async {
+    final removeList = cartStore.cart!.activities
+        .where((ticket) => ticket.itemId == activityId)
+        .map((ticket) => ticket.id)
+        .toList();
+    if (removeList.length <= 0) {
+      return;
+    }
+
+    final isSuccessful = await cartStore.removeItems(farmstayId, removeList);
+    if (!isSuccessful) {
+      toast("Có lỗi xảy ra");
+      return;
+    }
   }
 
   void handleGoToCartDetailScreen() {

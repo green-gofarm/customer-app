@@ -1,7 +1,11 @@
+import 'dart:collection';
+
+import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_ticket_model.dart';
 import 'package:customer_app/models/combine_cart_item.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/BookingPaymentScreen.dart';
+import 'package:customer_app/screens/FarmstayDetailScreen.dart';
 import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/booking/booking_store.dart';
 import 'package:customer_app/store/cart/cart_store.dart';
@@ -11,9 +15,9 @@ import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:customer_app/utils/error_message.dart';
 import 'package:customer_app/utils/number_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../models/room_ticket_model.dart';
@@ -56,7 +60,10 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
     if (!store.hasAvailableCart()) {
       toast("Giỏ hàng đã bị xóa hoặc không tồn tại");
       await Future.delayed(Duration(seconds: 1));
-      Navigator.pop(context);
+      widget.onBack();
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
       return;
     }
   }
@@ -82,11 +89,6 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
 
     toast("Xóa thành công");
     await _refresh();
-
-    if (!store.hasAvailableCart()) {
-      Navigator.pop(context);
-      return;
-    }
   }
 
   @override
@@ -165,7 +167,8 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
       widget.onBack();
       Navigator.pop(context);
     },
-        titleWidget: Text("Giỏ hàng", style: boldTextStyle(color: white)),
+        titleWidget: Text("Chi tiết giỏ hàng",
+            style: boldTextStyle(color: white, size: 18)),
         actions: [
           IconButton(
               onPressed: () async {
@@ -201,26 +204,8 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                             _getBottomSheetHeight()),
                     child: Column(
                       children: [
-                        ListView.separated(
-                          padding: EdgeInsets.all(8),
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: combinedList.length,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(height: 8);
-                          },
-                          itemBuilder: (_, index) {
-                            final combinedItem = combinedList[index];
-
-                            if (combinedItem.type == 'activity') {
-                              return _buildActivityItem(combinedItem.item);
-                            } else if (combinedItem.type == 'room') {
-                              return _buildRoomItem(combinedItem.item);
-                            }
-
-                            return SizedBox.shrink();
-                          },
-                        ),
+                        _buildFarmstayInfo(context),
+                        _buildList(context),
                         140.height
                       ],
                     ),
@@ -241,7 +226,129 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
     );
   }
 
-  Widget _buildActivityItem(ActivityTicketModel activity) {
+  Widget _buildFarmstayInfo(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text("Điểm đến", style: boldTextStyle()),
+          12.height,
+          if (store.cart?.farmstayImages.avatar != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.home_outlined,
+                            size: 16,
+                          ),
+                          8.width,
+                          Text(
+                            store.cart?.farmstayName ?? "",
+                            style: boldTextStyle(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      16.height,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.shopping_cart,
+                            size: 16,
+                          ),
+                          8.width,
+                          Text("${store.cart?.totalCartItem ?? 0} sản phẩm.")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: appStore.iconColor)
+              ],
+            ).onTap(() {
+              if (store.cart?.farmstayId != null) {
+                FarmstayDetailScreen(
+                  farmstayId: store.cart!.farmstayId,
+                  onBack: () => _refresh(),
+                ).launch(context);
+              }
+            }),
+          12.height,
+          Divider(color: Colors.grey.withOpacity(0.5), height: 1),
+          12.height,
+          Text("Tóm tắt giỏ hàng", style: boldTextStyle()),
+        ],
+      ),
+    );
+  }
+
+  int getItemId(CombinedCartItem item) {
+    if (item.type == 'activity') {
+      return (item.item as ActivityTicketModel).itemId;
+    } else {
+      return (item.item as RoomTicketModel).itemId;
+    }
+  }
+
+  Widget _buildList(BuildContext context) {
+    final Map<int, dynamic> data = {};
+    LinkedHashMap<int, int> itemCountMap = LinkedHashMap<int, int>();
+
+    combinedList.forEach((item) {
+      int itemId = getItemId(item);
+      itemCountMap.update(itemId, (count) => count + 1, ifAbsent: () => 1);
+      if (data[itemId] == null) {
+        data[itemId] = item;
+      }
+    });
+
+    List<dynamic> itemList = [];
+
+    itemCountMap.forEach((itemId, count) {
+      itemList.add({
+        "itemId": itemId,
+        "count": count,
+        "data": data[itemId],
+      });
+    });
+
+    return ListView.separated(
+      padding: EdgeInsets.all(8),
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: itemList.length,
+      separatorBuilder: (BuildContext context, int index) {
+        return SizedBox(height: 8);
+      },
+      itemBuilder: (_, index) {
+        final item = itemList[index];
+        final data = item['data'];
+
+        // Assuming the CartItemType enum has string values like 'activity' and 'room'
+        if (data.type == 'activity') {
+          return _buildActivityItem(data.item, item["count"]);
+        } else if (data.type == 'room') {
+          return _buildRoomItem(data.item, item["count"]);
+        }
+
+        return SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildActivityItem(ActivityTicketModel activity, int quantity) {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -262,7 +369,7 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                 Container(
                   padding: EdgeInsets.all(4),
                   width: 80,
-                  height: 70,
+                  height: 60,
                   decoration: BoxDecoration(
                     color: Colors.grey.withOpacity(0.2),
                     shape: BoxShape.rectangle,
@@ -288,57 +395,43 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               style: boldTextStyle()),
-                          Icon(Icons.clear).onTap(() {
-                            removeItem(activity.id);
-                          })
+                          Text(
+                            NumberUtil.formatIntPriceToVnd(
+                                activity.price * quantity),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: boldTextStyle(size: 14),
+                          )
                         ],
                       ),
                       SizedBox(height: 4),
-                      Text(DateFormat.yMMMMd().format(activity.date),
+                      Text("x${quantity} vé",
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
                           style: secondaryTextStyle()),
                       SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            NumberUtil.formatIntPriceToVnd(activity.price),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                            style: boldTextStyle(size: 14),
-                          ),
-                          SizedBox(width: 32),
-                        ],
-                      ),
+                      Text("Chỉnh sửa",
+                              style: boldTextStyle(
+                                  color: rf_primaryColor, size: 12))
+                          .onTap(() {
+                        ActivityDetailScreen(
+                          farmstayId: store.cart!.farmstayId,
+                          activityId: activity.itemId,
+                          onBack: () => _refresh(),
+                        ).launch(context);
+                      }),
                     ],
                   ),
                 ),
               ],
             ),
-            4.height,
-            Divider(),
-            4.height,
-            Text(
-              "Xem chi tiết",
-              style: primaryTextStyle(color: rf_primaryColor),
-            ).onTap(() {
-              ActivityDetailScreen(
-                farmstayId: widget.farmstayId,
-                activityId: activity.itemId,
-                onBack: () {
-                  _refresh();
-                },
-              ).launch(context,
-                  pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
-            })
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRoomItem(RoomTicketModel room) {
+  Widget _buildRoomItem(RoomTicketModel room, int quantity) {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -359,7 +452,7 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                 Container(
                   padding: EdgeInsets.all(4),
                   width: 80,
-                  height: 70,
+                  height: 60,
                   decoration: BoxDecoration(
                     color: Colors.grey.withOpacity(0.2),
                     shape: BoxShape.rectangle,
@@ -385,50 +478,36 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               style: boldTextStyle()),
-                          Icon(Icons.clear).onTap(() {
-                            removeItem(room.id);
-                          })
+                          Text(
+                            NumberUtil.formatIntPriceToVnd(
+                                room.price * quantity),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: boldTextStyle(size: 14),
+                          )
                         ],
                       ),
                       SizedBox(height: 4),
-                      Text(DateFormat.yMMMMd().format(room.date),
+                      Text("x${quantity} ngày & đêm",
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
                           style: secondaryTextStyle()),
                       SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            NumberUtil.formatIntPriceToVnd(room.price),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                            style: boldTextStyle(size: 14),
-                          ),
-                          SizedBox(width: 32),
-                        ],
-                      ),
+                      Text("Chỉnh sửa",
+                              style: boldTextStyle(
+                                  color: rf_primaryColor, size: 12))
+                          .onTap(() {
+                        RoomDetailScreen(
+                          farmstayId: store.cart!.farmstayId,
+                          roomId: room.itemId,
+                          onBack: () => _refresh(),
+                        ).launch(context);
+                      }),
                     ],
                   ),
                 ),
               ],
             ),
-            4.height,
-            Divider(),
-            4.height,
-            Text(
-              "Xem chi tiết",
-              style: primaryTextStyle(color: rf_primaryColor),
-            ).onTap(() {
-              RoomDetailScreen(
-                farmstayId: widget.farmstayId,
-                roomId: room.itemId,
-                onBack: () {
-                  _refresh();
-                },
-              ).launch(context,
-                  pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
-            })
           ],
         ),
       ),
@@ -490,40 +569,45 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
     );
   }
 
+  static const String ACTION_TITLE = 'Xóa giỏ hàng';
+  static const String ACTION_MESSAGE = "Bán có chắc muốn xóa giỏ hàng?";
+  static const String ACTION_CANCEL = 'Suy nghĩ lại';
+  static const String ACTION_OK = 'OK';
+
   Future<bool> _showDialog(BuildContext parentContext) async {
     bool result = false;
 
-    await showDialog<bool>(
-      context: parentContext,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentTextStyle: secondaryTextStyle(),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4))),
-          actionsPadding: EdgeInsets.symmetric(horizontal: 16.0),
-          title: Text("Xóa giỏ hàng", style: boldTextStyle()),
-          content: Text("Bán có chắc muốn xóa giỏ hàng?",
-              style: secondaryTextStyle()),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Quay lại",
-                  style: TextStyle(color: Colors.blue, fontSize: 14)),
-              onPressed: () {
-                Navigator.pop(context, false); // Return false when canceled
-              },
-            ),
-            TextButton(
-              child: Text("Xác nhận",
-                  style: TextStyle(color: Colors.blue, fontSize: 14)),
+    final removeAction = CustomTheme(
+      child: CupertinoActionSheet(
+        title: Text(
+          ACTION_TITLE,
+          style: boldTextStyle(size: 18),
+        ),
+        message: Text(
+          ACTION_MESSAGE,
+          style: secondaryTextStyle(),
+        ),
+        actions: [
+          CupertinoActionSheetAction(
               onPressed: () {
                 Navigator.pop(context, true); // Return false when canceled
               },
-            ),
-          ],
-        );
-      },
-    ).then((value) => result = value is bool ? value : false);
+              child: Text(ACTION_OK, style: primaryTextStyle(size: 18)))
+        ],
+        cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, false); // Return false when canceled
+            },
+            child: Text(
+              ACTION_CANCEL,
+              style: primaryTextStyle(color: redColor, size: 18),
+            )),
+      ),
+    );
+
+    await showCupertinoModalPopup<bool>(
+            context: context, builder: (_) => removeAction)
+        .then((value) => result = value is bool ? value : false);
 
     return result;
   }

@@ -4,8 +4,10 @@ import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/utils/api/end_points.dart';
 import 'package:customer_app/utils/api/request_options.dart';
 import 'package:customer_app/utils/enum/method.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 
 import 'package:http/http.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class HttpClient {
   final String baseUrl = DOMAIN;
@@ -13,12 +15,18 @@ class HttpClient {
 
   HttpClient({this.headers});
 
+  void navigateToSignIn() {
+    navigatorKey.currentState?.pushNamed(RoutePaths.SIGN_IN
+        .value); // Replace '/signin' with the route for your sign-in screen.
+  }
+
   Future<String> getFirebaseToken() async {
     final String? token;
 
     try {
       token = await AuthService.getFirebaseAuthToken(false);
       if (token == null) {
+        navigateToSignIn();
         throw Exception("Firebase auth token not found.");
       }
     } catch (error) {
@@ -51,8 +59,9 @@ class HttpClient {
 
   Future<Response> sendRequest(
       String path, METHOD method, RequestOptions? options) async {
-    final Uri uri = Uri.parse('$baseUrl/$path')
-        .replace(queryParameters: options?.queryParams);
+    String queryParams = buildQueryParams(options?.queryParams ?? {}).join('&');
+
+    final Uri uri = Uri.parse('$baseUrl/$path?$queryParams');
     final Request request = Request(method.value, uri);
 
     try {
@@ -67,8 +76,8 @@ class HttpClient {
 
   Future<Response> sendRequestCustomUrl(
       String url, METHOD method, RequestOptions? options) async {
-    final Uri uri = Uri.parse('$url')
-        .replace(queryParameters: options?.queryParams);
+    final Uri uri =
+        Uri.parse('$url').replace(queryParameters: options?.queryParams);
     final Request request = Request(method.value, uri);
 
     try {
@@ -81,10 +90,27 @@ class HttpClient {
     }
   }
 
+  List<String> buildQueryParams(Map<String, dynamic> queryParams) {
+    List<String> queryList = [];
+
+    queryParams.forEach((key, value) {
+      if (value is List) {
+        value.forEach((element) {
+          queryList.add('$key=${Uri.encodeComponent(element.toString())}');
+        });
+      } else {
+        queryList.add('$key=${Uri.encodeComponent(value.toString())}');
+      }
+    });
+
+    return queryList;
+  }
+
   Future<Response> sendUnAuthRequest(
       String path, METHOD method, RequestOptions? options) async {
-    final Uri uri = Uri.parse('$baseUrl/$path')
-        .replace(queryParameters: options?.queryParams);
+    String queryParams = buildQueryParams(options?.queryParams ?? {}).join('&');
+
+    final Uri uri = Uri.parse('$baseUrl/$path?$queryParams');
     final Request request = Request(method.value, uri);
 
     try {
@@ -99,8 +125,8 @@ class HttpClient {
 
   Future<Response> sendUnAuthRequestCustomUrl(
       String url, METHOD method, RequestOptions? options) async {
-    final Uri uri = Uri.parse('$url')
-        .replace(queryParameters: options?.queryParams);
+    final Uri uri =
+        Uri.parse('$url').replace(queryParameters: options?.queryParams);
     final Request request = Request(method.value, uri);
 
     try {

@@ -24,6 +24,22 @@ mixin _$CartStore on _CartStore, Store {
     });
   }
 
+  late final _$allCartsAtom =
+      Atom(name: '_CartStore.allCarts', context: context);
+
+  @override
+  List<CartItemModel> get allCarts {
+    _$allCartsAtom.reportRead();
+    return super.allCarts;
+  }
+
+  @override
+  set allCarts(List<CartItemModel> value) {
+    _$allCartsAtom.reportWrite(value, super.allCarts, () {
+      super.allCarts = value;
+    });
+  }
+
   late final _$loadingAtom = Atom(name: '_CartStore.loading', context: context);
 
   @override
@@ -52,6 +68,15 @@ mixin _$CartStore on _CartStore, Store {
     _$messageAtom.reportWrite(value, super.message, () {
       super.message = value;
     });
+  }
+
+  late final _$getAllCustomerCartsAsyncAction =
+      AsyncAction('_CartStore.getAllCustomerCarts', context: context);
+
+  @override
+  Future<void> getAllCustomerCarts() {
+    return _$getAllCustomerCartsAsyncAction
+        .run(() => super.getAllCustomerCarts());
   }
 
   late final _$getCustomerCartInFarmstayAsyncAction =
@@ -89,6 +114,15 @@ mixin _$CartStore on _CartStore, Store {
     return _$clearCartAsyncAction.run(() => super.clearCart(farmstayId));
   }
 
+  late final _$removeItemsAsyncAction =
+      AsyncAction('_CartStore.removeItems', context: context);
+
+  @override
+  Future<bool> removeItems(int farmstayId, List<int> items) {
+    return _$removeItemsAsyncAction
+        .run(() => super.removeItems(farmstayId, items));
+  }
+
   late final _$_CartStoreActionController =
       ActionController(name: '_CartStore', context: context);
 
@@ -118,6 +152,7 @@ mixin _$CartStore on _CartStore, Store {
   String toString() {
     return '''
 cart: ${cart},
+allCarts: ${allCarts},
 loading: ${loading},
 message: ${message}
     ''';

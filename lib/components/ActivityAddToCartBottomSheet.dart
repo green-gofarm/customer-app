@@ -9,29 +9,28 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-typedef OnSubmitCallback = void Function();
-typedef OnUpdateQuantityCallback = void Function(DateTime, int);
+typedef OnSubmitCallback = void Function(Map<DateTime, int>);
 
 class ActivityAddToCartBottomSheet extends StatefulWidget {
   final Map<DateTime, int> listItem;
   final OnSubmitCallback onSubmit;
   final ActivityModel activity;
-  final OnUpdateQuantityCallback onUpdatedQuantity;
   final Map<String, ScheduleItemModel> schedule;
 
   ActivityAddToCartBottomSheet({
     required this.listItem,
     required this.onSubmit,
     required this.activity,
-    required this.onUpdatedQuantity,
     required this.schedule,
   });
 
   @override
-  ActivityAddToCartBottomSheetState createState() => ActivityAddToCartBottomSheetState();
+  ActivityAddToCartBottomSheetState createState() =>
+      ActivityAddToCartBottomSheetState();
 }
 
-class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomSheet> {
+class ActivityAddToCartBottomSheetState
+    extends State<ActivityAddToCartBottomSheet> {
   Map<DateTime, int> _item = {};
 
   @override
@@ -45,7 +44,6 @@ class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomShe
     setState(() {
       final quantity = _item[date]! + 1;
       _item[date] = quantity;
-      widget.onUpdatedQuantity(date, quantity);
     });
   }
 
@@ -54,9 +52,18 @@ class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomShe
       final quantity = _item[date]! - 1;
       if (quantity >= 0) {
         _item[date] = quantity;
-        widget.onUpdatedQuantity(date, quantity);
       }
     });
+  }
+
+  int getTotalQuantity() {
+    int totalQuantity = 0;
+
+    _item.forEach((date, quantity) {
+      totalQuantity += quantity;
+    });
+
+    return totalQuantity;
   }
 
   @override
@@ -69,7 +76,7 @@ class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomShe
           _itemDetail(),
           Divider(color: Colors.grey),
           Container(
-            height: MediaQuery.of(context).size.height * 0.5 - 140,
+            height: MediaQuery.of(context).size.height * 0.5 - 150,
             child: _listItem(),
           ),
           Divider(color: Colors.grey),
@@ -77,21 +84,13 @@ class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomShe
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.grey.withOpacity(0.5),
-              //     offset: Offset(0, -1),
-              //     // Offset for the shadow, change as needed
-              //     blurRadius: 2, // Adjust the blur radius as needed
-              //   ),
-              // ],
             ),
             child: sSAppButton(
               context: context,
-              title: 'Thêm vào giỏ',
+              title: 'Cập nhật giỏ hàng (${getTotalQuantity()})',
               onPressed: () {
                 Navigator.pop(context);
-                widget.onSubmit();
+                widget.onSubmit(_item);
               },
             ),
           ),
@@ -120,7 +119,7 @@ class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomShe
               borderRadius: BorderRadius.circular(8),
               child: FadeInImage.assetNetwork(
                 placeholder: default_image,
-                image: widget.activity.images.avatar!,
+                image: widget.activity.images.avatar,
                 fit: BoxFit.cover,
               )),
         ),
@@ -224,7 +223,7 @@ class ActivityAddToCartBottomSheetState extends State<ActivityAddToCartBottomShe
                                 child: Icon(Icons.minimize,
                                     color: rf_primaryColor))
                             .onTap(() {
-                          if(quantity > 0) {
+                          if (quantity > 0) {
                             decrementQuantity(date);
                           }
                         }),

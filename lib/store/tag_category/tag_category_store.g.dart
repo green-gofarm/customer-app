@@ -25,6 +25,22 @@ mixin _$TagCategoryStore on _TagCategoryStore, Store {
     });
   }
 
+  late final _$categoriesAtom =
+      Atom(name: '_TagCategoryStore.categories', context: context);
+
+  @override
+  List<TagCategoryModel> get categories {
+    _$categoriesAtom.reportRead();
+    return super.categories;
+  }
+
+  @override
+  set categories(List<TagCategoryModel> value) {
+    _$categoriesAtom.reportWrite(value, super.categories, () {
+      super.categories = value;
+    });
+  }
+
   late final _$isLoadingAtom =
       Atom(name: '_TagCategoryStore.isLoading', context: context);
 
@@ -66,10 +82,19 @@ mixin _$TagCategoryStore on _TagCategoryStore, Store {
         .run(() => super.getAllTagCategories(force: force));
   }
 
+  late final _$getListCategoriesAsyncAction =
+      AsyncAction('_TagCategoryStore.getListCategories', context: context);
+
+  @override
+  Future<void> getListCategories() {
+    return _$getListCategoriesAsyncAction.run(() => super.getListCategories());
+  }
+
   @override
   String toString() {
     return '''
 categoryMap: ${categoryMap},
+categories: ${categories},
 isLoading: ${isLoading},
 message: ${message}
     ''';

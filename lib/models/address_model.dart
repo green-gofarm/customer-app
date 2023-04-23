@@ -34,19 +34,23 @@ class AddressModel {
 }
 
 class ProvinceModel {
-  final String? name;
-  final int? code;
+  final int code;
+  final String name;
 
-  ProvinceModel({
-    this.name,
-    this.code,
-  });
+  ProvinceModel({required this.code, required this.name});
 
   factory ProvinceModel.fromJson(Map<String, dynamic> json) {
     return ProvinceModel(
-      name: json['name'],
       code: json['code'],
+      name: json['name'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['code'] = this.code;
+    data['name'] = this.name;
+    return data;
   }
 }
 

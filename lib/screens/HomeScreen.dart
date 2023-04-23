@@ -1,8 +1,8 @@
 import 'package:customer_app/fragment/BookingFragment.dart';
 import 'package:customer_app/fragment/CartFragment.dart';
 import 'package:customer_app/fragment/HomeFragment.dart';
+import 'package:customer_app/fragment/NotificationFragment.dart';
 import 'package:customer_app/fragment/ProfileFragment.dart';
-import 'package:customer_app/fragment/SearchFragment.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/utils/ICImages.dart';
@@ -12,18 +12,22 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HomeScreen extends StatefulWidget {
+  final int? selectedIndex;
+
+  HomeScreen({this.selectedIndex});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static final int SIGN_IN_ITEM_INDEX = 4;
+  static final int HOME_ITEM_INDEX = 0;
 
-  int _selectedIndex = 0;
+  int _selectedIndex = HOME_ITEM_INDEX;
 
   final _pages = [
     HomeFragment(),
-    SearchFragment(),
+    NotificationFragment(),
     CartFragment(),
     BookingFragment(),
     authStore.user != null ? ProfileFragment() : null,
@@ -46,9 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
               color: appStore.isDarkModeOn ? white : rf_primaryColor, size: 22),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search_outlined),
-          label: 'Tìm kiếm',
-          activeIcon: Icon(Icons.search_rounded),
+          icon: Icon(Icons.notifications_none),
+          label: 'Thông báo',
+          activeIcon: Icon(Icons.notifications),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.shopping_cart_outlined),
@@ -78,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-    if (index == SIGN_IN_ITEM_INDEX && authStore.user == null) {
+    if (index != HOME_ITEM_INDEX && authStore.user == null) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen()),
@@ -97,7 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void init() async {
-    // setStatusBarColor(primaryColor, statusBarIconBrightness: Brightness.light);
+    if (widget.selectedIndex != null) {
+      setState(() {
+        _selectedIndex = widget.selectedIndex!;
+      });
+    }
   }
 
   @override

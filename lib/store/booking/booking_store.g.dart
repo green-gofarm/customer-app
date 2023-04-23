@@ -41,6 +41,22 @@ mixin _$BookingStore on _BookingStore, Store {
     });
   }
 
+  late final _$bookingDetailAtom =
+      Atom(name: '_BookingStore.bookingDetail', context: context);
+
+  @override
+  BookingDetailModel? get bookingDetail {
+    _$bookingDetailAtom.reportRead();
+    return super.bookingDetail;
+  }
+
+  @override
+  set bookingDetail(BookingDetailModel? value) {
+    _$bookingDetailAtom.reportWrite(value, super.bookingDetail, () {
+      super.bookingDetail = value;
+    });
+  }
+
   late final _$bookingAtom =
       Atom(name: '_BookingStore.booking', context: context);
 
@@ -54,6 +70,22 @@ mixin _$BookingStore on _BookingStore, Store {
   set booking(BookingModel? value) {
     _$bookingAtom.reportWrite(value, super.booking, () {
       super.booking = value;
+    });
+  }
+
+  late final _$refundDetailAtom =
+      Atom(name: '_BookingStore.refundDetail', context: context);
+
+  @override
+  RefundDetail? get refundDetail {
+    _$refundDetailAtom.reportRead();
+    return super.refundDetail;
+  }
+
+  @override
+  set refundDetail(RefundDetail? value) {
+    _$refundDetailAtom.reportWrite(value, super.refundDetail, () {
+      super.refundDetail = value;
     });
   }
 
@@ -133,12 +165,41 @@ mixin _$BookingStore on _BookingStore, Store {
     return _$getBookingByIdAsyncAction.run(() => super.getBookingById(id));
   }
 
+  late final _$getBookingRefundDetailAsyncAction =
+      AsyncAction('_BookingStore.getBookingRefundDetail', context: context);
+
+  @override
+  Future<void> getBookingRefundDetail(int id) {
+    return _$getBookingRefundDetailAsyncAction
+        .run(() => super.getBookingRefundDetail(id));
+  }
+
+  late final _$createFeedbackAsyncAction =
+      AsyncAction('_BookingStore.createFeedback', context: context);
+
+  @override
+  Future<bool> createFeedback(int id,
+      {required double rating, required String comment}) {
+    return _$createFeedbackAsyncAction
+        .run(() => super.createFeedback(id, rating: rating, comment: comment));
+  }
+
+  late final _$cancelBookingAsyncAction =
+      AsyncAction('_BookingStore.cancelBooking', context: context);
+
+  @override
+  Future<bool> cancelBooking(int id) {
+    return _$cancelBookingAsyncAction.run(() => super.cancelBooking(id));
+  }
+
   @override
   String toString() {
     return '''
 bookings: ${bookings},
 referenceId: ${referenceId},
+bookingDetail: ${bookingDetail},
 booking: ${booking},
+refundDetail: ${refundDetail},
 loading: ${loading},
 message: ${message}
     ''';
