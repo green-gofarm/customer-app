@@ -207,7 +207,7 @@ class __SearchResultsState extends State<_SearchResults> {
                 color: Colors.white,
                 width: context.width(),
                 child: Text(
-                  'Kết quả tìm kiếm (${widget.farmstayStore.farmstays.length})',
+                  'Kết quả tìm kiếm (${widget.farmstayStore.pagination.totalItem})',
                   style: boldTextStyle(),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),

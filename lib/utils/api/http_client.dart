@@ -61,7 +61,7 @@ class HttpClient {
       String path, METHOD method, RequestOptions? options) async {
     String queryParams = buildQueryParams(options?.queryParams ?? {}).join('&');
 
-    final Uri uri = Uri.parse('$baseUrl/$path?$queryParams');
+    final Uri uri = getUri('$baseUrl/$path', queryParams);
     final Request request = Request(method.value, uri);
 
     try {
@@ -106,11 +106,19 @@ class HttpClient {
     return queryList;
   }
 
+  Uri getUri(String url, String? queryParams) {
+    if (queryParams != null) {
+      return Uri.parse('$url?$queryParams');
+    }
+
+    return Uri.parse(url);
+  }
+
   Future<Response> sendUnAuthRequest(
       String path, METHOD method, RequestOptions? options) async {
     String queryParams = buildQueryParams(options?.queryParams ?? {}).join('&');
 
-    final Uri uri = Uri.parse('$baseUrl/$path?$queryParams');
+    final Uri uri = getUri('$baseUrl/$path', queryParams);
     final Request request = Request(method.value, uri);
 
     try {

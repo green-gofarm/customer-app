@@ -50,4 +50,5 @@ const Color bannedTextColor = Color(0xFFEE7450);
 const Color bannedBgColor = Color(0xFFFDEEEA);
 
 
-const Color mainBgColor = Color(0xFFebeefa);
+// const Color mainBgColor = Color(0xFFebeefa);
+const Color mainBgColor = Color(0xFFF3F3F3);
