@@ -1,3 +1,7 @@
+import 'package:customer_app/utils/RFColors.dart';
+import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
+
 enum NotificationType {
   PAYMENT_SUCCESS_CUSTOMER,
   CANCEL_BOOKING_CUSTOMER,
@@ -34,5 +38,34 @@ extension NotificationTypeExtension on NotificationType {
       default:
         return NotificationType.PAYMENT_SUCCESS_CUSTOMER;
     }
+  }
+
+  static Tuple2<IconData, Color> getIconAndColor(NotificationType type) {
+    IconData icon;
+    Color color;
+
+    switch (type) {
+      case NotificationType.PAYMENT_SUCCESS_CUSTOMER:
+        icon = Icons.payment;
+        color = rf_primaryColor;
+        break;
+      case NotificationType.CANCEL_BOOKING_CUSTOMER:
+        icon = Icons.cancel;
+        color = Colors.red;
+        break;
+      case NotificationType.BOOKING_APPROVED_CUSTOMER:
+        icon = Icons.check_circle;
+        color = rf_primaryColor;
+        break;
+      case NotificationType.BOOKING_REJECTED_CUSTOMER:
+        icon = Icons.error;
+        color = Colors.red;
+        break;
+      default:
+        icon = Icons.notifications;
+        color = Colors.grey;
+    }
+
+    return Tuple2(icon, color);
   }
 }

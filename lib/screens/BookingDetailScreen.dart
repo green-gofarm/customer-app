@@ -8,6 +8,7 @@ import 'package:customer_app/models/feedback_model.dart';
 import 'package:customer_app/models/refund_model.dart';
 import 'package:customer_app/screens/BookingFeedbackScreen.dart';
 import 'package:customer_app/screens/BookingPaymentScreen.dart';
+import 'package:customer_app/screens/HomeScreen.dart';
 
 import 'package:customer_app/store/booking/booking_store.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
@@ -27,11 +28,18 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
 
+class BookingDetailArguments {
+  final int bookingId;
+  final VoidCallback? onBack;
+
+  BookingDetailArguments({required this.bookingId, this.onBack});
+}
+
 class BookingDetailScreen extends StatefulWidget {
   final int bookingId;
-  final VoidCallback onBack;
+  final VoidCallback? onBack;
 
-  BookingDetailScreen({required this.bookingId, required this.onBack});
+  BookingDetailScreen({required this.bookingId, this.onBack});
 
   @override
   BookingDetailScreenState createState() => BookingDetailScreenState();
@@ -127,7 +135,11 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          widget.onBack();
+          if (widget.onBack != null) {
+            widget.onBack!();
+          } else {
+            HomeScreen(selectedIndex: 3).launch(context);
+          }
           return true;
         },
         child: Observer(
@@ -234,7 +246,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                     ),
                   ),
                   8.width,
-                  Text("(${feedback.rating.toString()})", style: secondaryTextStyle()),
+                  Text("(${feedback.rating.toString()})",
+                      style: secondaryTextStyle()),
                 ],
               ),
               Text(feedback.comment, style: secondaryTextStyle()),

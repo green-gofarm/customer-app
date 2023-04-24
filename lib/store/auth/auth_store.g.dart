@@ -47,6 +47,22 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
+  late final _$isLoadingAtom =
+      Atom(name: '_AuthStore.isLoading', context: context);
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   late final _$signInCustomerAsyncAction =
       AsyncAction('_AuthStore.signInCustomer', context: context);
 
@@ -81,6 +97,15 @@ mixin _$AuthStore on _AuthStore, Store {
     return _$signOutAsyncAction.run(() => super.signOut());
   }
 
+  late final _$updateNotificationTokenAsyncAction =
+      AsyncAction('_AuthStore.updateNotificationToken', context: context);
+
+  @override
+  Future<void> updateNotificationToken(String messageToken) {
+    return _$updateNotificationTokenAsyncAction
+        .run(() => super.updateNotificationToken(messageToken));
+  }
+
   late final _$_AuthStoreActionController =
       ActionController(name: '_AuthStore', context: context);
 
@@ -111,6 +136,7 @@ mixin _$AuthStore on _AuthStore, Store {
     return '''
 user: ${user},
 errorMessage: ${errorMessage},
+isLoading: ${isLoading},
 getUser: ${getUser}
     ''';
   }

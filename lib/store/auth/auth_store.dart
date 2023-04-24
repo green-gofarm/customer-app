@@ -1,3 +1,4 @@
+import 'package:customer_app/data/user/user_api.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/data/auth/auth_api.dart';
@@ -12,6 +13,7 @@ class AuthStore = _AuthStore with _$AuthStore;
 
 abstract class _AuthStore with Store {
   final AuthApi _authApi = AuthApi();
+  final UserApi _userApi = UserApi();
 
   @observable
   UserModel? user;
@@ -96,5 +98,21 @@ abstract class _AuthStore with Store {
   Future<void> signOut() async {
     await AuthService.signOut();
     user = null;
+  }
+
+  @observable
+  bool isLoading = false;
+
+  @action
+  Future<void> updateNotificationToken(String messageToken) async {
+    isLoading = false;
+
+    final result =await  _userApi.updateNotificationToken(messageToken);
+    result.fold((l) => errorMessage = l, (r) => errorMessage = null);
+
+    if(errorMessage != null) {
+      logger.e("Error when update noti token: $errorMessage");
+    }
+    isLoading = true;
   }
 }

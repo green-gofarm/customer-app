@@ -7,8 +7,8 @@ class RouteConstants {
   static const String ACTIVITY_DETAIL = "/activity";
   static const String ROOM_DETAIL = "/room";
   static const String CART_LIST = "/carts";
+  static const String BOOKING_DETAIL = "/booking-detail";
 }
-
 
 enum RoutePaths {
   SPLASH,
@@ -19,6 +19,7 @@ enum RoutePaths {
   ACTIVITY_DETAIL,
   ROOM_DETAIL,
   CART_LIST,
+  BOOKING_DETAIL
 }
 
 extension RoutePathsExtension on RoutePaths {
@@ -40,6 +41,8 @@ extension RoutePathsExtension on RoutePaths {
         return RouteConstants.ROOM_DETAIL;
       case RoutePaths.CART_LIST:
         return RouteConstants.CART_LIST;
+      case RoutePaths.BOOKING_DETAIL:
+        return RouteConstants.BOOKING_DETAIL;
     }
   }
 
@@ -61,6 +64,8 @@ extension RoutePathsExtension on RoutePaths {
         return RoutePaths.ROOM_DETAIL;
       case RouteConstants.CART_LIST:
         return RoutePaths.CART_LIST;
+      case RouteConstants.BOOKING_DETAIL:
+        return RoutePaths.BOOKING_DETAIL;
       default:
         throw ArgumentError('Invalid route value: $value');
     }

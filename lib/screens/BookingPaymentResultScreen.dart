@@ -1,5 +1,4 @@
-import 'package:customer_app/fragment/BookingFragment.dart';
-import 'package:customer_app/screens/HomeScreen.dart';
+import 'package:customer_app/screens/BookingDetailScreen.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
@@ -10,8 +9,10 @@ import '../../../main.dart';
 
 class BookingPaymentResultScreen extends StatelessWidget {
   final bool isSuccessful;
+  final int bookingId;
 
-  BookingPaymentResultScreen({required this.isSuccessful});
+  BookingPaymentResultScreen(
+      {required this.isSuccessful, required this.bookingId});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class BookingPaymentResultScreen extends StatelessWidget {
           body: _buildBody(context),
         ),
         onWillPop: () async {
-          HomeScreen().launch(context);
+          Navigator.pushReplacementNamed(context, RoutePaths.HOME.value);
           return false;
         });
   }
@@ -60,7 +61,9 @@ class BookingPaymentResultScreen extends StatelessWidget {
             context: context,
             title: 'Xem đơn hàng',
             onPressed: () {
-              BookingFragment().launch(context);
+              Navigator.pushReplacementNamed(
+                  context, RoutePaths.BOOKING_DETAIL.value,
+                  arguments: BookingDetailArguments(bookingId: bookingId));
             },
           ),
         ],
@@ -74,8 +77,7 @@ class BookingPaymentResultScreen extends StatelessWidget {
     return appBarWidget(APPBAR_NAME, showBack: false, textSize: 18, actions: [
       IconButton(
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, RoutePaths.HOME.value, (route) => false);
+            Navigator.pushReplacementNamed(context, RoutePaths.HOME.value);
           },
           icon: Icon(Icons.home, size: 20))
     ]);

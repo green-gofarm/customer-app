@@ -1,3 +1,4 @@
+import 'package:customer_app/components/NotificationHandler.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/screens/SelectCityScreen.dart';
 import 'package:customer_app/services/auth_service.dart';
@@ -17,6 +18,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  NotificationHandler _notificationHandler = NotificationHandler();
+
+
   @override
   void initState() {
     super.initState();
@@ -48,9 +52,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> init() async {
-    await Future.delayed(Duration(milliseconds: 500));
     await autoSignIn();
     await handleNavigate();
+    await _notificationHandler.setupFirebaseMessaging();
   }
 
   @override

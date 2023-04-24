@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:customer_app/data/auth/auth_api.dart';
-import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/utils/api/end_points.dart';
 import 'package:customer_app/utils/api/http_client.dart';
 import 'package:customer_app/utils/api/request_options.dart';
@@ -46,6 +45,23 @@ class UserApi {
           final urls = data.map((json) => json as String).toList();
           return right(urls);
         }
+      }
+      throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  FutureEither<bool> updateNotificationToken(String messageToken) async {
+    final url = '${ENP.USER}/update-notification-token';
+    final options = RequestOptions(body: {'token': messageToken});
+
+    try {
+      final response = await _httpClient.sendRequest(url, METHOD.POST, options);
+      final payload = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return right(true);
       }
       throw (payload['resultMessage'] ?? UNKNOWN_ERROR_MESSAGE);
     } catch (e) {

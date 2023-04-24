@@ -64,10 +64,13 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
           OrderStatus.PENDING_APPROVE) {
         BookingPaymentResultScreen(
           isSuccessful: true,
+          bookingId: store.booking!.id,
         ).launch(context);
       } else if (OrderStatusExtension.fromValue(store.booking!.status) ==
           OrderStatus.FAILED) {
-        BookingPaymentResultScreen(isSuccessful: false).launch(context);
+        BookingPaymentResultScreen(
+                isSuccessful: false, bookingId: store.booking!.id)
+            .launch(context);
       } else {
         toast("Thanh toán thất bại..");
         logger.e("Payment status not right: ${store.booking!.status}");
@@ -97,7 +100,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
     return WillPopScope(
         child: Observer(
             builder: (_) => Scaffold(
-              backgroundColor: mainBgColor,
+                  backgroundColor: mainBgColor,
                   appBar: _buildAppbar(context),
                   body: _buildBody(),
                   bottomSheet: _buildBottom(),
@@ -111,9 +114,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
   static const APPBAR_NAME = 'Thanh toán';
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return appBarWidget(APPBAR_NAME,
-        showBack: false,
-        textSize: 18, actions: [
+    return appBarWidget(APPBAR_NAME, showBack: false, textSize: 18, actions: [
       IconButton(
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
