@@ -1,8 +1,8 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/tag_category_model.dart';
-import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/StorageUtil.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -62,7 +62,8 @@ class _SelectHashtagScreenState extends State<SelectHashtagScreen> {
       actions: [
         IconButton(
           onPressed: () {
-            HomeScreen().launch(context);
+            Navigator.pushNamedAndRemoveUntil(
+                context, RoutePaths.HOME.value, (route) => false);
           },
           icon: Text("Bỏ"),
         ),
@@ -195,7 +196,8 @@ class _SelectHashtagScreenState extends State<SelectHashtagScreen> {
       onTap: () async {
         List<TagCategoryModel> tags = getSelectedTags();
         await StorageUtil.storeHashtags(tags);
-        HomeScreen().launch(context);
+        Navigator.pushNamedAndRemoveUntil(
+            context, RoutePaths.HOME.value, (route) => false);
       },
       child: Container(
         alignment: Alignment.center,

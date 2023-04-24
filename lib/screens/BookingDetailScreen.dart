@@ -221,7 +221,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(feedback.customerId.toString(), style: boldTextStyle()),
+              Text(feedback.customerName ?? "No_name", style: boldTextStyle()),
               Row(
                 children: [
                   IgnorePointer(
@@ -233,8 +233,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                       initialRating: feedback.rating.toDouble(),
                     ),
                   ),
-                  16.width,
-                  Text(feedback.rating.toString(), style: secondaryTextStyle()),
+                  8.width,
+                  Text("(${feedback.rating.toString()})", style: secondaryTextStyle()),
                 ],
               ),
               Text(feedback.comment, style: secondaryTextStyle()),

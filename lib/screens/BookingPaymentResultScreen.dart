@@ -2,6 +2,7 @@ import 'package:customer_app/fragment/BookingFragment.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -73,7 +74,8 @@ class BookingPaymentResultScreen extends StatelessWidget {
     return appBarWidget(APPBAR_NAME, showBack: false, textSize: 18, actions: [
       IconButton(
           onPressed: () {
-            HomeScreen().launch(context);
+            Navigator.pushNamedAndRemoveUntil(
+                context, RoutePaths.HOME.value, (route) => false);
           },
           icon: Icon(Icons.home, size: 20))
     ]);
