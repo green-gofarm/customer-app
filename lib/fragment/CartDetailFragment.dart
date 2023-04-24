@@ -9,7 +9,6 @@ import 'package:customer_app/screens/FarmstayDetailScreen.dart';
 import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/booking/booking_store.dart';
 import 'package:customer_app/store/cart/cart_store.dart';
-import 'package:customer_app/utils/JSWidget.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/SSWidgets.dart';

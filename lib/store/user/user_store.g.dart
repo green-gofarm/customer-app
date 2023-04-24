@@ -48,6 +48,14 @@ mixin _$UserStore on _UserStore, Store {
     return _$updateProfileAsyncAction.run(() => super.updateProfile(newUser));
   }
 
+  late final _$updateAvatarAsyncAction =
+      AsyncAction('_UserStore.updateAvatar', context: context);
+
+  @override
+  Future<bool> updateAvatar(XFile file) {
+    return _$updateAvatarAsyncAction.run(() => super.updateAvatar(file));
+  }
+
   @override
   String toString() {
     return '''

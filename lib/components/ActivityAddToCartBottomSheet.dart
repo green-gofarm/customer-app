@@ -121,6 +121,13 @@ class ActivityAddToCartBottomSheetState
                 placeholder: default_image,
                 image: widget.activity.images.avatar,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return Image.asset(
+                    default_image,
+                    fit: BoxFit.cover,
+                  );
+                },
               )),
         ),
         SizedBox(width: 12),

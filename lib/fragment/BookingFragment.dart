@@ -56,12 +56,10 @@ class BookingFragmentState extends State<BookingFragment> {
   }
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return appBarWidget(APPBAR_NAME,
-        // center: true,
-        showBack: false,
-        // color: rf_primaryColor,
-        // textColor: Colors.white,
-        textSize: 18,
+    return appBarWidget(
+      APPBAR_NAME,
+      showBack: false,
+      textSize: 18,
     );
   }
 

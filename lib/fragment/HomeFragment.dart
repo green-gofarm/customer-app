@@ -90,7 +90,7 @@ class HomeFragmentState extends State<HomeFragment> {
         titleWidget: _buildSearchBar(),
         actions: [
           _buildSuggest(),
-          _buildNotification(),
+          12.width
         ]);
   }
 
@@ -153,27 +153,6 @@ class HomeFragmentState extends State<HomeFragment> {
       () {
         SelectCityScreen().launch(context,
             pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
-      },
-    );
-  }
-
-  Widget _buildNotification() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.notifications,
-            size: 20,
-            color: Colors.white,
-          ),
-        ],
-      ),
-    ).onTap(
-      () {
-        // HomeFilterScreen().launch(context,
-        //     pageRouteAnimation: PageRouteAnimation.SlideBottomTop);
       },
     );
   }

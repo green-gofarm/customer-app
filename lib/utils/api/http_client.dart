@@ -7,6 +7,7 @@ import 'package:customer_app/utils/enum/method.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HttpClient {
@@ -54,14 +55,6 @@ class HttpClient {
     if (includeToken) {
       final String token = await getFirebaseToken();
       request.headers.addAll({'Authorization': 'Bearer $token'});
-    }
-
-    //Todo: remove
-    if (!includeToken) {
-      final token = await AuthService.getFirebaseAuthToken(false);
-      if (token != null) {
-        request.headers.addAll({'Authorization': 'Bearer $token'});
-      }
     }
   }
 
@@ -138,8 +131,7 @@ class HttpClient {
 
   Future<Response> sendUnAuthRequestCustomUrl(
       String url, METHOD method, RequestOptions? options) async {
-    final Uri uri =
-        Uri.parse('$url').replace(queryParameters: options?.queryParams);
+    final Uri uri = getUri(url, options?.queryParams);
     final Request request = Request(method.value, uri);
 
     try {
@@ -147,6 +139,43 @@ class HttpClient {
 
       final response = await Client().send(request);
       return Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> setupMultipartRequestHeader(MultipartRequest request,
+      RequestOptions? options, bool includeToken) async {
+    if (headers != null) {
+      request.headers.addAll(headers!);
+    }
+
+    if (options?.headers != null) {
+      request.headers.addAll(options!.headers!);
+    }
+
+    if (includeToken) {
+      final String token = await getFirebaseToken();
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+    }
+  }
+
+  Future<Response> uploadMultipleFiles(
+      String path, List<XFile> files, RequestOptions? options) async {
+    final Uri uri = getUri('$baseUrl/$path', options?.queryParams);
+    final MultipartRequest request = MultipartRequest('POST', uri);
+
+    try {
+      await setupMultipartRequestHeader(request, options, true);
+
+      // Add files to the request
+      for (XFile file in files) {
+        request.files.add(await MultipartFile.fromPath('files', file.path));
+      }
+
+      // Send the request
+      final StreamedResponse streamedResponse = await request.send();
+      return Response.fromStream(streamedResponse);
     } catch (e) {
       rethrow;
     }

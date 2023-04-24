@@ -100,6 +100,13 @@ class RoomAddToCartBottomSheetState extends State<RoomAddToCartBottomSheet> {
                 placeholder: default_image,
                 image: widget.room.images.avatar,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return Image.asset(
+                    default_image,
+                    fit: BoxFit.cover,
+                  );
+                },
               )),
         ),
         SizedBox(width: 12),

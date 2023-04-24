@@ -1,3 +1,6 @@
+import 'package:customer_app/utils/enum/gender.dart';
+import 'package:customer_app/utils/map_utils.dart';
+
 class UserModel {
   final int? id;
   final String? name;
@@ -8,7 +11,7 @@ class UserModel {
   final DateTime? dateOfBirth;
   final String? phoneNumber;
   final int? role;
-  final int? gender;
+  final Gender? gender;
   final int? status;
   final DateTime? createdDate;
   final DateTime? updatedDate;
@@ -42,7 +45,9 @@ class UserModel {
           : null,
       phoneNumber: json['phoneNumber'],
       role: json['role'],
-      gender: json['gender'],
+      gender: json['gender'] != null
+          ? GenderExtension.fromValue(json['gender'])
+          : null,
       status: json['status'],
       createdDate: json['createdDate'] != null && json['createdDate'] is String
           ? DateTime.parse(json['createdDate'])
@@ -51,5 +56,67 @@ class UserModel {
           ? DateTime.parse(json['updatedDate'])
           : null,
     );
+  }
+
+  UserModel copyWith({
+    int? id,
+    String? name,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? avatar,
+    DateTime? dateOfBirth,
+    String? phoneNumber,
+    int? role,
+    Gender? gender,
+    int? status,
+    DateTime? createdDate,
+    DateTime? updatedDate,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      avatar: avatar ?? this.avatar,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      role: role ?? this.role,
+      gender: gender ?? this.gender,
+      status: status ?? this.status,
+      createdDate: createdDate ?? this.createdDate,
+      updatedDate: updatedDate ?? this.updatedDate,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'avatar': avatar,
+      'dateOfBirth': dateOfBirth?.toIso8601String(),
+      'phoneNumber': phoneNumber,
+      'role': role,
+      'gender': gender?.value,
+      'status': status,
+      'createdDate': createdDate?.toIso8601String(),
+      'updatedDate': updatedDate?.toIso8601String(),
+    };
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return MapUtils.filterNullValues({
+      'name': name,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'dateOfBirth': dateOfBirth?.toIso8601String(),
+      'phoneNumber': phoneNumber,
+      'gender': gender?.value,
+    });
   }
 }

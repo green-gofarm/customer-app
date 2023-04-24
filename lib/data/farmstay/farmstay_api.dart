@@ -24,12 +24,12 @@ class FarmstayApi {
 
   FutureEither<PagingModel<FarmstayModel>> searchFarmstayWithElastic(
       Map<String, dynamic> params) async {
-    final url = '${ENP.FARMSTAY}/elastic-search';
+    final url = '$DOMAIN_V2/${ENP.FARMSTAY}/elastic-search';
     final options = RequestOptions(queryParams: params);
 
     try {
       final response =
-          await _httpClient.sendUnAuthRequest(url, METHOD.GET, options);
+          await _httpClient.sendUnAuthRequestCustomUrl(url, METHOD.GET, options);
       final payload = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
