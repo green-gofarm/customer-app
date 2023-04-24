@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class DateTimeUtil {
   static List<String> VN_MONTHS_LIST = [
@@ -32,12 +33,15 @@ class DateTimeUtil {
     return start.add(Duration(days: end.difference(start).inDays ~/ 2));
   }
 
-  static int getLongestPeriod(DateTime start, DateTime end, DateTime centerDay) {
+  static int getLongestPeriod(
+      DateTime start, DateTime end, DateTime centerDay) {
     Duration centerToStart = centerDay.difference(start);
     Duration centerToEnd = end.difference(centerDay);
     int centerToStartDays = centerToStart.inDays;
     int centerToEndDays = centerToEnd.inDays;
-    return centerToStartDays > centerToEndDays ? centerToStartDays : centerToEndDays;
+    return centerToStartDays > centerToEndDays
+        ? centerToStartDays
+        : centerToEndDays;
   }
 
   static String getFormattedDateInVietnamese(DateTime date) {
@@ -46,5 +50,9 @@ class DateTimeUtil {
 
   static String getFormattedDateMdInVietnamese(DateTime date) {
     return DateFormat.Md("vi_VN").format(date);
+  }
+
+  static String timeAgoString(DateTime date, {String locale = 'vi'}) {
+    return timeago.format(date, locale: locale);
   }
 }

@@ -16,8 +16,6 @@ import 'package:customer_app/store/cart/cart_store.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
-import 'package:customer_app/utils/RFWidget.dart';
-import 'package:customer_app/utils/event/EAImages.dart';
 import 'package:customer_app/utils/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -373,7 +371,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(feeback.customerId.toString(),
+                        Text(feeback.customerName ?? "No_name",
                             style: boldTextStyle()),
                         Row(
                           children: [
@@ -489,8 +487,8 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
           8.height,
           Text(farmstayStore.farmstayDetail?.address.toString() ?? "",
               style: secondaryTextStyle()),
-          rfCommonCachedNetworkImage(event_ic_map,
-              fit: BoxFit.cover, height: 200, width: context.width()),
+          // rfCommonCachedNetworkImage(event_ic_map,
+          //     fit: BoxFit.cover, height: 200, width: context.width()),
         ],
       ),
     );

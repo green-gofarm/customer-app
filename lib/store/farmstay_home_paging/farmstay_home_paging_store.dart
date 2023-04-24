@@ -65,10 +65,12 @@ abstract class _FarmstayPagingHomeStore with Store {
         'status': FarmstayStatus.ACTIVE.value,
         'page': _pagination.page,
         'pageSize': _pagination.pageSize,
-        'orderBy': _pagination.orderBy ?? PaginationModel.DEFAULT_ORDER_BY,
-        'orderDirection': _pagination.orderDirection ??
-            PaginationModel.DEFAULT_ORDER_DIRECTION,
+        // 'orderBy': _pagination.orderBy ?? PaginationModel.DEFAULT_ORDER_BY,
+        // 'orderDirection': _pagination.orderDirection ??
+        //     PaginationModel.DEFAULT_ORDER_DIRECTION,
         ..._params,
+        'orderBy': null,
+        'orderDirection': null,
       };
 
       final cities =

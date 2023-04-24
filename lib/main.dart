@@ -24,6 +24,8 @@ import 'package:customer_app/utils/AppTheme.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:timeago/src/messages/vi_messages.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 // create instances of AppStore, AuthStore, and Logger
 final AppStore appStore = AppStore();
@@ -48,6 +50,9 @@ void main() async {
 
   // Toggle dark mode based on user preference
   appStore.toggleDarkMode(value: getBoolAsync(isDarkModeOnPref));
+
+  // Set language
+  timeago.setLocaleMessages('vi', ViMessages());
 
   // Start the app
   runApp(const MyApp());

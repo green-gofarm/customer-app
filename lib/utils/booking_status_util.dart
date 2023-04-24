@@ -16,7 +16,7 @@ Tuple2<Color, String> getBookingStatusColorAndLabel(OrderStatus status) {
     case OrderStatus.REJECTED:
       return Tuple2(canceledTextColor, "Đã từ chối");
     case OrderStatus.DISBURSE:
-      return Tuple2(finishedTextColor, "Đã thanh toán");
+      return Tuple2(finishedTextColor, "Đã kết thúc");
     case OrderStatus.FAILED:
       return Tuple2(deletedTextColor, "Thất bại");
     case OrderStatus.CUSTOMER_CANCEL:

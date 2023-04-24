@@ -9,7 +9,6 @@ import 'package:customer_app/screens/BookingPaymentResultScreen.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
 import 'package:customer_app/screens/PaymentScreen.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
-import 'package:customer_app/utils/JSWidget.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
@@ -69,8 +68,8 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
           OrderStatus.FAILED) {
         BookingPaymentResultScreen(isSuccessful: false).launch(context);
       } else {
-        toast("Có lỗi xảy ra");
-        logger.i("payment status not right: ${store.booking!.status}");
+        toast("Thanh toán thất bại..");
+        logger.e("Payment status not right: ${store.booking!.status}");
       }
     }
 
@@ -97,26 +96,29 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
     return WillPopScope(
         child: Observer(
             builder: (_) => Scaffold(
-              appBar: _buildAppbar(context),
-              body: _buildBody(),
-              bottomSheet: _buildBottom(),
-            )),
+              backgroundColor: mainBgColor,
+                  appBar: _buildAppbar(context),
+                  body: _buildBody(),
+                  bottomSheet: _buildBottom(),
+                )),
         onWillPop: () async {
           HomeScreen().launch(context);
           return false;
         });
   }
 
+  static const APPBAR_NAME = 'Thanh toán';
+
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return jsAppBar(
-      context,
-      homeAction: true,
-      appBarHeight: 50,
-      titleWidget: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text("Thanh toán", style: boldTextStyle(color: white))],
-      ),
-    );
+    return appBarWidget(APPBAR_NAME,
+        showBack: false,
+        textSize: 18, actions: [
+      IconButton(
+          onPressed: () {
+            HomeScreen().launch(context);
+          },
+          icon: Icon(Icons.home, size: 20))
+    ]);
   }
 
   Widget _buildBody() {
@@ -127,7 +129,6 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
         mainAxisSize: MainAxisSize.max,
         children: [
           _buildStepBar(),
-          12.height,
           _buildDetail(),
           12.height,
           _buildPaymentMethod(),
@@ -142,7 +143,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
         padding: EdgeInsets.only(left: 12, right: 12, bottom: 0, top: 12),
         child: Container(
           height: 300,
-          color: Color(0xFFf7f7f7),
+          color: Colors.white,
         ),
       );
     }
@@ -153,7 +154,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
     return Container(
       padding: EdgeInsets.only(left: 12, right: 12, bottom: 0, top: 12),
       child: Container(
-        color: Color(0xFFf7f7f7),
+        color: Colors.white,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +187,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(farmstay.address.province!.name!,
+                        Text(farmstay.address.province!.name,
                             style: secondaryTextStyle()),
                         6.height,
                         Text(farmstay.address.toString(),

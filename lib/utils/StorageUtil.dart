@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StorageUtil {
   static const String _cityKey = 'cities';
   static const String _hashtagKey = 'hashtags';
+  static const String _onlyUnreadKey = 'onlyUnread';
 
   static Future<void> storeCities(List<ProvinceModel> cities) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,5 +38,15 @@ class StorageUtil {
         .map((hashtagJson) =>
             TagCategoryModel.fromJson(json.decode(hashtagJson)))
         .toList();
+  }
+
+  static Future<void> storeOnlyUnread(bool onlyUnread) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_onlyUnreadKey, onlyUnread);
+  }
+
+  static Future<bool> isOnlyUnread() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_onlyUnreadKey) ?? false;
   }
 }

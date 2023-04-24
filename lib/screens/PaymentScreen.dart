@@ -1,5 +1,5 @@
-import 'package:customer_app/utils/JSWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -35,22 +35,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ..loadRequest(Uri.parse(widget.url));
   }
 
+  static const String APPBAR_NAME = "VNPay";
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-          appBar: jsAppBar(
-            context,
-            titleWidget: Text('VN Pay'),
-            appBarHeight: 50,
-            backWidget: true,
-            callBack: widget.onCloseCallback
-          ),
+          appBar: _buildAppbar(context),
           body: WebViewWidget(controller: controller),
         ),
         onWillPop: () async {
           widget.onCloseCallback();
           return true;
         });
+  }
+
+  PreferredSizeWidget _buildAppbar(BuildContext context) {
+    return appBarWidget(
+      APPBAR_NAME,
+      showBack: true,
+      textSize: 18,
+    );
   }
 }

@@ -56,4 +56,22 @@ class NotificationApi {
       return left(e.toString());
     }
   }
+
+  FutureEither<bool> makeNotificationAsRead(int id) async {
+    final url = '${ENP.USER}/my-notification/$id/read';
+    final options = RequestOptions(body: {});
+
+    try {
+      final response =
+          await _httpClient.sendRequest(url, METHOD.PATCH, options);
+      final payload = jsonDecode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return right(true);
+      }
+      throw (payload['resultMessage'] ?? GET_CART_ERROR_MESSAGE);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
 }

@@ -41,6 +41,7 @@ dependencies:
   url_launcher: ^6.1.10
   webview_flutter: ^4.0.7
   shared_preferences: ^2.1.0
+  timeago: ^3.3.0
 
 dev_dependencies:
   flutter_test:

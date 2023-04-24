@@ -6,6 +6,7 @@ class FeedbackModel {
   final int? repliedFeedbackId;
   final int hostId;
   final int customerId;
+  final String? customerName;
   final int orderId;
   final int? type;
   final int status;
@@ -25,6 +26,7 @@ class FeedbackModel {
     required this.status,
     required this.createdDate,
     this.updatedDate,
+    this.customerName,
   });
 
   factory FeedbackModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class FeedbackModel {
       orderId: json['orderId'],
       type: json['type'],
       status: json['status'],
+      customerName: json['customerName'],
       createdDate: DateTime.parse(json['createdDate']),
       updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
           ? DateTime.parse(json['updatedDate'])

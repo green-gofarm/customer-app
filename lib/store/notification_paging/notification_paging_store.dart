@@ -3,6 +3,8 @@ import 'package:customer_app/main.dart';
 import 'package:customer_app/models/PaginationModel.dart';
 import 'package:customer_app/models/notification_model.dart';
 import 'package:customer_app/models/paging_model.dart';
+import 'package:customer_app/utils/StorageUtil.dart';
+import 'package:customer_app/utils/enum/notification_status.dart';
 import 'package:customer_app/utils/map_utils.dart';
 import 'package:mobx/mobx.dart';
 
@@ -20,7 +22,7 @@ abstract class _NotificationPagingStore with Store {
   @observable
   PaginationModel pagination = PaginationModel(
       orderBy: PaginationModel.DEFAULT_ORDER_BY,
-      orderDirection: PaginationModel.DEFAULT_ORDER_DIRECTION,
+      orderDirection: "desc",
       pageSize: 10);
 
   @observable
@@ -40,6 +42,7 @@ abstract class _NotificationPagingStore with Store {
   }
 
   void reset() {
+    notifications.clear();
     pagination.pageSize = 6;
   }
 
@@ -63,6 +66,10 @@ abstract class _NotificationPagingStore with Store {
             PaginationModel.DEFAULT_ORDER_DIRECTION,
         ..._params,
       };
+
+      if (await StorageUtil.isOnlyUnread()) {
+        totalParams['Status'] = NotificationStatuses.unread.value;
+      }
 
       final preparedParams = MapUtils.filterNullValues(totalParams);
       final result = await _api.getNotifications(preparedParams);
@@ -124,5 +131,24 @@ abstract class _NotificationPagingStore with Store {
   @action
   Future<void> handleChangeParams(Map<String, dynamic> params) async {
     await refresh(newParams: params);
+  }
+
+  @action
+  Future<void> makeNotificationAsRead(int id) async {
+    clear();
+    isLoading = true;
+
+    bool isMarked = false;
+    final result = await _api.makeNotificationAsRead(id);
+    result.fold((l) => message = l, (r) {
+      isMarked = r;
+      message = null;
+    });
+
+    logger.i("Mark as read: $isMarked");
+    if (message != null) {
+      logger.e("Mark as read error: $message");
+    }
+    isLoading = false;
   }
 }

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../../main.dart';
-import '../utils/JSWidget.dart';
 
 class BookingPaymentResultScreen extends StatelessWidget {
   final bool isSuccessful;
@@ -68,16 +67,16 @@ class BookingPaymentResultScreen extends StatelessWidget {
     );
   }
 
+  static const APPBAR_NAME = 'Hoàn thành';
+
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return jsAppBar(
-      context,
-      homeAction: true,
-      appBarHeight: 50,
-      titleWidget: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text("Kết thúc", style: boldTextStyle(color: white))],
-      ),
-    );
+    return appBarWidget(APPBAR_NAME, showBack: false, textSize: 18, actions: [
+      IconButton(
+          onPressed: () {
+            HomeScreen().launch(context);
+          },
+          icon: Icon(Icons.home, size: 20))
+    ]);
   }
 
   Widget _buildStepBar() {

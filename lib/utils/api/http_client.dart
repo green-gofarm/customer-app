@@ -55,13 +55,19 @@ class HttpClient {
       final String token = await getFirebaseToken();
       request.headers.addAll({'Authorization': 'Bearer $token'});
     }
+
+    //Todo: remove
+    if (!includeToken) {
+      final token = await AuthService.getFirebaseAuthToken(false);
+      if (token != null) {
+        request.headers.addAll({'Authorization': 'Bearer $token'});
+      }
+    }
   }
 
   Future<Response> sendRequest(
       String path, METHOD method, RequestOptions? options) async {
-    String queryParams = buildQueryParams(options?.queryParams ?? {}).join('&');
-
-    final Uri uri = getUri('$baseUrl/$path', queryParams);
+    final Uri uri = getUri('$baseUrl/$path', options?.queryParams);
     final Request request = Request(method.value, uri);
 
     try {
@@ -106,9 +112,10 @@ class HttpClient {
     return queryList;
   }
 
-  Uri getUri(String url, String? queryParams) {
+  Uri getUri(String url, Map<String, dynamic>? queryParams) {
     if (queryParams != null) {
-      return Uri.parse('$url?$queryParams');
+      String queryParamsString = buildQueryParams(queryParams).join('&');
+      return Uri.parse('$url?$queryParamsString');
     }
 
     return Uri.parse(url);
@@ -116,9 +123,7 @@ class HttpClient {
 
   Future<Response> sendUnAuthRequest(
       String path, METHOD method, RequestOptions? options) async {
-    String queryParams = buildQueryParams(options?.queryParams ?? {}).join('&');
-
-    final Uri uri = getUri('$baseUrl/$path', queryParams);
+    final Uri uri = getUri('$baseUrl/$path', options?.queryParams);
     final Request request = Request(method.value, uri);
 
     try {

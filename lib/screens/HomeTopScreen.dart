@@ -32,7 +32,7 @@ class HomeTopScreenState extends State<HomeTopScreen> {
     await store.getTopRatedFarmstay();
     await store.getTopBookedActivities();
     await store.getTopBookedRooms();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     setState(() => loading = false);
   }
 

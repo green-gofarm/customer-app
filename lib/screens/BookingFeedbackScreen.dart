@@ -23,7 +23,6 @@ class _BookingFeedbackScreenState extends State<BookingFeedbackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppbar(context),
-      bottomNavigationBar: _buildBottom(context),
       body: _buildBody(context),
     );
   }
@@ -77,11 +76,13 @@ class _BookingFeedbackScreenState extends State<BookingFeedbackScreen> {
             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             width: context.width() - 32,
             color: rf_primaryColor,
-            text: 'Send',
+            text: 'Gửi đánh giá',
             textStyle: boldTextStyle(color: white),
             onTap: () {
+              final comment = _commentController
+                  .text; // Get the text from the TextEditingController
+              widget.onCreate(rating: rating, comment: comment);
               finish(context);
-              toast('Feedback received. Thanks!');
             },
           )
         ],
@@ -105,27 +106,5 @@ class _BookingFeedbackScreenState extends State<BookingFeedbackScreen> {
       halfFilledIconData: Icons.star_half,
       defaultIconData: Icons.star_border_outlined,
     ).center();
-  }
-
-  Widget _buildBottom(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      margin: EdgeInsets.all(20),
-      width: context.width(),
-      height: 50,
-      decoration: boxDecorationWithShadow(
-        borderRadius: radius(24),
-        gradient: LinearGradient(colors: [rf_primaryColor, rf_primaryColor]),
-      ),
-      child: Text('Gửi đánh giá'.toUpperCase(),
-          style: primaryTextStyle(color: white, size: 16)),
-    ).onTap(
-      () {
-        final comment = _commentController
-            .text; // Get the text from the TextEditingController
-        widget.onCreate(rating: rating, comment: comment);
-        finish(context);
-      },
-    );
   }
 }

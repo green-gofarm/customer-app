@@ -162,13 +162,12 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                 )));
   }
 
+  static const String APPBAR_NAME = "Chi tiết giỏ hàng";
+
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return jsAppBar(context, appBarHeight: 50, backWidget: true, callBack: () {
-      widget.onBack();
-      Navigator.pop(context);
-    },
-        titleWidget: Text("Chi tiết giỏ hàng",
-            style: boldTextStyle(color: white, size: 18)),
+    return appBarWidget(APPBAR_NAME,
+        showBack: true,
+        textSize: 18,
         actions: [
           IconButton(
               onPressed: () async {
@@ -179,8 +178,7 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                   widget.onBack();
                 }
               },
-              icon: Icon(LineIcons.trash, size: 20),
-              color: Colors.white)
+              icon: Icon(LineIcons.trash, size: 20))
         ]);
   }
 

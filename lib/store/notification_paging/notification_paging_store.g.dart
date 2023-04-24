@@ -127,6 +127,16 @@ mixin _$NotificationPagingStore on _NotificationPagingStore, Store {
         .run(() => super.handleChangeParams(params));
   }
 
+  late final _$makeNotificationAsReadAsyncAction = AsyncAction(
+      '_NotificationPagingStore.makeNotificationAsRead',
+      context: context);
+
+  @override
+  Future<void> makeNotificationAsRead(int id) {
+    return _$makeNotificationAsReadAsyncAction
+        .run(() => super.makeNotificationAsRead(id));
+  }
+
   @override
   String toString() {
     return '''

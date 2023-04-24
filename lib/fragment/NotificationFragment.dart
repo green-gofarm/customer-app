@@ -1,11 +1,15 @@
+import 'package:customer_app/components/NotificationSkeleton.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/PaginationModel.dart';
 import 'package:customer_app/models/notification_model.dart';
 import 'package:customer_app/screens/BookingDetailScreen.dart';
 import 'package:customer_app/store/notification_paging/notification_paging_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/StorageUtil.dart';
+import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/notification_status.dart';
 import 'package:customer_app/utils/enum/notification_type.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -23,11 +27,11 @@ class NotificationFragmentState extends State<NotificationFragment> {
   ScrollController _scrollController = ScrollController();
 
   bool loadingInit = false;
+  bool isUnreadOnly = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
     init();
   }
 
@@ -40,13 +44,11 @@ class NotificationFragmentState extends State<NotificationFragment> {
   void _onScroll() async {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      await Future.delayed(Duration(seconds: 2));
       await _loadMore();
     }
   }
 
   Future<void> _loadMore() async {
-    logger.i("trigger loadmore");
     if (store.isLoading) {
       return;
     }
@@ -66,12 +68,15 @@ class NotificationFragmentState extends State<NotificationFragment> {
   }
 
   void init() async {
+    _scrollController.addListener(_onScroll);
+    isUnreadOnly = await StorageUtil.isOnlyUnread();
     setState(() => loadingInit = true);
     await _refresh();
     setState(() => loadingInit = false);
   }
 
   Future<void> _refresh() async {
+    store.reset();
     await store.refresh();
   }
 
@@ -86,14 +91,35 @@ class NotificationFragmentState extends State<NotificationFragment> {
   }
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return appBarWidget(
-      APPBAR_NAME,
-      center: true,
-      showBack: false,
-      color: rf_primaryColor,
-      textColor: Colors.white,
-      textSize: 18,
-    );
+    return appBarWidget(APPBAR_NAME,
+        showBack: false,
+        color: Colors.white,
+        // textColor: Colors.white,
+        textSize: 18,
+        actions: [
+          Row(
+            children: [
+              Text(
+                "Hiển thị chưa đọc",
+                style: secondaryTextStyle(size: 12),
+              ),
+              Transform.scale(
+                scale: 0.5,
+                child: CupertinoSwitch(
+                  value: isUnreadOnly,
+                  activeColor: rf_primaryColor,
+                  onChanged: (bool val) async {
+                    await StorageUtil.storeOnlyUnread(val);
+                    setState(() {
+                      isUnreadOnly = val;
+                    });
+                    await _refresh();
+                  },
+                ),
+              )
+            ],
+          ),
+        ]);
   }
 
   Widget _buildBody(BuildContext context) {
@@ -104,13 +130,11 @@ class NotificationFragmentState extends State<NotificationFragment> {
         children: [
           RefreshIndicator(
             onRefresh: _refresh,
-            child: store.notifications.isEmpty
+            child: store.notifications.isEmpty && !store.isLoading
                 ? _buildEmpty(context, MediaQuery.of(context).size.width)
                 : Column(
                     children: [
-                      SizedBox(height: 8),
                       Expanded(child: _buildListView()),
-                      SizedBox(height: 8),
                     ],
                   ),
           ),
@@ -137,6 +161,7 @@ class NotificationFragmentState extends State<NotificationFragment> {
             children: <Widget>[
               SizedBox(height: width * 0.15),
               Icon(Icons.notifications_off_outlined, size: width * 0.5),
+              8.height,
               Text('Không có thông báo',
                   style: TextStyle(
                       color: Colors.black,
@@ -148,17 +173,19 @@ class NotificationFragmentState extends State<NotificationFragment> {
   }
 
   Widget _buildListView() {
-    logger.i("List here: ${store.notifications}");
-    return ListView.separated(
+    return ListView.builder(
       controller: _scrollController,
-      itemCount: store.notifications.length,
+      itemCount: store.isLoading
+          ? store.notifications.length + 10
+          : store.notifications.length,
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(vertical: 8),
       itemBuilder: (_, i) {
-        NotificationModel notification = store.notifications[i];
-        return _buildItem(notification);
+        if (i < store.notifications.length) {
+          NotificationModel notification = store.notifications[i];
+          return _buildItem(notification);
+        }
+        return NotificationSkeleton();
       },
-      separatorBuilder: (_, __) => SizedBox(height: 8),
     );
   }
 
@@ -168,19 +195,17 @@ class NotificationFragmentState extends State<NotificationFragment> {
     final color = iconAndColor.item2;
 
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
         color: notification.status == NotificationStatuses.unread
-            ? Color(0xFFF5F5F5)
+            ? rf_primaryColor.withOpacity(0.05)
             : context.cardColor,
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 0,
-              blurRadius: 5)
-        ],
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey.shade400, // Change the border color as needed
+            width: 1.0, // Change the border width as needed
+          ),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,9 +221,6 @@ class NotificationFragmentState extends State<NotificationFragment> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: notification.status == NotificationStatuses.unread
-                        ? Colors.black
-                        : Colors.grey,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -206,17 +228,20 @@ class NotificationFragmentState extends State<NotificationFragment> {
                   notification.content,
                   style: TextStyle(
                     fontSize: 14,
-                    color: notification.status == NotificationStatuses.unread
-                        ? Colors.black
-                        : Colors.grey,
                   ),
                 ),
+                SizedBox(height: 4),
+                Text(
+                  DateTimeUtil.timeAgoString(notification.createdDate),
+                  style: secondaryTextStyle(size: 13),
+                )
               ],
             ),
           ),
         ],
       ),
     ).onTap(() {
+      store.makeNotificationAsRead(notification.id);
       _handleNavigation(notification);
     });
   }
@@ -225,7 +250,10 @@ class NotificationFragmentState extends State<NotificationFragment> {
     IconData icon;
     Color color;
 
-    switch (notification.extras["type"]) {
+    NotificationType type =
+        NotificationTypeExtension.fromValue(notification.extras["type"]);
+
+    switch (type) {
       case NotificationType.PAYMENT_SUCCESS_CUSTOMER:
         icon = Icons.payment;
         color = Colors.green;
@@ -251,15 +279,20 @@ class NotificationFragmentState extends State<NotificationFragment> {
   }
 
   void _handleNavigation(NotificationModel notification) {
-    switch (notification.extras["type"]) {
+    NotificationType type =
+        NotificationTypeExtension.fromValue(notification.extras["type"]);
+
+    switch (type) {
       case NotificationType.PAYMENT_SUCCESS_CUSTOMER:
       case NotificationType.CANCEL_BOOKING_CUSTOMER:
       case NotificationType.BOOKING_APPROVED_CUSTOMER:
       case NotificationType.BOOKING_REJECTED_CUSTOMER:
-        BookingDetailScreen(
-          bookingId: notification.id,
-          onBack: () => _refresh(),
-        ).launch(context);
+        if (notification.extras["orderId"] != null) {
+          BookingDetailScreen(
+            bookingId: notification.extras["orderId"],
+            onBack: () => _refresh(),
+          ).launch(context);
+        }
         break;
       // Add more cases for other notification types if needed.
     }

@@ -33,6 +33,7 @@ abstract class _ActivityDetailStore with Store {
       (detail) {
         this.activityDetail = detail;
         isLoading = false;
+        message = null;
       },
     );
 

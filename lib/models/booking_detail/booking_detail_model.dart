@@ -15,6 +15,8 @@ class BookingDetailModel {
   final DateTime createdDate;
   final DateTime? updatedDate;
   final DateTime checkInDate;
+  final DateTime? checkoutDate;
+  final DateTime feedbackDate;
   final DateTime completedDate;
   final List<BookingActivityItem> activities;
   final List<BookingRoomItem> rooms;
@@ -32,6 +34,8 @@ class BookingDetailModel {
     required this.referenceId,
     required this.expiredTime,
     required this.createdDate,
+    this.checkoutDate,
+    required this.feedbackDate,
     this.updatedDate,
     required this.checkInDate,
     required this.completedDate,
@@ -57,6 +61,8 @@ class BookingDetailModel {
       referenceId: json['referenceId'],
       expiredTime: DateTime.parse(json['expiredTime']),
       createdDate: DateTime.parse(json['createdDate']),
+      checkoutDate: json['checkoutDate'] != null ? DateTime.parse(json['checkoutDate']) : null,
+      feedbackDate: DateTime.parse(json['feedbackDate']),
       updatedDate: json['updatedDate'] != null && json['updatedDate'] is String
           ? DateTime.parse(json['updatedDate'])
           : null,
@@ -88,6 +94,8 @@ class BookingDetailModel {
       'createdDate': createdDate.toIso8601String(),
       'updatedDate': updatedDate?.toIso8601String(),
       'checkInDate': checkInDate.toIso8601String(),
+      'checkoutDate': checkoutDate?.toIso8601String(),
+      'feedbackDate': feedbackDate.toIso8601String(),
       'completedDate': completedDate.toIso8601String(),
       'activities': activities.map((activity) => activity.toJson()).toList(),
       'rooms': rooms.map((room) => room.toJson()).toList(),

@@ -59,10 +59,10 @@ class _CartFragmentState extends State<CartFragment> {
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
     return appBarWidget(APPBAR_NAME,
-        center: true,
+        // center: true,
         showBack: false,
-        color: rf_primaryColor,
-        textColor: Colors.white,
+        color: Colors.white,
+        // textColor: Colors.white,
 
         textSize: 18);
   }
@@ -92,22 +92,8 @@ class _CartFragmentState extends State<CartFragment> {
   Widget _buildListView(BuildContext context) {
     final carts = store.allCarts;
 
-    if (carts.length < 1) {
-      return Container(
-          width: context.width(),
-          color: mainBgColor,
-          padding: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Expanded(
-                child: Text(
-                  "Chưa có giỏ hàng nào",
-                  textAlign: TextAlign.center,
-                  style: secondaryTextStyle(fontStyle: FontStyle.italic),
-                ),
-              )
-            ],
-          ));
+    if (carts.isEmpty) {
+      return _buildEmpty(context, MediaQuery.of(context).size.width);
     }
 
     return Column(
@@ -127,6 +113,28 @@ class _CartFragmentState extends State<CartFragment> {
         ),
       ],
     );
+  }
+
+  Widget _buildEmpty(BuildContext context, double width) {
+    return SingleChildScrollView(
+        child: Container(
+      color: context.scaffoldBackgroundColor,
+      height: context.height(),
+      child: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: width * 0.15),
+              Icon(Icons.remove_shopping_cart, size: width * 0.5),
+              8.height,
+              Text('Ban chưa mua gì.',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500)),
+            ]),
+      ),
+    ));
   }
 
   Widget _buildCartItem(BuildContext context, CartItemModel cart) {
@@ -165,7 +173,7 @@ class _CartFragmentState extends State<CartFragment> {
             width: 100,
             child: FadeInImage.assetNetwork(
               placeholder: default_image,
-              image: cart.farmstayImages.avatar!,
+              image: cart.farmstayImages.avatar,
               fit: BoxFit.cover,
               imageErrorBuilder: (BuildContext context, Object exception,
                   StackTrace? stackTrace) {

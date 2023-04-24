@@ -9,7 +9,6 @@ import 'package:customer_app/utils/enum/order_status.dart';
 import 'package:customer_app/utils/number_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -58,19 +57,12 @@ class BookingFragmentState extends State<BookingFragment> {
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
     return appBarWidget(APPBAR_NAME,
-        center: true,
+        // center: true,
         showBack: false,
-        color: rf_primaryColor,
-        textColor: Colors.white,
+        // color: rf_primaryColor,
+        // textColor: Colors.white,
         textSize: 18,
-        actions: [
-          Icon(
-            SimpleLineIcons.equalizer,
-            size: 18,
-            color: white,
-          ).onTap(() {}),
-          12.width,
-        ]);
+    );
   }
 
   Widget _buildBody(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:customer_app/components/FarmstayListComponent.dart';
 import 'package:customer_app/components/SkeletonFarmstayListComponent.dart';
-import 'package:customer_app/main.dart';
 import 'package:customer_app/models/PaginationModel.dart';
+import 'package:customer_app/store/farmstay/farmstay_store.dart';
 import 'package:customer_app/store/farmstay_home_paging/farmstay_home_paging_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,10 @@ class HomeSearchResultScreen extends StatefulWidget {
 
 class HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
   FarmstayPagingHomeStore store = FarmstayPagingHomeStore();
+  FarmstayStore topStore = FarmstayStore();
+
   bool loading = false;
+  bool isInit = false;
 
   ScrollController _scrollController = ScrollController();
 
@@ -27,13 +30,18 @@ class HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
 
   void init() async {
     await _refresh();
+    setState(() {
+      isInit = true;
+    });
   }
 
   Future<void> _refresh() async {
     setState(() => loading = true);
     store.reset();
     await store.refresh();
-    await Future.delayed(Duration(seconds: 2));
+    if(store.farmstays.length < 1) {
+      await topStore.getTopRatedFarmstay();
+    }
     setState(() => loading = false);
   }
 
@@ -46,13 +54,11 @@ class HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
   void _onScroll() async {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      await Future.delayed(Duration(seconds: 2));
       await _loadMore();
     }
   }
 
   Future<void> _loadMore() async {
-    logger.i("trigger loadmore");
     if (store.isLoading) {
       return;
     }
@@ -98,21 +104,33 @@ class HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
       },
       child: Column(
         children: [
-          SizedBox(
-            height: 8,
-          ),
-          Expanded(child: _buildListFarmstay(context)),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 8),
+          Expanded(
+              child: (store.farmstays.length < 1 && !loading && isInit)
+                  ? _buildTopListFarmstay(context)
+                  : _buildListFarmstay(context)),
+          SizedBox(height: 8),
         ],
       ),
+    );
+  }
+
+  Widget _buildTopListFarmstay(BuildContext context) {
+    return ListView.separated(
+      controller: _scrollController,
+      itemCount: topStore.topRatedFarmstays.length,
+      physics: AlwaysScrollableScrollPhysics(),
+      itemBuilder: (context, i) {
+        return FarmstayListComponent(farmstay: topStore.topRatedFarmstays[i]);
+      },
+      separatorBuilder: (_, __) => SizedBox(height: 8),
     );
   }
 
   Widget _buildListFarmstay(BuildContext context) {
     return ListView.separated(
       controller: _scrollController,
+      physics: AlwaysScrollableScrollPhysics(),
       itemCount: store.farmstays.length + (store.isLoading ? 3 : 0),
       itemBuilder: (context, i) {
         if (i < store.farmstays.length) {

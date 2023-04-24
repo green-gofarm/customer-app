@@ -11,7 +11,6 @@ import 'package:customer_app/screens/BookingPaymentScreen.dart';
 
 import 'package:customer_app/store/booking/booking_store.dart';
 import 'package:customer_app/store/farmstay_detail/farmstay_detail_store.dart';
-import 'package:customer_app/utils/JSWidget.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
@@ -139,13 +138,14 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                 )));
   }
 
+  static const String APPBAR_NAME = "Chi tiết đơn hàng";
+
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return jsAppBar(context, appBarHeight: 50, backWidget: true, callBack: () {
-      widget.onBack();
-      Navigator.pop(context);
-    },
-        titleWidget: Text("Chi tiết đơn hàng",
-            style: boldTextStyle(color: white, size: 18)));
+    return appBarWidget(
+      APPBAR_NAME,
+      showBack: true,
+      textSize: 18,
+    );
   }
 
   Widget _buildBody() {
@@ -166,15 +166,22 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                         children: [
                           _buildFarmstayInfo(context),
                           SizedBox(height: 8),
-                          if (store.bookingDetail != null &&
-                              store.bookingDetail!.feedbacks.length > 0)
-                            _buildFeedback(
-                                store.bookingDetail!.feedbacks.first),
-                          SizedBox(height: 8),
+                          if (hasFeedback())
+                            Column(
+                              children: [
+                                _buildFeedback(
+                                    store.bookingDetail!.feedbacks.first),
+                                SizedBox(height: 8),
+                              ],
+                            ),
                           if (store.bookingDetail != null)
-                            _buildTimeline(store.bookingDetail!),
-                          // Add the timeline here
-                          SizedBox(height: 8),
+                            Column(
+                              children: [
+                                _buildTimeline(store.bookingDetail!),
+                                // Add the timeline here
+                                SizedBox(height: 8),
+                              ],
+                            ),
                           _buildList(context),
                           SizedBox(height: 8),
                           _buildBodyBottom(),
@@ -643,7 +650,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
         "icon": Icons.login,
         "title": "Check-in",
         "date": bookingDetail.checkInDate
-      }
+      },
     ];
 
     final groupedRooms = groupBy<BookingRoomItem, DateTime>(
@@ -686,11 +693,13 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
       });
     });
 
-    timelineItemsWithDate.add({
-      "icon": Icons.check_circle,
-      "title": "Hoàn thành",
-      "date": bookingDetail.completedDate
-    });
+    if (bookingDetail.checkoutDate != null) {
+      timelineItemsWithDate.add({
+        "icon": Icons.login,
+        "title": "Check-out",
+        "date": bookingDetail.checkoutDate
+      });
+    }
 
     // Sort the items by date
     timelineItemsWithDate.sort((a, b) => a["date"].compareTo(b["date"]));
@@ -790,13 +799,32 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
       return _buildPendingPayment(store.bookingDetail!);
     }
 
-    if (orderStatus == OrderStatus.DISBURSE) {
-      return _buildComplete(store.bookingDetail!);
+    if (feedbackable(store.bookingDetail!.feedbackDate, orderStatus)) {
+      if (!hasFeedback()) {
+        return _buildComplete(store.bookingDetail!);
+      }
     }
 
     return SizedBox(
       height: 0,
     );
+  }
+
+  bool hasFeedback() {
+    if (store.bookingDetail == null) return false;
+    return store.bookingDetail!.feedbacks.length > 0;
+  }
+
+  bool feedbackable(DateTime feedbackDate, OrderStatus status) {
+    DateTime currentDate = DateTime.now();
+
+    bool validStatus =
+        status == OrderStatus.APPROVED || status == OrderStatus.DISBURSE;
+
+    int daysDifference = currentDate.difference(feedbackDate).inDays;
+    bool isSameOrAfterFeedbackDate = daysDifference >= 0;
+
+    return validStatus && isSameOrAfterFeedbackDate;
   }
 
   Widget _buildPendingPayment(BookingDetailModel booking) {
@@ -897,7 +925,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                 children: [
                   Text('Thực nhận', style: primaryTextStyle()),
                   Text(
-                      NumberUtil.formatIntPriceToVnd(refundDetail.refundAmount!),
+                      NumberUtil.formatIntPriceToVnd(
+                          refundDetail.refundAmount!),
                       style: primaryTextStyle()),
                 ],
               ),
@@ -989,7 +1018,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                     final result = await store.createFeedback(booking.id,
                         rating: rating, comment: comment);
                     if (result) {
-                      toast("Gửi đánh giá thành công");
+                      toast('Cảm ơn bạn đã đánh giá!');
                       _refresh();
                     }
                   },

@@ -205,7 +205,7 @@ class _SelectHashtagScreenState extends State<SelectHashtagScreen> {
             borderRadius: radius(8),
             gradient:
                 LinearGradient(colors: [rf_primaryColor, rf_primaryColor])),
-        child: Text('Tiếp theo'.toUpperCase(),
+        child: Text('Hoàn tất'.toUpperCase(),
             style: boldTextStyle(color: white, size: 18)),
       ),
     );
