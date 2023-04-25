@@ -683,11 +683,8 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
         String key = _generateUniqueKey('room', room.roomId, date);
         if (!uniqueKeys.contains(key)) {
           uniqueKeys.add(key);
-          timelineItemsWithDate.add({
-            "icon": Icons.hotel,
-            "title": "Phòng ${room.room.name}",
-            "date": date
-          });
+          timelineItemsWithDate.add(
+              {"icon": Icons.hotel, "title": room.room.name, "date": date});
         }
       });
     });
@@ -699,7 +696,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
           uniqueKeys.add(key);
           timelineItemsWithDate.add({
             "icon": Icons.local_activity,
-            "title": "Hoạt động ${activity.activity.name}",
+            "title": activity.activity.name,
             "date": date
           });
         }
