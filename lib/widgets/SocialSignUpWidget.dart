@@ -5,6 +5,7 @@ import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/GoogleButtonWidget.dart';
 import 'package:customer_app/widgets/LoadingMixin.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -41,6 +42,11 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
         final String? token = await AuthService.getFirebaseAuthToken(false);
         if (token != null) {
           await authStore.signUpCustomer(token);
+
+          String? messageToken = await FirebaseMessaging.instance.getToken();
+          if (messageToken != null) {
+            authStore.updateNotificationToken(messageToken);
+          }
         }
 
         if (authStore.user != null) {
@@ -71,8 +77,8 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
         Container(
           color: rf_primaryColor.withOpacity(0.05),
           height: 250,
-          child: Align(
-              alignment: Alignment.center, child: Image.asset(big_logo)),
+          child:
+              Align(alignment: Alignment.center, child: Image.asset(big_logo)),
         ),
         Container(
           padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
@@ -82,7 +88,8 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
             children: [
               Text(CTA_SUBTITLE, style: boldTextStyle(size: 16)),
               12.height,
-              Text("Tạo tài khoản gofarm và đăng nhập.", style: secondaryTextStyle()),
+              Text("Tạo tài khoản gofarm và đăng nhập.",
+                  style: secondaryTextStyle()),
               12.height,
               GoogleButtonWidget(
                 context,
@@ -92,7 +99,8 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
                 await handleSignUp();
               }),
               16.height,
-              if (mounted && authStore.errorMessage != null &&
+              if (mounted &&
+                  authStore.errorMessage != null &&
                   authStore.errorMessage!.isNotEmpty)
                 Container(
                   padding: EdgeInsets.all(8.0),

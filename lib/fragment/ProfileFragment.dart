@@ -1,6 +1,7 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/user_model.dart';
 import 'package:customer_app/screens/HomeScreen.dart';
+import 'package:customer_app/screens/SupportScreen.dart';
 import 'package:customer_app/screens/UserProfileScreen.dart';
 import 'package:customer_app/store/user/user_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
@@ -58,6 +59,13 @@ class ProfileFragmentState extends State<ProfileFragment> {
                   title: "Hồ sơ cá nhân",
                   onTap: () {
                     UserProfileScreen().launch(context);
+                  },
+                ),
+                _buildActionCard(
+                  iconData: Icons.support_agent,
+                  title: "Trung tâm hỗ trợ",
+                  onTap: () {
+                    SupportScreen().launch(context);
                   },
                 ),
                 _buildActionCard(

@@ -4,6 +4,7 @@ import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/widgets/GoogleButtonWidget.dart';
 import 'package:customer_app/widgets/LoadingMixin.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -40,9 +41,14 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
 
       if (userCredential.user != null) {
         await authStore.signInCustomer(false);
+        String? token = await FirebaseMessaging.instance.getToken();
+        if (token != null) {
+          authStore.updateNotificationToken(token);
+        }
 
         if (authStore.user != null) {
-          Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+          Navigator.pushNamedAndRemoveUntil(
+              context, RoutePaths.HOME.value, (route) => false);
         }
       }
     } catch (error) {
@@ -72,7 +78,8 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
               await handleGoogleSignIn();
             }),
             20.height,
-            if (mounted && authStore.errorMessage != null &&
+            if (mounted &&
+                authStore.errorMessage != null &&
                 authStore.errorMessage!.isNotEmpty)
               Padding(
                 padding: EdgeInsets.all(8.0),

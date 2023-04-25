@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer_app/fragment/BookingFragment.dart';
 import 'package:customer_app/fragment/CartFragment.dart';
 import 'package:customer_app/fragment/HomeFragment.dart';
@@ -9,6 +11,7 @@ import 'package:customer_app/utils/ICImages.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -113,13 +116,35 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) super.setState(fn);
   }
 
+  int backPressCounter = 0;
+
+  Future<bool> onWillPop() async {
+    backPressCounter++;
+
+    if (backPressCounter == 2) {
+      await SystemNavigator.pop(animated: true);
+      return false;
+    }
+
+    toast("Nhấn lại để thoát");
+    // Reset the counter after a short delay
+    Timer(Duration(seconds: 2), () {
+      backPressCounter = 0;
+    });
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DoublePressBackWidget(
-      message: "Nhấn lại để thoát",
-      child: Scaffold(
-        body: Center(child: _pages.elementAt(_selectedIndex)),
-        bottomNavigationBar: _bottomTab(),
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: DoublePressBackWidget(
+        message: "Nhấn lại để thoát",
+        child: Scaffold(
+          body: Center(child: _pages.elementAt(_selectedIndex)),
+          bottomNavigationBar: _bottomTab(),
+        ),
       ),
     );
   }
