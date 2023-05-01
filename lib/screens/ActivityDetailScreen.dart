@@ -13,6 +13,7 @@ import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/cart_item_type.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/number_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -137,6 +138,13 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
         expandedHeight: IMAGE_CONTAINER_HEIGHT,
         iconTheme: const IconThemeData(color: white),
         automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+              },
+              icon: Icon(Icons.home, size: 20))
+        ],
         flexibleSpace: FlexibleSpaceBar(
           background: _buildFlexibleSpaceBackground(),
         ),
@@ -238,14 +246,24 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text((activity?.name ?? ""), style: boldTextStyle(size: 20)),
+            Expanded(
+              child: Text(
+                (activity?.name ?? ""),
+                style: boldTextStyle(size: 20),
+                softWrap: true,
+              ),
+            ),
             activity?.price != null
                 ? Text(
                     "${NumberUtil.formatIntPriceToVnd(activity!.price)} / vé",
-                    style: boldTextStyle(size: 16, color: rf_primaryColor))
-                : Text("Miễn phí",
-                    style: boldTextStyle(size: 16, color: rf_primaryColor)),
+                    style: boldTextStyle(size: 16, color: rf_primaryColor),
+                  )
+                : Text(
+                    "Miễn phí",
+                    style: boldTextStyle(size: 16, color: rf_primaryColor),
+                  ),
           ],
         ),
         activity?.tags != null && activity!.tags!.length > 0
@@ -322,7 +340,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     return resultList;
   }
 
-  void handleOnSubmit (Map<DateTime, int> tickets) async {
+  void handleOnSubmit(Map<DateTime, int> tickets) async {
     if (cartStore.cart?.activities != null) {
       await handleRemoveFromCart();
     }
@@ -347,9 +365,8 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
               enabled: !cartStore.loading,
               context: context,
               title: totalTempTicket > 0
-                  ? 'Vé (${totalTempTicket})'
-                  : 'Cập nhật giỏ hàng'
-              ,
+                  ? 'Cập nhật giỏ hàng (${totalTempTicket})'
+                  : 'Cập nhật giỏ hàng',
               child: cartStore.loading
                   ? SizedBox(
                       width: 14,
@@ -361,7 +378,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                     )
                   : null,
               onPressed: () async {
-                if(totalTempTicket <= 0) {
+                if (totalTempTicket <= 0) {
                   handleOnSubmit({});
                   return;
                 }
@@ -548,7 +565,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
           Text('Ảnh minh họa'.toUpperCase(), style: boldTextStyle()),
           SizedBox(height: 8),
           Container(
-            height: 200, // Adjust the height of the horizontal list as needed
+            height: 200,
             child: ListView.builder(
               itemCount: images != null ? images.length : 0,
               scrollDirection: Axis.horizontal,

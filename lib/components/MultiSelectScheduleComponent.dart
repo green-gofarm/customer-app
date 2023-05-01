@@ -1,4 +1,5 @@
 import 'package:customer_app/models/schedule_item_model.dart';
+import 'package:customer_app/utils/SettingUtils.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/schedule_item_status.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class MultiSelectScheduleComponent extends StatelessWidget {
         controller: controller,
         view: DateRangePickerView.month,
         minDate: DateTimeUtil.getTomorrow(),
+        maxDate: DateTime.now().add(Duration(days: SettingUtils.MAX_BOOK_DATE)),
         enablePastDates: false,
         monthViewSettings: DateRangePickerMonthViewSettings(
           blackoutDates: disabledDates,

@@ -77,7 +77,7 @@ class BookingPaymentResultScreen extends StatelessWidget {
     return appBarWidget(APPBAR_NAME, showBack: false, textSize: 18, actions: [
       IconButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(context, RoutePaths.HOME.value);
+            Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
           },
           icon: Icon(Icons.home, size: 20))
     ]);

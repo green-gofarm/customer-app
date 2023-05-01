@@ -50,10 +50,14 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
         }
 
         if (authStore.user != null) {
-          //Refresh to get new token after sign up success;
           AuthService.getFirebaseAuthToken(true);
-          Navigator.pushNamedAndRemoveUntil(
-              context, RoutePaths.HOME.value, (route) => false);
+          if (widget.callBack != null) {
+            widget.callBack!();
+            finish(context);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+                context, RoutePaths.HOME.value, (route) => false);
+          }
         }
       }
     } catch (error) {

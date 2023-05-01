@@ -10,8 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 const BUTTON_TEXT = "Đăng nhập với Google";
-const CTA_TITLE = "Chưa có tài khoản?";
-const CTA_SUBTITLE = "Đăng ký";
 
 class SocialSignInWidget extends StatefulWidget {
   final Function? callBack;
@@ -47,8 +45,13 @@ class _SocialSignInWidgetState extends State<SocialSignInWidget>
         }
 
         if (authStore.user != null) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, RoutePaths.HOME.value, (route) => false);
+          if(widget.callBack != null) {
+            widget.callBack!();
+            finish(context);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+                context, RoutePaths.HOME.value, (route) => false);
+          }
         }
       }
     } catch (error) {

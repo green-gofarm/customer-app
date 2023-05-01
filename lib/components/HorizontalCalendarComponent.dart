@@ -1,5 +1,5 @@
-import 'package:customer_app/main.dart';
 import 'package:customer_app/utils/RFColors.dart';
+import 'package:customer_app/utils/SettingUtils.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -40,8 +40,6 @@ class HorizontalCalendarComponentState
   ];
   static List<String> listOfDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
-  static int MAX_DATE = 90;
-
   @override
   void initState() {
     super.initState();
@@ -70,7 +68,7 @@ class HorizontalCalendarComponentState
         separatorBuilder: (BuildContext context, int index) {
           return SizedBox(width: 0);
         },
-        itemCount: MAX_DATE,
+        itemCount: SettingUtils.MAX_BOOK_DATE,
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int index) {

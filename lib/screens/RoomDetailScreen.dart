@@ -14,6 +14,7 @@ import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/cart_item_type.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/number_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -138,6 +139,14 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         expandedHeight: IMAGE_CONTAINER_HEIGHT,
         iconTheme: const IconThemeData(color: white),
         automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RoutePaths.HOME.value, (route) => false);
+              },
+              icon: Icon(Icons.home, size: 20))
+        ],
         flexibleSpace: FlexibleSpaceBar(
           background: _buildFlexibleSpaceBackground(),
         ),
@@ -239,13 +248,24 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text((room?.name ?? ""), style: boldTextStyle(size: 18)),
+            Expanded(
+              child: Text(
+                (room?.name ?? ""),
+                style: boldTextStyle(size: 18),
+                softWrap: true,
+              ),
+            ),
             room?.price != null
-                ? Text("${NumberUtil.formatIntPriceToVnd(room!.price)} / ngày",
-                    style: boldTextStyle(size: 16, color: rf_primaryColor))
-                : Text("Miễn phí",
-                    style: boldTextStyle(size: 16, color: rf_primaryColor)),
+                ? Text(
+                    "${NumberUtil.formatIntPriceToVnd(room!.price)} / ngày",
+                    style: boldTextStyle(size: 16, color: rf_primaryColor),
+                  )
+                : Text(
+                    "Miễn phí",
+                    style: boldTextStyle(size: 16, color: rf_primaryColor),
+                  ),
           ],
         ),
       ],
@@ -318,7 +338,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               enabled: !cartStore.loading,
               context: context,
               title: totalTempTicket > 0
-                  ? 'Vé (${totalTempTicket})'
+                  ? 'Cập nhật giỏ hàng (${totalTempTicket})'
                   : 'Cập nhật giỏ hàng',
               child: cartStore.loading
                   ? SizedBox(

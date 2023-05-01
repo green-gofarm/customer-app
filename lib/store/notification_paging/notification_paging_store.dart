@@ -104,7 +104,7 @@ abstract class _NotificationPagingStore with Store {
       pagination.totalItem = temp!.totalItem;
       pagination.totalPage = temp!.totalPage;
 
-      if (temp!.data != null && temp!.data!.isNotEmpty) {
+      if (temp!.data != null) {
         notifications = List.of(temp!.data!);
         logger.i("DATA: ${temp!.data!.length}");
       }

@@ -490,16 +490,18 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.activity.name,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: boldTextStyle()),
+                          Expanded(
+                            child: Text(
+                              item.activity.name,
+                              style: boldTextStyle(),
+                              softWrap: true,
+                            ),
+                          ),
                           Text(
                             NumberUtil.formatIntPriceToVnd(
                                 item.price * quantity),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
                             style: boldTextStyle(size: 14),
                           )
                         ],
@@ -585,16 +587,18 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.room.name,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: boldTextStyle()),
+                          Expanded(
+                            child: Text(
+                              item.room.name,
+                              style: boldTextStyle(),
+                              softWrap: true,
+                            ),
+                          ),
                           Text(
                             NumberUtil.formatIntPriceToVnd(
                                 item.price * quantity),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
                             style: boldTextStyle(size: 14),
                           )
                         ],

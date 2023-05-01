@@ -1,6 +1,7 @@
 import 'package:customer_app/components/FarmstayListComponent.dart';
 import 'package:customer_app/components/SkeletonFarmstayListComponent.dart';
 import 'package:customer_app/models/PaginationModel.dart';
+import 'package:customer_app/screens/LocationPickerScreen.dart';
 import 'package:customer_app/store/farmstay_elastic_paging/farmstay_elastic_paging_store.dart';
 import 'package:customer_app/store/farmstay_query_autocomplete/farmstay_query_autocomplete_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
@@ -132,7 +133,21 @@ class CustomerSearchDelegate extends SearchDelegate {
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    return [];
+    return [
+      // IconButton(
+      //   icon: Icon(Icons.location_on),
+      //   onPressed: () async {
+      //     final selectedLocation = await Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => LocationPickerScreen()),
+      //     );
+      //     if (selectedLocation != null) {
+      //       query = selectedLocation;
+      //       showResults(context);
+      //     }
+      //   },
+      // ),
+    ];
   }
 }
 

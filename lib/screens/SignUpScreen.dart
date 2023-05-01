@@ -9,6 +9,10 @@ import 'package:customer_app/utils/RFWidget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class SignUpScreen extends StatefulWidget {
+  final VoidCallback? onSignedInCallback;
+
+  SignUpScreen({this.onSignedInCallback});
+
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -50,16 +54,30 @@ class _SignUpState extends State<SignUpScreen> {
           children: [
             SocialSignUpWidget(
               callBack: () {
-                Navigator.pushNamed(context, RoutePaths.SIGN_IN.value);
+                if (widget.onSignedInCallback != null) {
+                  widget.onSignedInCallback!();
+                  finish(context);
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, RoutePaths.HOME.value, (route) => false);
+                }
               },
             ),
             Row(
               children: [
-                Container(width: context.width(), height: 1, color: gray.withOpacity(0.2)).expand(),
+                Container(
+                        width: context.width(),
+                        height: 1,
+                        color: gray.withOpacity(0.2))
+                    .expand(),
                 8.width,
                 Text("&", style: secondaryTextStyle()),
                 8.width,
-                Container(width: context.width(), height: 1, color: gray.withOpacity(0.2)).expand(),
+                Container(
+                        width: context.width(),
+                        height: 1,
+                        color: gray.withOpacity(0.2))
+                    .expand(),
               ],
             ),
             8.height,
@@ -108,7 +126,14 @@ class _SignUpState extends State<SignUpScreen> {
                 Text('Đã có tài khoản?', style: secondaryTextStyle()),
                 TextButton(
                   onPressed: () {
-                    SignInScreen().launch(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignInScreen(
+                          onSignedInCallback: widget.onSignedInCallback,
+                        ),
+                      ),
+                    );
                   },
                   child: Text('Đăng nhập',
                       style: boldTextStyle(size: 14, color: rf_primaryColor)),

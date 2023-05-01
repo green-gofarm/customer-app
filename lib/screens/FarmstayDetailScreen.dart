@@ -1,4 +1,5 @@
 import 'package:customer_app/components/FarmstayScheduleComponent.dart';
+import 'package:customer_app/components/ShowLocationGoogleMap.dart';
 import 'package:customer_app/fragment/CartDetailFragment.dart';
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
@@ -20,6 +21,7 @@ import 'package:customer_app/utils/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:customer_app/utils/number_utils.dart';
 
@@ -43,7 +45,7 @@ class FarmstayDetailScreen extends StatefulWidget {
 class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   static double IMAGE_CONTAINER_HEIGHT = 250;
 
-  FarmstayDetailStore farmstayStore = FarmstayDetailStore();
+  FarmstayDetailStore fStore = FarmstayDetailStore();
   CartStore cartStore = CartStore();
 
   List<String> imageUrls = [];
@@ -71,11 +73,11 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   Future<void> _refresh(int id) async {
-    await farmstayStore.getFarmstayDetail(id);
+    await fStore.getFarmstayDetail(id);
     farmstayScheduleComponentKey.currentState?.refresh();
     setState(() {
-      if (farmstayStore.farmstayDetail != null) {
-        prepareShowDetail(farmstayStore.farmstayDetail!);
+      if (fStore.farmstayDetail != null) {
+        prepareShowDetail(fStore.farmstayDetail!);
         initFarmstayCart();
       }
     });
@@ -116,9 +118,8 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       SliverAppBar(
         floating: true,
         pinned: true,
-        title: Text(innerBoxIsScrolled
-            ? (farmstayStore.farmstayDetail?.name ?? "")
-            : ""),
+        title:
+            Text(innerBoxIsScrolled ? (fStore.farmstayDetail?.name ?? "") : ""),
         backgroundColor: rf_primaryColor,
         expandedHeight: IMAGE_CONTAINER_HEIGHT,
         iconTheme: IconThemeData(color: white),
@@ -175,8 +176,8 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       builder: (BuildContext context) {
         return RefreshIndicator(
           onRefresh: () async {
-            if (farmstayStore.farmstayDetail != null) {
-              return await _refresh(farmstayStore.farmstayDetail!.id);
+            if (fStore.farmstayDetail != null) {
+              return await _refresh(fStore.farmstayDetail!.id);
             }
           },
           child: CustomScrollView(
@@ -200,9 +201,9 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayReview()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
-      SliverToBoxAdapter(child: _farmstayService()),
-      SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayLocation()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayService()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayContactInfo()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
@@ -228,14 +229,14 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 8.height,
-                Text(farmstayStore.farmstayDetail?.name ?? "",
+                Text(fStore.farmstayDetail?.name ?? "",
                     style: boldTextStyle(size: 20)),
                 8.height,
                 Row(
                   children: [
                     RatingBarWidget(
                       onRatingChanged: (rating) {},
-                      rating: farmstayStore.farmstayDetail?.rating ?? 0.0,
+                      rating: fStore.farmstayDetail?.rating ?? 0.0,
                       allowHalfRating: true,
                       itemCount: 5,
                       disable: true,
@@ -246,10 +247,10 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                       defaultIconData: Icons.star_border_outlined,
                     ),
                     4.width,
-                    farmstayStore.farmstayDetail?.rating != null &&
-                            farmstayStore.farmstayDetail!.rating > 0.0
+                    fStore.farmstayDetail?.rating != null &&
+                            fStore.farmstayDetail!.rating > 0.0
                         ? Text(
-                            "(${farmstayStore.farmstayDetail!.rating})",
+                            "(${fStore.farmstayDetail!.rating})",
                             style: primaryTextStyle(size: 12),
                           )
                         : Text(
@@ -258,8 +259,8 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                                 fontStyle: FontStyle.italic, size: 12),
                           ),
                     8.width,
-                    if (farmstayStore.farmstayDetail?.rating != null &&
-                        farmstayStore.farmstayDetail!.rating > 0.0)
+                    if (fStore.farmstayDetail?.rating != null &&
+                        fStore.farmstayDetail!.rating > 0.0)
                       Text(
                         "20 nhận xét",
                         style: primaryTextStyle(
@@ -285,9 +286,9 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
         children: [
           Text('Mô tả'.toUpperCase(), style: boldTextStyle()),
           8.height,
-          farmstayStore.farmstayDetail?.description != null
+          fStore.farmstayDetail?.description != null
               ? Text(
-                  farmstayStore.farmstayDetail!.description!,
+                  fStore.farmstayDetail!.description!,
                   style: primaryTextStyle(size: 14),
                   textAlign: TextAlign.justify,
                 )
@@ -310,9 +311,9 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             'Lịch hoạt động'.toUpperCase(),
             style: boldTextStyle(),
           ),
-          farmstayStore.farmstayDetail != null
+          fStore.farmstayDetail != null
               ? FarmstayScheduleComponent(
-                  farmstay: farmstayStore.farmstayDetail!,
+                  farmstay: fStore.farmstayDetail!,
                   refresh: () {
                     _refresh(widget.farmstayId);
                   },
@@ -328,7 +329,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   Widget _farmstayReview() {
-    final feedbacks = farmstayStore.farmstayDetail?.feedbacks ?? [];
+    final feedbacks = fStore.farmstayDetail?.feedbacks ?? [];
 
     return Container(
       color: Colors.white,
@@ -405,8 +406,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   Widget _farmstayService() {
-    final List<ServiceModel> services =
-        farmstayStore.farmstayDetail?.services ?? [];
+    final List<ServiceModel> services = fStore.farmstayDetail?.services ?? [];
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(12),
@@ -482,13 +482,20 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             ],
           ),
           8.height,
-          Text(farmstayStore.farmstayDetail?.address.province?.name ?? "",
+          Text(fStore.farmstayDetail?.address.province?.name ?? "",
               style: boldTextStyle()),
           8.height,
-          Text(farmstayStore.farmstayDetail?.address.toString() ?? "",
+          Text(fStore.farmstayDetail?.address.toString() ?? "",
               style: secondaryTextStyle()),
-          // rfCommonCachedNetworkImage(event_ic_map,
-          //     fit: BoxFit.cover, height: 200, width: context.width()),
+          8.height,
+          if (fStore.farmstayDetail?.latitude != null &&
+              fStore.farmstayDetail?.longitude != null)
+            Container(
+              height: 300,
+              child: ShowLocationGoogleMap(
+                  center: LatLng(fStore.farmstayDetail!.latitude,
+                      fStore.farmstayDetail!.longitude)),
+            )
         ],
       ),
     );
@@ -496,7 +503,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
 
   Widget _farmstayContactInfo() {
     List<ContactInfoItemModel> listContact =
-        farmstayStore.farmstayDetail?.contactInformation ?? [];
+        fStore.farmstayDetail?.contactInformation ?? [];
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(12),
@@ -575,7 +582,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   Widget _farmstayFaq() {
-    final faqs = farmstayStore.farmstayDetail?.faqs ?? [];
+    final faqs = fStore.farmstayDetail?.faqs ?? [];
 
     return Container(
       color: Colors.white,
@@ -631,8 +638,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   Widget _farmstayPolicies() {
-    final List<PolicyModel> policies =
-        farmstayStore.farmstayDetail?.policies ?? [];
+    final List<PolicyModel> policies = fStore.farmstayDetail?.policies ?? [];
 
     return Container(
       color: Colors.white,
@@ -863,7 +869,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   void handleGoToCartDetailScreen() {
-    final farmstayId = farmstayStore.farmstayDetail?.id;
+    final farmstayId = fStore.farmstayDetail?.id;
     if (farmstayId == null) return;
     CartDetailFragment(
       farmstayId: farmstayId,
@@ -874,7 +880,7 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
   }
 
   Widget _buildBottom() {
-    if (!cartStore.hasAvailableCart() || farmstayStore.farmstayDetail == null) {
+    if (!cartStore.hasAvailableCart() || fStore.farmstayDetail == null) {
       return Container(height: 0);
     }
 

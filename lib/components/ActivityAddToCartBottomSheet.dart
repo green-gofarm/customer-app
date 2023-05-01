@@ -1,6 +1,7 @@
 import 'package:customer_app/main.dart';
 import 'package:customer_app/models/activity_model.dart';
 import 'package:customer_app/models/schedule_item_model.dart';
+import 'package:customer_app/screens/SignInScreen.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
@@ -89,8 +90,17 @@ class ActivityAddToCartBottomSheetState
               context: context,
               title: 'Cập nhật giỏ hàng (${getTotalQuantity()})',
               onPressed: () {
-                Navigator.pop(context);
-                widget.onSubmit(_item);
+                if(authStore.isAuthenticated()) {
+                  Navigator.pop(context);
+                  widget.onSubmit(_item);
+                } else {
+                  SignInScreen(
+                    onSignedInCallback: () {
+                      Navigator.pop(context);
+                      widget.onSubmit(_item);
+                    },
+                  ).launch(context);
+                }
               },
             ),
           ),

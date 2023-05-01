@@ -13,6 +13,10 @@ import 'package:customer_app/utils/RFWidget.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class SignInScreen extends StatefulWidget {
+  final VoidCallback? onSignedInCallback;
+
+  SignInScreen({this.onSignedInCallback});
+
   @override
   _SignInState createState() => _SignInState();
 }
@@ -70,7 +74,12 @@ class _SignInState extends State<SignInScreen> {
             children: [
               SocialSignInWidget(
                 callBack: () {
-                  Navigator.pushNamed(context, RoutePaths.SIGN_UP.value);
+                  if (widget.onSignedInCallback != null) {
+                    widget.onSignedInCallback!();
+                  } else {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, RoutePaths.HOME.value, (route) => false);
+                  }
                 },
               ),
             ],
@@ -88,7 +97,14 @@ class _SignInState extends State<SignInScreen> {
                 Text('Chưa có tài khoản?', style: secondaryTextStyle()),
                 TextButton(
                   onPressed: () {
-                    SignUpScreen().launch(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignUpScreen(
+                          onSignedInCallback: widget.onSignedInCallback,
+                        ),
+                      ),
+                    );
                   },
                   child: Text('Đăng ký',
                       style: boldTextStyle(size: 14, color: rf_primaryColor)),

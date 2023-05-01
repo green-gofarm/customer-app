@@ -164,21 +164,18 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
   static const String APPBAR_NAME = "Chi tiết giỏ hàng";
 
   PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return appBarWidget(APPBAR_NAME,
-        showBack: true,
-        textSize: 18,
-        actions: [
-          IconButton(
-              onPressed: () async {
-                final isConfirmed = await _showDialog(context);
-                if (isConfirmed) {
-                  await store.clearCart(widget.farmstayId);
-                  await _refresh();
-                  widget.onBack();
-                }
-              },
-              icon: Icon(LineIcons.trash, size: 20))
-        ]);
+    return appBarWidget(APPBAR_NAME, showBack: true, textSize: 18, actions: [
+      IconButton(
+          onPressed: () async {
+            final isConfirmed = await _showDialog(context);
+            if (isConfirmed) {
+              await store.clearCart(widget.farmstayId);
+              await _refresh();
+              widget.onBack();
+            }
+          },
+          icon: Icon(LineIcons.trash, size: 20))
+    ]);
   }
 
   Widget _buildBody() {
@@ -387,16 +384,17 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(activity.name ?? "No_name",
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: boldTextStyle()),
+                          Expanded(
+                            child: Text(
+                              (activity.name ?? ""),
+                              style: boldTextStyle(),
+                              softWrap: true,
+                            ),
+                          ),
                           Text(
-                            NumberUtil.formatIntPriceToVnd(
-                                activity.price * quantity),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
+                            NumberUtil.formatIntPriceToVnd(activity.price),
                             style: boldTextStyle(size: 14),
                           )
                         ],
@@ -470,16 +468,17 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(room.name ?? "No_name",
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: boldTextStyle()),
+                          Expanded(
+                            child: Text(
+                              (room.name ?? ""),
+                              style: boldTextStyle(),
+                              softWrap: true,
+                            ),
+                          ),
                           Text(
-                            NumberUtil.formatIntPriceToVnd(
-                                room.price * quantity),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
+                            NumberUtil.formatIntPriceToVnd(room.price),
                             style: boldTextStyle(size: 14),
                           )
                         ],

@@ -30,6 +30,7 @@ class ProfileFragmentState extends State<ProfileFragment> {
   void initState() {
     super.initState();
     user = authStore.user!.copyWith();
+    logger.i("abc");
   }
 
   @override

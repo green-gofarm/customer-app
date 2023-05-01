@@ -12,6 +12,7 @@ import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,14 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   static final int HOME_ITEM_INDEX = 0;
 
   int _selectedIndex = HOME_ITEM_INDEX;
-
-  final _pages = [
-    HomeFragment(),
-    NotificationFragment(),
-    CartFragment(),
-    BookingFragment(),
-    authStore.user != null ? ProfileFragment() : null,
-  ];
 
   Widget _bottomTab() {
     return BottomNavigationBar(
@@ -141,9 +134,17 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: onWillPop,
       child: DoublePressBackWidget(
         message: "Nhấn lại để thoát",
-        child: Scaffold(
-          body: Center(child: _pages.elementAt(_selectedIndex)),
-          bottomNavigationBar: _bottomTab(),
+        child: Observer(
+          builder: (_) => Scaffold(
+            body: Center(child: [
+              HomeFragment(),
+              NotificationFragment(),
+              CartFragment(),
+              BookingFragment(),
+              authStore.user != null ? ProfileFragment() : null,
+            ].elementAt(_selectedIndex)),
+            bottomNavigationBar: _bottomTab(),
+          ),
         ),
       ),
     );
