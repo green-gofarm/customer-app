@@ -7,6 +7,7 @@ enum NotificationType {
   CANCEL_BOOKING_CUSTOMER,
   BOOKING_APPROVED_CUSTOMER,
   BOOKING_REJECTED_CUSTOMER,
+  REFUND_SUCCESS_CUSTOMER
 }
 
 extension NotificationTypeExtension on NotificationType {
@@ -20,6 +21,8 @@ extension NotificationTypeExtension on NotificationType {
         return 'notification.booking-approved.customer';
       case NotificationType.BOOKING_REJECTED_CUSTOMER:
         return 'notification.booking-rejected.customer';
+      case NotificationType.REFUND_SUCCESS_CUSTOMER:
+        return 'notification.refund-success.customer';
       default:
         return '';
     }
@@ -35,6 +38,8 @@ extension NotificationTypeExtension on NotificationType {
         return NotificationType.BOOKING_APPROVED_CUSTOMER;
       case 'notification.booking-rejected.customer':
         return NotificationType.BOOKING_REJECTED_CUSTOMER;
+      case 'notification.refund-success.customer':
+        return NotificationType.REFUND_SUCCESS_CUSTOMER;
       default:
         return NotificationType.PAYMENT_SUCCESS_CUSTOMER;
     }
@@ -47,6 +52,10 @@ extension NotificationTypeExtension on NotificationType {
     switch (type) {
       case NotificationType.PAYMENT_SUCCESS_CUSTOMER:
         icon = Icons.payment;
+        color = rf_primaryColor;
+        break;
+      case NotificationType.REFUND_SUCCESS_CUSTOMER:
+        icon = Icons.undo;
         color = rf_primaryColor;
         break;
       case NotificationType.CANCEL_BOOKING_CUSTOMER:

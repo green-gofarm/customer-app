@@ -12,6 +12,7 @@ import 'package:customer_app/store/cart/cart_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFWidget.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
+import 'package:customer_app/utils/enum/route_path.dart';
 import 'package:customer_app/utils/error_message.dart';
 import 'package:customer_app/utils/number_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,10 +60,8 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
     if (!store.hasAvailableCart()) {
       toast("Giỏ hàng đã bị xóa hoặc không tồn tại");
       await Future.delayed(Duration(seconds: 1));
-      widget.onBack();
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
+      Navigator.pushNamedAndRemoveUntil(
+          context, RoutePaths.HOME.value, (route) => false);
       return;
     }
   }
@@ -279,6 +278,21 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
                 ).launch(context);
               }
             }),
+          if (bookingStore.message != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                12.height,
+                Expanded(
+                  child: Text(
+                    bookingStore.message!,
+                    style: boldTextStyle(),
+                    softWrap: true,
+                  ),
+                ),
+              ],
+            ),
           12.height,
           Divider(color: Colors.grey.withOpacity(0.5), height: 1),
           12.height,
@@ -566,7 +580,7 @@ class CartDetailFragmentState extends State<CartDetailFragment> {
   }
 
   static const String ACTION_TITLE = 'Xóa giỏ hàng';
-  static const String ACTION_MESSAGE = "Bán có chắc muốn xóa giỏ hàng?";
+  static const String ACTION_MESSAGE = "Bạn có chắc muốn xóa giỏ hàng?";
   static const String ACTION_CANCEL = 'Suy nghĩ lại';
   static const String ACTION_OK = 'OK';
 

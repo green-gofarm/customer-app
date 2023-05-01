@@ -279,7 +279,7 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
               textAlign: TextAlign.start,
               overflow: TextOverflow.clip,
               style: boldTextStyle()),
-          SizedBox(height: 16, width: 16),
+          SizedBox(height: 8, width: 16),
           ListView.builder(
             padding: EdgeInsets.only(top: 8, bottom: 8),
             shrinkWrap: true,
@@ -305,8 +305,6 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                          margin: EdgeInsets.zero,
-                          padding: EdgeInsets.zero,
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
@@ -315,6 +313,17 @@ class _BookingPaymentScreenState extends State<BookingPaymentScreen> {
                             border: Border.all(
                               color: context.iconColor,
                               width: 1,
+                            ),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
                         ),

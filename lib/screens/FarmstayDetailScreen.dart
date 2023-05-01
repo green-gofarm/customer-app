@@ -207,13 +207,13 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayContactInfo()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
-      SliverToBoxAdapter(child: _farmstayActivities()),
-      SliverToBoxAdapter(child: SizedBox(height: 8)),
-      SliverToBoxAdapter(child: _farmstayRooms()),
-      SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayFaq()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
       SliverToBoxAdapter(child: _farmstayPolicies()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayActivities()),
+      SliverToBoxAdapter(child: SizedBox(height: 8)),
+      SliverToBoxAdapter(child: _farmstayRooms()),
       SliverToBoxAdapter(child: SizedBox(height: 8)),
     ];
   }
@@ -258,16 +258,6 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                             style: primaryTextStyle(
                                 fontStyle: FontStyle.italic, size: 12),
                           ),
-                    8.width,
-                    if (fStore.farmstayDetail?.rating != null &&
-                        fStore.farmstayDetail!.rating > 0.0)
-                      Text(
-                        "20 nhận xét",
-                        style: primaryTextStyle(
-                            size: 12,
-                            color: rf_primaryColor,
-                            weight: FontWeight.bold),
-                      ),
                   ],
                 ),
               ],
@@ -385,9 +375,9 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
                                 initialRating: feeback.rating.toDouble(),
                               ),
                             ),
-                            16.width,
-                            Text(feeback.rating.toString(),
-                                style: secondaryTextStyle()),
+                            8.width,
+                            Text('(${feeback.rating.toString()})',
+                                style: secondaryTextStyle(size: 12)),
                           ],
                         ),
                         Text(feeback.comment, style: secondaryTextStyle()),
@@ -421,8 +411,13 @@ class _FarmstayDetailScreenState extends State<FarmstayDetailScreen> {
             ],
           ),
           if (services.length <= 0)
-            Text("Không cung cấp dịch vụ khác.",
-                style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+            Column(
+              children: [
+                8.height,
+                Text("Không cung cấp dịch vụ khác.",
+                    style: secondaryTextStyle(fontStyle: FontStyle.italic)),
+              ],
+            ),
           ListView.builder(
             itemCount: services.length,
             shrinkWrap: true,

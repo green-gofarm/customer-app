@@ -247,35 +247,9 @@ class NotificationFragmentState extends State<NotificationFragment> {
   }
 
   Tuple2<IconData, Color> _getIconAndColor(NotificationModel notification) {
-    IconData icon;
-    Color color;
-
-    NotificationType type =
+        NotificationType type =
         NotificationTypeExtension.fromValue(notification.extras["type"]);
-
-    switch (type) {
-      case NotificationType.PAYMENT_SUCCESS_CUSTOMER:
-        icon = Icons.payment;
-        color = Colors.green;
-        break;
-      case NotificationType.CANCEL_BOOKING_CUSTOMER:
-        icon = Icons.cancel;
-        color = Colors.red;
-        break;
-      case NotificationType.BOOKING_APPROVED_CUSTOMER:
-        icon = Icons.check_circle;
-        color = Colors.green;
-        break;
-      case NotificationType.BOOKING_REJECTED_CUSTOMER:
-        icon = Icons.error;
-        color = Colors.red;
-        break;
-      default:
-        icon = Icons.notifications;
-        color = Colors.grey;
-    }
-
-    return Tuple2(icon, color);
+    return NotificationTypeExtension.getIconAndColor(type);
   }
 
   void _handleNavigation(NotificationModel notification) {
@@ -287,6 +261,7 @@ class NotificationFragmentState extends State<NotificationFragment> {
       case NotificationType.CANCEL_BOOKING_CUSTOMER:
       case NotificationType.BOOKING_APPROVED_CUSTOMER:
       case NotificationType.BOOKING_REJECTED_CUSTOMER:
+      case NotificationType.REFUND_SUCCESS_CUSTOMER:
         if (notification.extras["orderId"] != null) {
           BookingDetailScreen(
             bookingId: notification.extras["orderId"],

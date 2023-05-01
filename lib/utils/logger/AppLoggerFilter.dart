@@ -10,6 +10,6 @@ class AppLoggerFilter extends LogFilter {
     //
     // return false;
 
-    return true;
+    return false;
   }
 }

@@ -594,7 +594,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
   Future<void> getSchedule(int farmstayId, int roomId,
       {DateTime? date, int? limit}) async {
     await scheduleStore.getRoomSchedule(
-        farmstayId: farmstayId, roomId: roomId, date: date, limit: limit ?? 15);
+        farmstayId: farmstayId, roomId: roomId, date: date, limit: limit ?? 30);
   }
 
   Future<void> getRoomInfo(int farmstayId, int roomId) async {

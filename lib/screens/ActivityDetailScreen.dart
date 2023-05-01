@@ -624,7 +624,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
         farmstayId: farmstayId,
         activityId: activityId,
         date: date,
-        limit: limit ?? 15);
+        limit: limit ?? 30);
   }
 
   Future<void> getActivityInfo(int farmstayId, int activityId) async {
