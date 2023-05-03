@@ -12,6 +12,7 @@ import 'package:customer_app/store/room_schedule/room_schedule_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
+import 'package:customer_app/utils/SettingUtils.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/cart_item_type.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
@@ -497,13 +498,6 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
             height: 300,
             child: MultiSelectScheduleComponent(
                 controller: _controller,
-                onViewChanged: (start, end) async {
-                  final centerDay = DateTimeUtil.getCenterDate(start, end);
-                  final limit =
-                      DateTimeUtil.getLongestPeriod(start, end, centerDay);
-                  await getSchedule(farmstayId, roomId,
-                      date: centerDay, limit: limit);
-                },
                 onSelectedDates: (List<DateTime> dates) {
                   Map<DateTime, int> newTempTickets = {};
 
@@ -591,10 +585,13 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     }
   }
 
-  Future<void> getSchedule(int farmstayId, int roomId,
-      {DateTime? date, int? limit}) async {
+  Future<void> getSchedule(int farmstayId, int roomId) async {
+    final tomorrow = DateTimeUtil.getTomorrow();
+    final limit = (SettingUtils.MAX_BOOK_DATE / 2).ceil();
+    final date = tomorrow.add(Duration(days: limit));
+
     await scheduleStore.getRoomSchedule(
-        farmstayId: farmstayId, roomId: roomId, date: date, limit: limit ?? 30);
+        farmstayId: farmstayId, roomId: roomId, date: date, limit: limit);
   }
 
   Future<void> getRoomInfo(int farmstayId, int roomId) async {

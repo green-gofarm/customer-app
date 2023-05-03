@@ -11,6 +11,7 @@ import 'package:customer_app/store/cart/cart_store.dart';
 import 'package:customer_app/utils/RFColors.dart';
 import 'package:customer_app/utils/RFConstant.dart';
 import 'package:customer_app/utils/SSWidgets.dart';
+import 'package:customer_app/utils/SettingUtils.dart';
 import 'package:customer_app/utils/date_time_utils.dart';
 import 'package:customer_app/utils/enum/cart_item_type.dart';
 import 'package:customer_app/utils/enum/route_path.dart';
@@ -141,7 +142,8 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(context, RoutePaths.HOME.value, (route) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RoutePaths.HOME.value, (route) => false);
               },
               icon: Icon(Icons.home, size: 20))
         ],
@@ -524,13 +526,6 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
             height: 300,
             child: MultiSelectScheduleComponent(
                 controller: _controller,
-                onViewChanged: (start, end) async {
-                  final centerDay = DateTimeUtil.getCenterDate(start, end);
-                  final limit =
-                      DateTimeUtil.getLongestPeriod(start, end, centerDay);
-                  await getSchedule(farmstayId, activityId,
-                      date: centerDay, limit: limit);
-                },
                 onSelectedDates: (List<DateTime> dates) {
                   Map<DateTime, int> newTempTickets = {};
 
@@ -618,13 +613,15 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
     }
   }
 
-  Future<void> getSchedule(int farmstayId, int activityId,
-      {DateTime? date, int? limit}) async {
+  Future<void> getSchedule(int farmstayId, int activityId) async {
+    final tomorrow = DateTimeUtil.getTomorrow();
+    final limit = (SettingUtils.MAX_BOOK_DATE / 2).ceil();
+    final date = tomorrow.add(Duration(days: limit));
     await scheduleStore.getActivitySchedule(
         farmstayId: farmstayId,
         activityId: activityId,
         date: date,
-        limit: limit ?? 30);
+        limit: limit);
   }
 
   Future<void> getActivityInfo(int farmstayId, int activityId) async {

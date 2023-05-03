@@ -20,7 +20,7 @@ class HomeFragment extends StatefulWidget {
 class HomeFragmentState extends State<HomeFragment> {
   final _kTabs = <Tab>[
     Tab(text: 'GỢI Ý CHO BẠN'),
-    Tab(text: 'TOP'),
+    Tab(text: 'Địa Điểm Nổi Bật'.toUpperCase()),
   ];
 
   final _kTabPages = <Widget>[

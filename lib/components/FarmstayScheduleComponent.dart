@@ -1,7 +1,9 @@
 import 'package:customer_app/main.dart';
+import 'package:customer_app/models/activity_model.dart';
 import 'package:customer_app/models/farmstay_activity_schedule_item.dart';
 import 'package:customer_app/models/farmstay_detail_model.dart';
 import 'package:customer_app/models/farmstay_room_schedule_item.dart';
+import 'package:customer_app/models/room_model.dart';
 import 'package:customer_app/screens/ActivityDetailScreen.dart';
 import 'package:customer_app/screens/RoomDetailScreen.dart';
 import 'package:customer_app/store/farmstay_schedule/farmstay_schedule_store.dart';
@@ -42,6 +44,26 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
     roomScheduleList = [];
   }
 
+  RoomModel? getRoomById(List<RoomModel> rooms, int itemId) {
+    for (RoomModel room in rooms) {
+      if (room.id == itemId) {
+        return room;
+      }
+    }
+
+    return null;
+  }
+
+  ActivityModel? getActivityById(List<ActivityModel> activities, int itemId) {
+    for (ActivityModel activity in activities) {
+      if (activity.id == itemId) {
+        return activity;
+      }
+    }
+
+    return null;
+  }
+
   void handleGetScheduleItems(DateTime selectedDate) {
     clearSchedule();
     if (store.farmstaySchedule!.schedule == null) {
@@ -64,10 +86,10 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         .map((item) => FarmstayActivityScheduleItem(
               schedule: item,
               activity: widget.farmstay.activities.length > 0
-                  ? widget.farmstay.activities
-                      .firstWhere((activity) => activity.id == item.itemId)
+                  ? getActivityById(widget.farmstay.activities, item.itemId)
                   : null,
             ))
+        .where((element) => element.activity != null)
         .toList());
 
     roomScheduleList = List.from(scheduleList
@@ -75,10 +97,10 @@ class FarmstayScheduleComponentState extends State<FarmstayScheduleComponent> {
         .map((item) => FarmstayRoomScheduleItem(
               schedule: item,
               room: widget.farmstay.rooms.length > 0
-                  ? widget.farmstay.rooms
-                      .firstWhere((room) => room.id == item.itemId)
+                  ? getRoomById(widget.farmstay.rooms, item.itemId)
                   : null,
             ))
+        .where((element) => element.room != null)
         .toList());
 
     logger.i("Activity ${activityScheduleList.length}");

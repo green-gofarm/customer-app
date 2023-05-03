@@ -50,69 +50,71 @@ class _SignUpState extends State<SignUpScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: jsAppBar(context, backWidget: true, homeAction: true),
-        body: Column(
-          children: [
-            SocialSignUpWidget(
-              callBack: () {
-                if (widget.onSignedInCallback != null) {
-                  widget.onSignedInCallback!();
-                  finish(context);
-                } else {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, RoutePaths.HOME.value, (route) => false);
-                }
-              },
-            ),
-            Row(
-              children: [
-                Container(
-                        width: context.width(),
-                        height: 1,
-                        color: gray.withOpacity(0.2))
-                    .expand(),
-                8.width,
-                Text("&", style: secondaryTextStyle()),
-                8.width,
-                Container(
-                        width: context.width(),
-                        height: 1,
-                        color: gray.withOpacity(0.2))
-                    .expand(),
-              ],
-            ),
-            8.height,
-            RichTextWidget(
-              list: [
-                TextSpan(
-                  text: 'Bằng cách Đăng ký, bạn đồng ý với ',
-                  style: primaryTextStyle(size: 12),
-                ),
-                TextSpan(
-                    text: ' Điều khoản Dịch vụ ',
-                    style: primaryTextStyle(
-                        size: 12,
-                        color: rf_primaryColor,
-                        decoration: TextDecoration.underline)),
-                TextSpan(text: ' và ', style: primaryTextStyle(size: 12)),
-                TextSpan(
-                    text: ' công nhận rằng ',
-                    style: primaryTextStyle(size: 12)),
-                TextSpan(
-                    text: 'Chính sách Bảo mật ',
-                    style: primaryTextStyle(
-                        size: 12,
-                        color: rf_primaryColor,
-                        decoration: TextDecoration.underline)),
-                TextSpan(
-                    text: ' của chúng tôi áp dụng cho bạn',
-                    style: primaryTextStyle(size: 12)),
-              ],
-              textAlign: TextAlign.center,
-              maxLines: 3,
-            )
-                .paddingOnly(top: 0, bottom: 16, left: 12, right: 12)
-                .visible(true),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SocialSignUpWidget(
+                callBack: () {
+                  if (widget.onSignedInCallback != null) {
+                    widget.onSignedInCallback!();
+                    finish(context);
+                  } else {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, RoutePaths.HOME.value, (route) => false);
+                  }
+                },
+              ),
+              Row(
+                children: [
+                  Container(
+                      width: context.width(),
+                      height: 1,
+                      color: gray.withOpacity(0.2))
+                      .expand(),
+                  8.width,
+                  Text("&", style: secondaryTextStyle()),
+                  8.width,
+                  Container(
+                      width: context.width(),
+                      height: 1,
+                      color: gray.withOpacity(0.2))
+                      .expand(),
+                ],
+              ),
+              8.height,
+              RichTextWidget(
+                list: [
+                  TextSpan(
+                    text: 'Bằng cách Đăng ký, bạn đồng ý với ',
+                    style: primaryTextStyle(size: 12),
+                  ),
+                  TextSpan(
+                      text: ' Điều khoản Dịch vụ ',
+                      style: primaryTextStyle(
+                          size: 12,
+                          color: rf_primaryColor,
+                          decoration: TextDecoration.underline)),
+                  TextSpan(text: ' và ', style: primaryTextStyle(size: 12)),
+                  TextSpan(
+                      text: ' công nhận rằng ',
+                      style: primaryTextStyle(size: 12)),
+                  TextSpan(
+                      text: 'Chính sách Bảo mật ',
+                      style: primaryTextStyle(
+                          size: 12,
+                          color: rf_primaryColor,
+                          decoration: TextDecoration.underline)),
+                  TextSpan(
+                      text: ' của chúng tôi áp dụng cho bạn',
+                      style: primaryTextStyle(size: 12)),
+                ],
+                textAlign: TextAlign.center,
+                maxLines: 3,
+              )
+                  .paddingOnly(top: 0, bottom: 16, left: 12, right: 12)
+                  .visible(true),
+            ],
+          ),
         ),
         persistentFooterButtons: <Widget>[
           Container(

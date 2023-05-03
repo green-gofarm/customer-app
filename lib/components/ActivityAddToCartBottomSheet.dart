@@ -76,10 +76,7 @@ class ActivityAddToCartBottomSheetState
         children: [
           _itemDetail(),
           Divider(color: Colors.grey),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.5 - 150,
-            child: _listItem(),
-          ),
+          Expanded(child: _listItem()), // Use Expanded instead of Flexible
           Divider(color: Colors.grey),
           Container(
             padding: EdgeInsets.all(12),
@@ -108,6 +105,7 @@ class ActivityAddToCartBottomSheetState
       ),
     );
   }
+
 
   Widget _itemDetail() {
     return Row(

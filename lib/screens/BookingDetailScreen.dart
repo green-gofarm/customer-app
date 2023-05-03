@@ -1,4 +1,5 @@
 import 'package:customer_app/components/CountDownButton.dart';
+import 'package:customer_app/components/ShowLocationGoogleMap.dart';
 import 'package:customer_app/models/booking_activity_item.dart';
 import 'package:customer_app/models/booking_detail/booking_detail_model.dart';
 import 'package:customer_app/models/booking_room_item.dart';
@@ -24,6 +25,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
@@ -190,10 +192,11 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                             Column(
                               children: [
                                 _buildTimeline(store.bookingDetail!),
-                                // Add the timeline here
                                 SizedBox(height: 8),
                               ],
                             ),
+                          _farmstayLocation(),
+                          SizedBox(height: 8),
                           _buildList(context),
                           SizedBox(height: 8),
                           _buildBodyBottom(),
@@ -211,6 +214,34 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                 child: CircularProgressIndicator(),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _farmstayLocation() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(12),
+      width: context.width(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Vị trí', style: boldTextStyle()),
+            ],
+          ),
+          8.height,
+          if (farmstayStore.farmstayDetail?.latitude != null &&
+              farmstayStore.farmstayDetail?.longitude != null)
+            Container(
+              height: 300,
+              child: ShowLocationGoogleMap(
+                  center: LatLng(farmstayStore.farmstayDetail!.latitude,
+                      farmstayStore.farmstayDetail!.longitude)),
+            )
         ],
       ),
     );

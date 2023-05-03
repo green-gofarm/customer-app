@@ -42,15 +42,16 @@ class _SocialSignUpWidgetState extends State<SocialSignUpWidget>
         final String? token = await AuthService.getFirebaseAuthToken(false);
         if (token != null) {
           await authStore.signUpCustomer(token);
-
-          String? messageToken = await FirebaseMessaging.instance.getToken();
-          if (messageToken != null) {
-            authStore.updateNotificationToken(messageToken);
-          }
         }
 
         if (authStore.user != null) {
           AuthService.getFirebaseAuthToken(true);
+
+          String? messageToken = await FirebaseMessaging.instance.getToken();
+          if (messageToken != null) {
+            await authStore.updateNotificationToken(messageToken);
+          }
+
           if (widget.callBack != null) {
             widget.callBack!();
             finish(context);

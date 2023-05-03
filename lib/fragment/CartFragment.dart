@@ -127,7 +127,7 @@ class _CartFragmentState extends State<CartFragment> {
               SizedBox(height: width * 0.15),
               Icon(Icons.remove_shopping_cart, size: width * 0.5),
               8.height,
-              Text('Ban chưa mua gì.',
+              Text('Bạn chưa mua gì.',
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
